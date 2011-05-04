@@ -37,7 +37,13 @@ class Aoe_Scheduler_Model_Configuration extends Mage_Core_Model_Abstract {
 		$this->setName($code);
 
 		$global = $this->getGlobalCrontabJobXmlConfig();
-		$cronExpr = (string)$global->schedule->cron_expr;
+		$cronExpr = null;
+		if ($global->schedule->config_path) {
+			$cronExpr = Mage::getStoreConfig((string)$global->schedule->config_path);
+		}
+		if (empty($cronExpr) && $global->schedule->cron_expr) {
+			$cronExpr = (string)$global->schedule->cron_expr;
+		}
 		if ($cronExpr) {
 			$this->setCronExpr($cronExpr);
 		}
@@ -105,10 +111,10 @@ class Aoe_Scheduler_Model_Configuration extends Mage_Core_Model_Abstract {
 	protected function getJobXmlConfig($path) {
 		$xmlConfig = false;
 		$config = Mage::getConfig()->getNode($path);
-        if ($config instanceof Mage_Core_Model_Config_Element) {
-        	$xmlConfig = $config->{$this->getId()};
-        }
-        return $xmlConfig;
+		if ($config instanceof Mage_Core_Model_Config_Element) {
+			$xmlConfig = $config->{$this->getId()};
+		}
+		return $xmlConfig;
 	}
 
 }
