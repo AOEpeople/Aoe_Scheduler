@@ -1,0 +1,60 @@
+<?xml version="1.0" ?>
+<config>
+	<modules>
+		<Aoe_Scheduler>
+			<version>0.0.3</version>
+		</Aoe_Scheduler>
+	</modules>
+
+	<global>
+		<blocks>
+			<aoe_scheduler>
+				<class>Aoe_Scheduler_Block</class>
+			</aoe_scheduler>
+		</blocks>
+
+		<helpers>
+			<aoe_scheduler>
+				<class>Aoe_Scheduler_Helper</class>
+			</aoe_scheduler>
+		</helpers>
+
+		<models>
+			<aoe_scheduler>
+				<class>Aoe_Scheduler_Model</class>
+			</aoe_scheduler>
+
+			<cron>
+				<rewrite>
+					<observer>Aoe_Scheduler_Model_Observer</observer>
+					<schedule>Aoe_Scheduler_Model_Schedule</schedule>
+				</rewrite>
+			</cron>
+		</models>
+	</global>
+
+	<admin>
+		<routers>
+			<adminhtml>
+				<args>
+					<modules>
+						<Aoe_Scheduler before="Mage_Adminhtml">Aoe_Scheduler_Adminhtml</Aoe_Scheduler>
+					</modules>
+				</args>
+			</adminhtml>
+		</routers>
+	</admin>
+
+	<adminhtml>
+		<translate>
+			<modules>
+				<aoe_scheduler>
+					<files>
+						<default>Aoe_Scheduler.csv</default>
+					</files>
+				</aoe_scheduler>
+			</modules>
+		</translate>
+	</adminhtml>
+
+</config>

@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<config>
+    <sections>
+        <system>
+            <groups>
+                <cron translate="label comment" module="cron">
+                    <fields>
+                        <disabled_crons translate="label">
+                            <label>Disabled cron tasks</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>100</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </disabled_crons>
+                    </fields>
+                </cron>
+            </groups>
+        </system>
+    </sections>
+</config>
