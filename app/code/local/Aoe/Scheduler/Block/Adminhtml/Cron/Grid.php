@@ -133,4 +133,16 @@ class Aoe_Scheduler_Block_Adminhtml_Cron_Grid extends Mage_Adminhtml_Block_Widge
 		return $this->getUrl('adminhtml/scheduler/cron', array('_current' => true));
 	}
 	
+	/**
+	 * Gets the url for where to go when you click on the row.
+	 *
+	 * @param Varien_Object $row The row that was clicked on.
+	 *
+	 * @return string (the url)
+	 */
+	public function getRowUrl($row)
+	{
+		$url = $this->getUrl('*/*/edit', array('id' => $row->getId()));
+		return $url;
+	}	
 }

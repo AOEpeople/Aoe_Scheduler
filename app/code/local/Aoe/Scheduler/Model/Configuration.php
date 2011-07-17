@@ -38,20 +38,21 @@ class Aoe_Scheduler_Model_Configuration extends Mage_Core_Model_Abstract {
 
 		$global = $this->getGlobalCrontabJobXmlConfig();
 		$cronExpr = null;
-		if ($global->schedule->config_path) {
+		if (isset($global->schedule) && $global->schedule->config_path) {
 			$cronExpr = Mage::getStoreConfig((string)$global->schedule->config_path);
 		}
-		if (empty($cronExpr) && $global->schedule->cron_expr) {
+		if (empty($cronExpr) && isset($global->schedule) && $global->schedule->cron_expr) {
 			$cronExpr = (string)$global->schedule->cron_expr;
 		}
 		if ($cronExpr) {
 			$this->setCronExpr($cronExpr);
 		}
-		$model = (string)$global->run->model;
-		if ($model) {
-			$this->setModel($model);
+		if (isset($global->run)) {
+			$model = (string)$global->run->model;
+			if ($model) {
+				$this->setModel($model);
+			}
 		}
-
 		$configurable = $this->getConfigurableCrontabJobXmlConfig();
 		if ($configurable) {
 			if (is_object($configurable->schedule)) {
