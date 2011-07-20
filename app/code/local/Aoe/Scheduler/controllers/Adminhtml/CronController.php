@@ -2,30 +2,30 @@
 
 /**
  * Scheduler controller
- * 
+ *
  * @author Fabrizio Branca <fabrizio.branca@aoemedia.de>
  */
 class Aoe_Scheduler_Adminhtml_CronController extends Mage_Adminhtml_Controller_Action {
-	
-	
-	
+
+
+
 	/**
 	 * Index action (display grid)
-	 * 
+	 *
 	 * @return void
 	 */
 	public function indexAction() {
 		$this->loadLayout();
 		$block = $this->getLayout()->createBlock('aoe_scheduler/adminhtml_cron');
-    	$this->_addContent($block);
-    	$this->renderLayout();
+		$this->_addContent($block);
+		$this->renderLayout();
 	}
-	
-	
-	
+
+
+
 	/**
 	 * Mass action: disable
-	 * 
+	 *
 	 * @return void
 	 */
 	public function disableAction() {
@@ -41,12 +41,12 @@ class Aoe_Scheduler_Adminhtml_CronController extends Mage_Adminhtml_Controller_A
 		Mage::app()->getCache()->clean(Zend_Cache::CLEANING_MODE_MATCHING_TAG, array(Mage_Core_Model_Config::CACHE_TAG));
 		$this->_redirect('*/*/index');
 	}
-	
-	
-	
+
+
+
 	/**
 	 * Mass action: enable
-	 * 
+	 *
 	 * @return void
 	 */
 	public function enableAction() {
@@ -62,13 +62,13 @@ class Aoe_Scheduler_Adminhtml_CronController extends Mage_Adminhtml_Controller_A
 		Mage::app()->getCache()->clean(Zend_Cache::CLEANING_MODE_MATCHING_TAG, array(Mage_Core_Model_Config::CACHE_TAG));
 		$this->_redirect('*/*/index');
 	}
-	
-	
-	
-	
+
+
+
+
 	/**
 	 * Mass action: schedule now
-	 * 
+	 *
 	 * @return void
 	 */
 	public function scheduleNowAction() {
@@ -82,12 +82,12 @@ class Aoe_Scheduler_Adminhtml_CronController extends Mage_Adminhtml_Controller_A
 		}
 		$this->_redirect('*/*/index');
 	}
-	
 
-	
+
+
 	/**
 	 * Mass action: run now
-	 * 
+	 *
 	 * @return void
 	 */
 	public function runNowAction() {
@@ -101,6 +101,6 @@ class Aoe_Scheduler_Adminhtml_CronController extends Mage_Adminhtml_Controller_A
 		}
 		$this->_redirect('*/*/index');
 	}
-	
+
 }
 
