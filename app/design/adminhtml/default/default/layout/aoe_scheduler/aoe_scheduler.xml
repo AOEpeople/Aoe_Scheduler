@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<layout>
+	<adminhtml_timeline_index>
+		<reference name="content">
+			<block type="aoe_scheduler/adminhtml_timeline" name="aoe_scheduler.timeline" template="aoe_scheduler/timeline.phtml" />
+		</reference>
+	</adminhtml_timeline_index>
+	<adminhtml_scheduler_index>
+		<reference name="content">
+			<block type="aoe_scheduler/adminhtml_scheduler" name="aoe_scheduler.scheduler" />
+		</reference>
+	</adminhtml_scheduler_index>
+	<adminhtml_cron_index>
+		<reference name="content">
+			<block type="aoe_scheduler/adminhtml_cron" name="aoe_scheduler.cron" />
+		</reference>
+	</adminhtml_cron_index>
+</layout>

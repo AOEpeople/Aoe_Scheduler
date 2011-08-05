@@ -1,8 +1,6 @@
 <?php
 class Aoe_Scheduler_Block_Adminhtml_Timeline extends Mage_Adminhtml_Block_Template {
 
-	protected $_template = 'aoe_scheduler/timeline.phtml';
-
 	/**
 	 * Constructor for Timeline Adminhtml Block
 	 */

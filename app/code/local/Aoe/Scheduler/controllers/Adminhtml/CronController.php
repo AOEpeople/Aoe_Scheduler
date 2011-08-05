@@ -16,8 +16,7 @@ class Aoe_Scheduler_Adminhtml_CronController extends Mage_Adminhtml_Controller_A
 	 */
 	public function indexAction() {
 		$this->loadLayout();
-		$block = $this->getLayout()->createBlock('aoe_scheduler/adminhtml_cron');
-		$this->_addContent($block);
+		$this->_setActiveMenu('system');
 		$this->renderLayout();
 	}
 

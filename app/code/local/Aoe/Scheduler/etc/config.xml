@@ -55,6 +55,13 @@
 				</aoe_scheduler>
 			</modules>
 		</translate>
+		<layout>
+			<updates>
+				<aoe_scheduler>
+					<file>aoe_scheduler/aoe_scheduler.xml</file>
+				</aoe_scheduler>
+			</updates>
+		</layout>
 	</adminhtml>
 
 </config>
