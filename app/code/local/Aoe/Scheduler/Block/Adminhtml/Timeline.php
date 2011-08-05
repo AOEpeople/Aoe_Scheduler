@@ -1,13 +1,15 @@
 <?php
-class Aoe_Scheduler_Block_Adminhtml_Cron extends Mage_Adminhtml_Block_Widget_Grid_Container {
+class Aoe_Scheduler_Block_Adminhtml_Timeline extends Mage_Adminhtml_Block_Template {
+
+	protected $_template = 'aoe_scheduler/timeline.phtml';
 
 	/**
-	 * Constructor for Cron Adminhtml Block
+	 * Constructor for Timeline Adminhtml Block
 	 */
 	public function __construct() {
 		$this->_blockGroup = 'aoe_scheduler';
-		$this->_controller = 'adminhtml_cron';
-		$this->_headerText = Mage::helper('aoe_scheduler')->__('Available tasks');
+		$this->_controller = 'adminhtml_timeline';
+		$this->_headerText = Mage::helper('aoe_scheduler')->__('Timeline');
 
 		parent::__construct();
 	}
@@ -15,10 +17,9 @@ class Aoe_Scheduler_Block_Adminhtml_Cron extends Mage_Adminhtml_Block_Widget_Gri
 	/**
 	 * Prepare layout
 	 *
-	 * @return Aoe_Scheduler_Block_Adminhtml_Cron
+	 * @return Aoe_Scheduler_Block_Adminhtml_Timeline
 	 */
 	protected function _prepareLayout() {
-		$this->removeButton('add');
 		return parent::_prepareLayout();
 	}
 
