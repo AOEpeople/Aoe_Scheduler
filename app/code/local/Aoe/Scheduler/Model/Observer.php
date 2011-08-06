@@ -7,6 +7,8 @@
  */
 class Aoe_Scheduler_Model_Observer extends Mage_Cron_Model_Observer {
 
+
+
 	/**
 	 * Process cron queue
 	 * Geterate tasks schedule
@@ -41,8 +43,6 @@ class Aoe_Scheduler_Model_Observer extends Mage_Cron_Model_Observer {
 					Mage::throwException(Mage::helper('cron')->__('Too late for the schedule.'));
 				}
 
-				// TODO: this could be replaced by $schedule->runNow();
-
 				if ($runConfig->model) {
 					if (!preg_match(self::REGEX_RUN_MODEL, (string)$runConfig->model, $run)) {
 						Mage::throwException(Mage::helper('cron')->__('Invalid model/method definition, expecting "model/class::method".'));
@@ -61,7 +61,13 @@ class Aoe_Scheduler_Model_Observer extends Mage_Cron_Model_Observer {
 					// another cron started this job intermittently, so skip it
 					continue;
 				}
-				$schedule->setExecutedAt(strftime('%Y-%m-%d %H:%M:%S', time()))
+				/**
+					though running status is set in tryLockJob we must set it here because the object
+					was loaded with a pending status and will set it back to pending if we don't set it here
+				 */
+				$schedule
+					->setStatus(Mage_Cron_Model_Schedule::STATUS_RUNNING)
+					->setExecutedAt(strftime('%Y-%m-%d %H:%M:%S', time()))
 					->save();
 
 				$messages = call_user_func_array($callback, $arguments);
@@ -76,12 +82,12 @@ class Aoe_Scheduler_Model_Observer extends Mage_Cron_Model_Observer {
 					$schedule->setMessages($messages);
 				}
 
-				$schedule->setStatus(Mage_Cron_Model_Schedule::STATUS_SUCCESS)
+				$schedule
+					->setStatus(Mage_Cron_Model_Schedule::STATUS_SUCCESS)
 					->setFinishedAt(strftime('%Y-%m-%d %H:%M:%S', time()));
 
 			} catch (Exception $e) {
 				$schedule->setStatus($errorStatus)
-					->setFinishedAt(strftime('%Y-%m-%d %H:%M:%S', time()))
 					->setMessages($e->__toString());
 			}
 			$schedule->save();
