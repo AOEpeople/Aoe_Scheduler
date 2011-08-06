@@ -80,12 +80,11 @@ class Aoe_Scheduler_Block_Adminhtml_Timeline extends Mage_Adminhtml_Block_Templa
 			$offset = 0;
 		}
 
-		$title = $schedule->getId();
 		$style = sprintf('width: %spx; left: %spx;', $duration, $offset);
 		$class = 'task ' . $schedule->getStatus();
 		$id = 'id_'.$schedule->getScheduleId();
 
-		return sprintf('title="%s" class="%s" style="%s" id="%s"', $title, $class, $style, $id);
+		return sprintf('class="%s" style="%s" id="%s"', $class, $style, $id);
 	}
 
 }

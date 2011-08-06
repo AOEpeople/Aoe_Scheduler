@@ -34,10 +34,8 @@
 							<div class="timeline timeline_<?php echo $jobCode; ?>">
 								<?php foreach ($_schedules as $_schedule): /* @var $_schedule Aoe_Scheduler_Model_Schedule */ ?>
 									<div <?php echo $this->getGanttDivAttributes($_schedule); ?>>
-										<div class="detailwrap">
-											<?php echo $this->getLayout()->createBlock('aoe_scheduler/adminhtml_timelineDetail')->setSchedule($_schedule)->toHtml(); ?>
-										</div>
 									</div>
+									<?php echo $this->getLayout()->createBlock('aoe_scheduler/adminhtml_timelineDetail')->setSchedule($_schedule)->toHtml(); ?>
 								<?php endforeach; ?>
 							</div>
 						</div>
