@@ -35,4 +35,51 @@ class Aoe_Scheduler_Helper_Data extends Mage_Core_Helper_Abstract {
 		return $result;
 	}
 
+	/**
+	 * Decorate status values
+	 *
+	 * @return string
+	 */
+	public function decorateStatus($value) {
+		switch ($value) {
+			case Mage_Cron_Model_Schedule::STATUS_SUCCESS:
+				$cell = '<span class="grid-severity-notice"><span>'.$value.'</span></span>';
+				break;
+			case Mage_Cron_Model_Schedule::STATUS_PENDING:
+				$cell = '<span class="grid-severity-minor"><span>'.$value.'</span></span>';
+				break;
+			case Mage_Cron_Model_Schedule::STATUS_RUNNING:
+				$cell = '<span class="grid-severity-major"><span>'.$value.'</span></span>';
+				break;
+			case Mage_Cron_Model_Schedule::STATUS_MISSED:
+			case Mage_Cron_Model_Schedule::STATUS_ERROR:
+				$cell = '<span class="grid-severity-critical"><span>'.$value.'</span></span>';
+				break;
+			default:
+				$cell = $value;
+				break;
+		}
+		return $cell;
+	}
+
+	/**
+	 * Decorate time values
+	 *
+	 * @return string
+	 */
+	public function decorateTime($value) {
+		if ($value == '0000-00-00 00:00:00') {
+			$value = '';
+		} else {
+			$value = Mage::getModel('core/date')->date(null, $value);
+			$replace = array(
+				Mage::getModel('core/date')->date('Y-m-d ', time()) => '', // today
+				Mage::getModel('core/date')->date('Y-m-d ', strtotime('+1 day')) => Mage::helper('aoe_scheduler')->__('Tomorrow') . ', ',
+				Mage::getModel('core/date')->date('Y-m-d ', strtotime('-1 day')) => Mage::helper('aoe_scheduler')->__('Yesterday') . ', ',
+			);
+			$value = str_replace(array_keys($replace), array_values($replace), $value);
+		}
+		return $value;
+	}
+
 }

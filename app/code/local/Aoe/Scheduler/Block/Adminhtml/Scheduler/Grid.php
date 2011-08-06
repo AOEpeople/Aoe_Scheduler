@@ -57,6 +57,9 @@ class Aoe_Scheduler_Block_Adminhtml_Scheduler_Grid extends Mage_Adminhtml_Block_
 	 * @return Aoe_SourceContact_Block_Admin_Grid Self
 	 */
 	protected function _prepareColumns() {
+
+		$viewHelper = $this->helper('aoe_scheduler/data');
+
 		$this->addColumn('job_code', array (
 			'header' => Mage::helper('aoe_scheduler')->__('Code'),
 			'index' => 'job_code',
@@ -66,22 +69,22 @@ class Aoe_Scheduler_Block_Adminhtml_Scheduler_Grid extends Mage_Adminhtml_Block_
 		$this->addColumn('created_at', array (
 			'header' => Mage::helper('aoe_scheduler')->__('Created'),
 			'index' => 'created_at',
-			'frame_callback' => array($this, 'decorateTime')
+			'frame_callback' => array($viewHelper, 'decorateTime')
 		));
 		$this->addColumn('scheduled_at', array (
 			'header' => Mage::helper('aoe_scheduler')->__('Scheduled'),
 			'index' => 'scheduled_at',
-			'frame_callback' => array($this, 'decorateTime')
+			'frame_callback' => array($viewHelper, 'decorateTime')
 		));
 		$this->addColumn('executed_at', array (
 			'header' => Mage::helper('aoe_scheduler')->__('Executed'),
 			'index' => 'executed_at',
-			'frame_callback' => array($this, 'decorateTime')
+			'frame_callback' => array($viewHelper, 'decorateTime')
 		));
 		$this->addColumn('finished_at', array (
 			'header' => Mage::helper('aoe_scheduler')->__('Finished'),
 			'index' => 'finished_at',
-			'frame_callback' => array($this, 'decorateTime')
+			'frame_callback' => array($viewHelper, 'decorateTime')
 		));
 		$this->addColumn('messages', array (
 			'header' => Mage::helper('aoe_scheduler')->__('Messages'),
@@ -91,7 +94,7 @@ class Aoe_Scheduler_Block_Adminhtml_Scheduler_Grid extends Mage_Adminhtml_Block_
 		$this->addColumn('status', array (
 			'header' => Mage::helper('aoe_scheduler')->__('Status'),
 			'index' => 'status',
-			'frame_callback' => array($this, 'decorateStatus'),
+			'frame_callback' => array($viewHelper, 'decorateStatus'),
 			'type' => 'options',
 			'options' => array(
 				Mage_Cron_Model_Schedule::STATUS_PENDING => Mage_Cron_Model_Schedule::STATUS_PENDING,
@@ -121,57 +124,6 @@ class Aoe_Scheduler_Block_Adminhtml_Scheduler_Grid extends Mage_Adminhtml_Block_
 			$return .= '<div class="schedule-message" id="messages_'.$row->getScheduleId().'" style="display: none; width: 300px; overflow: auto; font-size: small;"><pre>'.$value.'</pre></div>';
 		}
 		return $return;
-	}
-
-
-
-	/**
-	 * Decorate status column values
-	 *
-	 * @return string
-	 */
-	public function decorateStatus($value) {
-		switch ($value) {
-			case Mage_Cron_Model_Schedule::STATUS_SUCCESS:
-				$cell = '<span class="grid-severity-notice"><span>'.$value.'</span></span>';
-				break;
-			case Mage_Cron_Model_Schedule::STATUS_PENDING:
-				$cell = '<span class="grid-severity-minor"><span>'.$value.'</span></span>';
-				break;
-			case Mage_Cron_Model_Schedule::STATUS_RUNNING:
-				$cell = '<span class="grid-severity-major"><span>'.$value.'</span></span>';
-				break;
-			case Mage_Cron_Model_Schedule::STATUS_MISSED:
-			case Mage_Cron_Model_Schedule::STATUS_ERROR:
-				$cell = '<span class="grid-severity-critical"><span>'.$value.'</span></span>';
-				break;
-			default:
-				$cell = $value;
-				break;
-		}
-		return $cell;
-	}
-
-
-
-	/**
-	 * Decorate status column values
-	 *
-	 * @return string
-	 */
-	public function decorateTime($value) {
-		if ($value == '0000-00-00 00:00:00') {
-			$value = '';
-		} else {
-			$value = Mage::getModel('core/date')->date(null, $value);
-			$replace = array(
-				Mage::getModel('core/date')->date('Y-m-d ', time()) => '', // today
-				Mage::getModel('core/date')->date('Y-m-d ', strtotime('+1 day')) => Mage::helper('aoe_scheduler')->__('Tomorrow') . ', ',
-				Mage::getModel('core/date')->date('Y-m-d ', strtotime('-1 day')) => Mage::helper('aoe_scheduler')->__('Yesterday') . ', ',
-			);
-			$value = str_replace(array_keys($replace), array_values($replace), $value);
-		}
-		return $value;
 	}
 
 
