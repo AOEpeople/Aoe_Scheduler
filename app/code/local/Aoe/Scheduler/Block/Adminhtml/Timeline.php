@@ -25,8 +25,11 @@ class Aoe_Scheduler_Block_Adminhtml_Timeline extends Mage_Adminhtml_Block_Templa
 
 		$this->loadSchedules();
 
-		$this->starttime = mktime(date('H', strtotime($this->minDate)), 0, 0);
-		$this->endtime = mktime(date('H', strtotime($this->maxDate))+1, 0, 0);
+		$minDate = strtotime($this->minDate);
+		$maxDate = strtotime($this->maxDate);
+
+		$this->starttime = mktime(date('H', $minDate), 0, 0, date('n', $minDate), date('j', $minDate), date('Y', $minDate));
+		$this->endtime = mktime(date('H', $maxDate)+1, 0, 0, date('n', $maxDate), date('j', $maxDate), date('Y', $maxDate));
 
 		$this->nowLine = (time() - $this->starttime) / $this->zoom;
 	}

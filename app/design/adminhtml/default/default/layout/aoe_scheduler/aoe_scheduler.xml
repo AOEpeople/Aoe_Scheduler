@@ -4,6 +4,7 @@
 	<adminhtml_timeline_index>
 		<reference name="head">
 			<action method="addCss"><stylesheet>aoe_scheduler/timeline.css</stylesheet></action>
+			<action method="addCss"><stylesheet>aoe_scheduler/bars.css</stylesheet></action>
 			<action method="addItem"><type>skin_js</type><script>aoe_scheduler/jquery-1.6.2.min.js</script></action>
 			<action method="addItem"><type>skin_js</type><script>aoe_scheduler/tooltip.js</script></action>
 			<action method="addItem"><type>skin_js</type><script>aoe_scheduler/tooltip.dynamic.js</script></action>
@@ -26,12 +27,18 @@
 	</adminhtml_timeline_index>
 
 	<adminhtml_scheduler_index>
+		<reference name="head">
+			<action method="addCss"><stylesheet>aoe_scheduler/bars.css</stylesheet></action>
+		</reference>
 		<reference name="content">
 			<block type="aoe_scheduler/adminhtml_scheduler" name="aoe_scheduler.scheduler" />
 		</reference>
 	</adminhtml_scheduler_index>
 
 	<adminhtml_cron_index>
+		<reference name="head">
+			<action method="addCss"><stylesheet>aoe_scheduler/bars.css</stylesheet></action>
+		</reference>
 		<reference name="content">
 			<block type="aoe_scheduler/adminhtml_cron" name="aoe_scheduler.cron" />
 		</reference>

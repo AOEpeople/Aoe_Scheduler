@@ -28,6 +28,14 @@ $_helper = $this->helper('aoe_scheduler/data'); /* @var $_helper Aoe_Scheduler_H
 			<tr>
 				<td class="label">Id:</td><td><?php echo $_schedule->getId(); ?></td>
 			</tr>
+			<?php if ($_schedule->getMessages()): ?>
+			<tr>
+				<td class="label" colspan="2">Message:</td>
+			</tr>
+			<tr>
+				<td colspan="2"><pre><?php echo $_schedule->getMessages(); ?></pre></td>
+			</tr>
+			<?php endif; ?>
 		</table>
 	</div>
 </div>
