@@ -1,3 +1,5 @@
+<?php /* @var $this Aoe_Scheduler_Block_Adminhtml_Timeline */ ?>
+
 <div class="content-header">
 <table cellspacing="0">
 	<tr>
@@ -10,12 +12,61 @@
 </div>
 
 <div id="maincontainer">
+
 	<div id="contentwrapper">
 		<div id="contentcolumn">
-			<div class="innertube"><b>Content Column: <em>Fluid</em></b></div>
+			<div class="timeline-box">
+				<div class="timeline-panel" style="width: <?php echo $this->getTimelinePanelWidth(); ?>px;">
+					<div id="now" style="left: <?php echo $this->getNowline(); ?>px"></div>
+					<div class="row hours">
+						<div class="timeline">
+							<?php for($i = $this->getStarttime(); $i < $this->getEndtime(); $i+=60*60): ?>
+								<div class="hour"><?php echo date('H:i', $i); ?></div>
+							<?php endfor; ?>
+						</div>
+					</div>
+
+					<?php foreach ($this->getAvailableConfigurations() as $configuration): /* @var $configuration Aoe_Scheduler_Model_Configuration */ ?>
+						<?php $_schedules = $this->getSchedulesForCode($configuration->getId()); ?>
+						<div class="row">
+							<div class="timeline timeline_<?php echo $configuration->getId(); ?>">
+								<?php foreach ($_schedules as $_schedule): /* @var $_schedule Aoe_Scheduler_Model_Schedule */ ?>
+									<div <?php echo $this->getGanttDivAttributes($_schedule); ?>>
+										<div class="detailwrap">
+											<div class="details">
+												<div class="details-headline <?php echo $_schedule->getStatus(); ?>">
+													<h3><?php echo $_schedule->getJobCode(); ?></h3>
+												</div>
+												<div class="details-content">
+													<p>Executed: <?php echo $_schedule->getExecutedAt(); ?></p>
+													<p>Scheduled: <?php echo $_schedule->getScheduledAt(); ?></p>
+													<p>Finished: <?php echo $_schedule->getFinishedAt(); ?></p>
+													<p>Created: <?php echo $_schedule->getCreatedAt(); ?></p>
+												</div>
+											</div>
+										</div>
+									</div>
+								<?php endforeach; ?>
+							</div>
+						</div>
+					<?php endforeach; ?>
+
+				</div>
+			</div>
 		</div>
 	</div>
+
 	<div id="leftcolumn">
-		<div class="innertube"><b>Left Column: <em>200px</em></b></div>
+		<div class="row hours">
+			<div class="caption"></div>
+		</div>
+		<?php foreach ($this->getAvailableConfigurations() as $configuration): /* @var $configuration Aoe_Scheduler_Model_Configuration */ ?>
+			<div class="row">
+				<div class="configuration">
+					<?php echo $configuration->getId(); ?>
+				</div>
+			</div>
+		<?php endforeach; ?>
 	</div>
+
 </div>

@@ -1,9 +1,21 @@
 <?php
 
+/**
+ *
+ * Enter description here ...
+ *
+ * @author Fabrizio
+ *
+ * @method string getModel()
+ * @method string getStatus()
+ * @method string getCronExpr()
+ */
 class Aoe_Scheduler_Model_Configuration extends Mage_Core_Model_Abstract {
 
 	const STATUS_DISABLED = 'disabled';
 	const STATUS_ENABLED = 'enabled';
+
+
 
 	/**
 	 * Override method.

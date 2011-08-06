@@ -1,5 +1,14 @@
 <?php
 
+/**
+ * @method string getExecutedAt()
+ * @method string getFinishedAt()
+ * @method string getStatus()
+ * @method string getMessages()
+ * @method string getCreatedAt()
+ * @method string getScheduledAt()
+ * @method string getJobCode()
+ */
 class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule {
 
 	/**
@@ -42,10 +51,10 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule {
 
 				// added by Fabrizio to also save messages when no exception was thrown
 				if (!empty($messages)) {
-						 if (!is_string($messages)) {
-							 $messages = var_export($messages, 1);
-						 }
-						 $this->setMessages($messages);
+						if (!is_string($messages)) {
+							$messages = var_export($messages, 1);
+						}
+						$this->setMessages($messages);
 				}
 
 		$this->setStatus(Mage_Cron_Model_Schedule::STATUS_SUCCESS)
@@ -97,5 +106,6 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule {
 		}
 		return $duration;
 	}
+
 
 }
