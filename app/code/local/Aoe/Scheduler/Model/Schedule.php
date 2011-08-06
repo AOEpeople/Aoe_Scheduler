@@ -94,6 +94,21 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule {
 
 
 	/**
+	 * Get start time (planned or actual)
+	 *
+	 * @return string
+	 */
+	public function getStarttime() {
+		$starttime = $this->getExecutedAt();
+		if ($starttime == '0000-00-00 00:00:00') {
+			$starttime = $this->getScheduledAt();
+		}
+		return $starttime;
+	}
+
+
+
+	/**
 	 * Get job duration
 	 *
 	 * @return bool|int time in seconds, or false

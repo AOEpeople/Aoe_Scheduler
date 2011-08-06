@@ -1,0 +1,16 @@
+<?php
+/* @var $this Aoe_Scheduler_Block_Adminhtml_TimelineDetail */
+$_schedule = $this->getSchedule();
+?>
+
+<div class="details">
+	<div class="details-headline <?php echo $_schedule->getStatus(); ?>">
+		<h3><?php echo $_schedule->getJobCode(); ?></h3>
+	</div>
+	<div class="details-content">
+		<p>Executed: <?php echo $_schedule->getExecutedAt(); ?></p>
+		<p>Scheduled: <?php echo $_schedule->getScheduledAt(); ?></p>
+		<p>Finished: <?php echo $_schedule->getFinishedAt(); ?></p>
+		<p>Created: <?php echo $_schedule->getCreatedAt(); ?></p>
+	</div>
+</div>

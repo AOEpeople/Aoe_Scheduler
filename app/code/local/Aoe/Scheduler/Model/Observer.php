@@ -81,6 +81,7 @@ class Aoe_Scheduler_Model_Observer extends Mage_Cron_Model_Observer {
 
 			} catch (Exception $e) {
 				$schedule->setStatus($errorStatus)
+					->setFinishedAt(strftime('%Y-%m-%d %H:%M:%S', time()))
 					->setMessages($e->__toString());
 			}
 			$schedule->save();

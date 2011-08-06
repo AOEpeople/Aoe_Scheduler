@@ -9,14 +9,16 @@ jQuery(function() {
 		trigger: 'click',
 		contentSelector: "jQuery(this).find('.details')",
 		//offsetParent: self,
-		fill: 'white',
+		fill: '#DDDDDD',
 		shrinkToFit: true,
 		padding: 0,
 		killTitle: false,
 		cornerRadius: 0,
 		spikeLength: 15,
 		spikeGirth: 5,
+		strokeWidth: 0,
 		clickAnywhereToClose: true,
+		positions: ['top', 'bottom', 'left', 'right'],
 		closeWhenOthersOpen: true
 	});
 })

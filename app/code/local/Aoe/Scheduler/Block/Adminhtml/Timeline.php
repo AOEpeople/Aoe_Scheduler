@@ -2,11 +2,6 @@
 class Aoe_Scheduler_Block_Adminhtml_Timeline extends Mage_Adminhtml_Block_Template {
 
 	/**
-	 * @var int amount of hours to be displayed
-	 */
-	protected $hours = 25;
-
-	/**
 	 * @var int amount of seconds per pixel
 	 */
 	protected $zoom = 15;
@@ -17,38 +12,46 @@ class Aoe_Scheduler_Block_Adminhtml_Timeline extends Mage_Adminhtml_Block_Templa
 
 	protected $currentTimeStamp;
 
-	protected $timelinePanelWidth;
-
 	protected $nowLine;
+
+	protected $minDate;
+
+	protected $maxDate;
+
+	protected $schedules = array();
 
 	protected function _construct() {
 		parent::_construct();
 
-		$this->currentTimeStamp = time();
+		$this->loadSchedules();
 
-		$pixelsPerMinute = 60 / $this->zoom;
-		$pixelsPerHour = 60 * $pixelsPerMinute;
+		$this->starttime = mktime(date('H', strtotime($this->minDate)), 0, 0);
+		$this->endtime = mktime(date('H', strtotime($this->maxDate))+1, 0, 0);
 
-		$this->timelinePanelWidth = $pixelsPerHour * $this->hours;
-
-		$this->starttime = mktime(date('H', $this->currentTimeStamp)-($this->hours-1), 0, 0);
-		$this->endtime = mktime(date('H', $this->currentTimeStamp)+1, 0, 0);
-
-		$this->nowLine = ($this->currentTimeStamp - $this->starttime) / $this->zoom;
+		$this->nowLine = (time() - $this->starttime) / $this->zoom;
 	}
 
-	public function getAvailableConfigurations() {
-		return Mage::getModel('aoe_scheduler/collection_crons');
-	}
-
-	public function getSchedulesForCode($code) {
+	protected function loadSchedules() {
 		$collection = Mage::getModel('cron/schedule')->getCollection(); /* @var $collection Mage_Cron_Model_Mysql4_Schedule_Collection */
-		$collection->addFieldToFilter('job_code', $code);
-		return $collection;
+		// TODO: at max age
+		foreach ($collection as $schedule) { /* @var $schedule Aoe_Scheduler_Model_Schedule */
+			$startTime = $schedule->getStarttime();
+			$this->minDate = is_null($this->minDate) ? $startTime : min($this->minDate, $startTime);
+			$this->maxDate = is_null($this->maxDate) ? $startTime : max($this->maxDate, $startTime);
+			$this->schedules[$schedule->getJobCode()][] = $schedule;
+		}
 	}
 
 	public function getTimelinePanelWidth() {
-		return $this->timelinePanelWidth;
+		return ($this->endtime - $this->starttime) / $this->zoom;
+	}
+
+	public function getAvailableJobCodes() {
+		return array_keys($this->schedules);
+	}
+
+	public function getSchedulesForCode($code) {
+		return $this->schedules[$code];
 	}
 
 	public function getStarttime() {
@@ -70,12 +73,7 @@ class Aoe_Scheduler_Block_Adminhtml_Timeline extends Mage_Adminhtml_Block_Templa
 		$duration = ceil($duration / 4) * 4 - 1; // round to numbers dividable by 4, then remove 1 px border
 		$duration = max($duration, 3);
 
-		$taskStarttime = $schedule->getExecutedAt();
-		if ($taskStarttime == '0000-00-00 00:00:00') {
-			$taskStarttime = $schedule->getScheduledAt();
-		}
-
-		$offset = (strtotime($taskStarttime) - $this->starttime) / $this->zoom;
+		$offset = (strtotime($schedule->getStarttime()) - $this->starttime) / $this->zoom;
 
 		if ($offset < 0) { // cut bar
 			$duration += $offset;
