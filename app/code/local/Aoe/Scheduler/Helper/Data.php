@@ -40,28 +40,28 @@ class Aoe_Scheduler_Helper_Data extends Mage_Core_Helper_Abstract {
 	 *
 	 * @return string
 	 */
-	public function decorateStatus($value) {
-		switch ($value) {
+	public function decorateStatus($status) {
+		switch ($status) {
 			case Mage_Cron_Model_Schedule::STATUS_SUCCESS:
-				$cell = '<span class="bar-green"><span>'.$value.'</span></span>';
+				$result = '<span class="bar-green"><span>'.$status.'</span></span>';
 				break;
 			case Mage_Cron_Model_Schedule::STATUS_PENDING:
-				$cell = '<span class="bar-lightgray"><span>'.$value.'</span></span>';
+				$result = '<span class="bar-lightgray"><span>'.$status.'</span></span>';
 				break;
 			case Mage_Cron_Model_Schedule::STATUS_RUNNING:
-				$cell = '<span class="bar-blue"><span>'.$value.'</span></span>';
+				$result = '<span class="bar-yellow"><span>'.$status.'</span></span>';
 				break;
 			case Mage_Cron_Model_Schedule::STATUS_MISSED:
-				$cell = '<span class="bar-orange"><span>'.$value.'</span></span>';
+				$result = '<span class="bar-orange"><span>'.$status.'</span></span>';
 				break;
 			case Mage_Cron_Model_Schedule::STATUS_ERROR:
-				$cell = '<span class="bar-red"><span>'.$value.'</span></span>';
+				$result = '<span class="bar-red"><span>'.$status.'</span></span>';
 				break;
 			default:
-				$cell = $value;
+				$result = $status;
 				break;
 		}
-		return $cell;
+		return $result;
 	}
 
 	/**

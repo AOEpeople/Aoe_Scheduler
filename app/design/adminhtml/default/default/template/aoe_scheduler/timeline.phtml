@@ -4,14 +4,7 @@ $_helper = $this->helper('aoe_scheduler/data'); /* @var $_helper Aoe_Scheduler_H
 ?>
 
 <div class="content-header">
-<table cellspacing="0">
-	<tr>
-		<td style="width: 50%;">
-		<h3><?php echo $this->__('Scheduler Timeline') ?></h3>
-		</td>
-		<td class="form-buttons"><?php // echo $this->getChildHtml('initSymlinksButton') ?></td>
-	</tr>
-</table>
+	<table cellspacing="0"><tr><td style="width: 50%;"><h3><?php echo $this->__('Scheduler Timeline') ?></h3></td></tr></table>
 </div>
 
 <div id="maincontainer">
@@ -36,8 +29,7 @@ $_helper = $this->helper('aoe_scheduler/data'); /* @var $_helper Aoe_Scheduler_H
 						<div class="row">
 							<div class="timeline timeline_<?php echo $jobCode; ?>">
 								<?php foreach ($_schedules as $_schedule): /* @var $_schedule Aoe_Scheduler_Model_Schedule */ ?>
-									<div <?php echo $this->getGanttDivAttributes($_schedule); ?>>
-									</div>
+									<div <?php echo $this->getGanttDivAttributes($_schedule); ?>></div>
 									<?php echo $this->getLayout()->createBlock('aoe_scheduler/adminhtml_timelineDetail')->setSchedule($_schedule)->toHtml(); ?>
 								<?php endforeach; ?>
 							</div>
@@ -46,8 +38,8 @@ $_helper = $this->helper('aoe_scheduler/data'); /* @var $_helper Aoe_Scheduler_H
 
 				</div>
 			</div>
-		</div>
-	</div>
+		</div><!-- id="contentcolumn" -->
+	</div><!-- id="contentwrapper" -->
 
 	<div id="leftcolumn">
 
@@ -63,6 +55,6 @@ $_helper = $this->helper('aoe_scheduler/data'); /* @var $_helper Aoe_Scheduler_H
 			</div>
 		<?php endforeach; ?>
 
-	</div>
+	</div><!-- id="leftcolumn" -->
 
-</div>
+</div><!-- id="maincontainer" -->

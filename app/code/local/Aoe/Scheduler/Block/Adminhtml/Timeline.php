@@ -20,20 +20,47 @@ class Aoe_Scheduler_Block_Adminhtml_Timeline extends Mage_Adminhtml_Block_Templa
 
 	protected $schedules = array();
 
+	/**
+	 * Constructor
+	 *
+	 * @return void
+	 */
 	protected function _construct() {
 		parent::_construct();
 
 		$this->loadSchedules();
 
-		$minDate = strtotime($this->minDate);
-		$maxDate = strtotime($this->maxDate);
-
-		$this->starttime = mktime(date('H', $minDate), 0, 0, date('n', $minDate), date('j', $minDate), date('Y', $minDate));
-		$this->endtime = mktime(date('H', $maxDate)+1, 0, 0, date('n', $maxDate), date('j', $maxDate), date('Y', $maxDate));
+		$this->starttime = $this->hourFloor(strtotime($this->minDate));
+		$this->endtime = $this->hourCeil(strtotime($this->maxDate));
 
 		$this->nowLine = (time() - $this->starttime) / $this->zoom;
 	}
 
+	/**
+	 * Return the last full houd
+	 *
+	 * @param int $timestamp
+	 * @return int
+	 */
+	protected function hourFloor($timestamp) {
+		return mktime(date('H', $timestamp), 0, 0, date('n', $timestamp), date('j', $timestamp), date('Y', $timestamp));
+	}
+
+	/**
+	 * Returns the next full hour
+	 *
+	 * @param int $timestamp
+	 * @return int
+	 */
+	protected function hourCeil($timestamp) {
+		return mktime(date('H', $timestamp)+1, 0, 0, date('n', $timestamp), date('j', $timestamp), date('Y', $timestamp));
+	}
+
+	/**
+	 * Load schedules
+	 *
+	 * @return void
+	 */
 	protected function loadSchedules() {
 		$collection = Mage::getModel('cron/schedule')->getCollection(); /* @var $collection Mage_Cron_Model_Mysql4_Schedule_Collection */
 		// TODO: at max age
@@ -45,30 +72,67 @@ class Aoe_Scheduler_Block_Adminhtml_Timeline extends Mage_Adminhtml_Block_Templa
 		}
 	}
 
+	/**
+	 * Get timeline panel width
+	 *
+	 * @return int
+	 */
 	public function getTimelinePanelWidth() {
 		return ($this->endtime - $this->starttime) / $this->zoom;
 	}
 
+	/**
+	 * Get all available job codes
+	 *
+	 * @return array
+	 */
 	public function getAvailableJobCodes() {
 		return array_keys($this->schedules);
 	}
 
+	/**
+	 * Get schedules for given code
+	 *
+	 * @param string $code
+	 * @return array
+	 */
 	public function getSchedulesForCode($code) {
 		return $this->schedules[$code];
 	}
 
+	/**
+	 * Get starttime
+	 *
+	 * @return int
+	 */
 	public function getStarttime() {
 		return $this->starttime;
 	}
 
+	/**
+	 * Get endtime
+	 *
+	 * @return int
+	 */
 	public function getEndtime() {
 		return $this->endtime;
 	}
 
+	/**
+	 * Get "now" line
+	 *
+	 * @return int
+	 */
 	public function getNowline() {
 		return $this->nowLine;
 	}
 
+	/**
+	 * Get attributes for div representing a gantt element
+	 *
+	 * @param Aoe_Scheduler_Model_Schedule $schedule
+	 * @return string
+	 */
 	public function getGanttDivAttributes(Aoe_Scheduler_Model_Schedule $schedule) {
 
 		$duration = $schedule->getDuration() ? $schedule->getDuration() : 0;

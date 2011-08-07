@@ -70,6 +70,8 @@ div.hours {
 	display: none;
 	background-color: white;
 	border: 1px solid black;
+	z-index: 1000;
+	max-width: 400px;
 }
 
 .details pre {
@@ -94,6 +96,7 @@ div.hours {
 .details-headline h3 {
 	padding: 5px;
 	color: white;
+	margin: 0;
 }
 
 .details-content {
@@ -105,10 +108,19 @@ div.hours {
 	font-weight: bold;
 }
 
+.caption-container {
+	width: 500px;
+	overflow: hidden;
+}
+
 .task {
 	position: absolute;
 	height: 24px;
 	top: 8px;
+}
+
+.status {
+	width: 100px;
 }
 
 .details-headline, .task { background-image: url(../Images/gradient.png); }
@@ -117,6 +129,6 @@ div.hours {
 .details-headline.pending, .task.pending { background-color: #A9ABA8; }
 .details-headline.error, .task.error { background-color: #E41300; }
 .details-headline.missed, .task.missed { background-color: #F75300; }
-.details-headline.running, .task.running { background-color: #00A2FA; }
+.details-headline.running, .task.running { background-color: #FE9D00; }
 
-div.task.active, div.task:hover { background-color: #000000; }
+div.task.active, div.task:hover { background-color: #00A2FA; }

@@ -11,7 +11,7 @@ $_helper = $this->helper('aoe_scheduler/data'); /* @var $_helper Aoe_Scheduler_H
 	<div class="details-content">
 		<table>
 			<tr>
-				<td class="label">Status:</td><td><?php echo $_helper->decorateStatus($_schedule->getStatus()) ?></td>
+				<td class="label">Status:</td><td><div class="status"><?php echo $_helper->decorateStatus($_schedule->getStatus()) ?></div></td>
 			</tr>
 			<tr>
 				<td class="label">Created at:</td><td><?php echo $_helper->decorateTime($_schedule->getCreatedAt()); ?></td>
