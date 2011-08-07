@@ -73,7 +73,7 @@ class Aoe_Scheduler_Helper_Data extends Mage_Core_Helper_Abstract {
 	 * @return string
 	 */
 	public function decorateTime($value, $echoToday=false, $dateFormat=NULL) {
-		if ($value == '0000-00-00 00:00:00') {
+		if (empty($value) || $value == '0000-00-00 00:00:00') {
 			$value = '';
 		} else {
 			$value = Mage::getModel('core/date')->date($dateFormat, $value);
