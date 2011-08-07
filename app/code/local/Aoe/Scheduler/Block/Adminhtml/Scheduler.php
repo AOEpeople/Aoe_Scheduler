@@ -1,6 +1,13 @@
 <?php
 
+/**
+ * Scheduler Block
+ *
+ * @author Fabrizio Branca <fabrizio.branca@aoemedia.de>
+ */
 class Aoe_Scheduler_Block_Adminhtml_Scheduler extends Mage_Adminhtml_Block_Widget_Grid_Container {
+
+
 
 	/**
 	 * Constructor for Scheduler Adminhtml Block
@@ -11,6 +18,8 @@ class Aoe_Scheduler_Block_Adminhtml_Scheduler extends Mage_Adminhtml_Block_Widge
 		$this->_headerText = Mage::helper('aoe_scheduler')->__('Scheduled tasks');
 		parent::__construct();
 	}
+
+
 
 	/**
 	 * Prepare layout
@@ -30,6 +39,8 @@ class Aoe_Scheduler_Block_Adminhtml_Scheduler extends Mage_Adminhtml_Block_Widge
 		return parent::_prepareLayout();
 	}
 
+
+
 	/**
 	 * Returns the CSS class for the header
 	 *
@@ -42,4 +53,5 @@ class Aoe_Scheduler_Block_Adminhtml_Scheduler extends Mage_Adminhtml_Block_Widge
 	public function getHeaderCssClass() {
 		return '';
 	}
+
 }

@@ -6,19 +6,22 @@ class Aoe_Scheduler_Block_Adminhtml_Timeline extends Mage_Adminhtml_Block_Widget
 	 */
 	protected $zoom = 15;
 
+	/**
+	 * @var int starttime
+	 */
 	protected $starttime;
 
+	/**
+	 * @var int endtime
+	 */
 	protected $endtime;
 
-	protected $currentTimeStamp;
-
-	protected $nowLine;
-
-	protected $minDate;
-
-	protected $maxDate;
-
+	/**
+	 * @var array schedules
+	 */
 	protected $schedules = array();
+
+
 
 	/**
 	 * Constructor
@@ -26,20 +29,12 @@ class Aoe_Scheduler_Block_Adminhtml_Timeline extends Mage_Adminhtml_Block_Widget
 	 * @return void
 	 */
 	protected function _construct() {
-
 		$this->_headerText = Mage::helper('aoe_scheduler')->__('Scheduler Timeline');
-
-		parent::_construct();
-
 		$this->loadSchedules();
-
-		$this->starttime = $this->hourFloor(strtotime($this->minDate));
-		$this->endtime = $this->hourCeil(strtotime($this->maxDate));
-
-		// TODO: add max/min time (+-24h?)
-
-		$this->nowLine = (time() - $this->starttime) / $this->zoom;
+		parent::_construct();
 	}
+
+
 
 	/**
 	 * Prepare layout
@@ -59,6 +54,8 @@ class Aoe_Scheduler_Block_Adminhtml_Timeline extends Mage_Adminhtml_Block_Widget
 		return parent::_prepareLayout();
 	}
 
+
+
 	/**
 	 * Return the last full houd
 	 *
@@ -68,6 +65,8 @@ class Aoe_Scheduler_Block_Adminhtml_Timeline extends Mage_Adminhtml_Block_Widget
 	protected function hourFloor($timestamp) {
 		return mktime(date('H', $timestamp), 0, 0, date('n', $timestamp), date('j', $timestamp), date('Y', $timestamp));
 	}
+
+
 
 	/**
 	 * Returns the next full hour
@@ -79,6 +78,8 @@ class Aoe_Scheduler_Block_Adminhtml_Timeline extends Mage_Adminhtml_Block_Widget
 		return mktime(date('H', $timestamp)+1, 0, 0, date('n', $timestamp), date('j', $timestamp), date('Y', $timestamp));
 	}
 
+
+
 	/**
 	 * Load schedules
 	 *
@@ -86,14 +87,19 @@ class Aoe_Scheduler_Block_Adminhtml_Timeline extends Mage_Adminhtml_Block_Widget
 	 */
 	protected function loadSchedules() {
 		$collection = Mage::getModel('cron/schedule')->getCollection(); /* @var $collection Mage_Cron_Model_Mysql4_Schedule_Collection */
-		// TODO: at max age
+
 		foreach ($collection as $schedule) { /* @var $schedule Aoe_Scheduler_Model_Schedule */
 			$startTime = $schedule->getStarttime();
-			$this->minDate = is_null($this->minDate) ? $startTime : min($this->minDate, $startTime);
-			$this->maxDate = is_null($this->maxDate) ? $startTime : max($this->maxDate, $startTime);
+			$minDate = is_null($minDate) ? $startTime : min($minDate, $startTime);
+			$maxDate = is_null($maxDate) ? $startTime : max($maxDate, $startTime);
 			$this->schedules[$schedule->getJobCode()][] = $schedule;
 		}
+
+		$this->starttime = $this->hourFloor(strtotime($minDate));
+		$this->endtime = $this->hourCeil(strtotime($maxDate));
 	}
+
+
 
 	/**
 	 * Get timeline panel width
@@ -104,6 +110,19 @@ class Aoe_Scheduler_Block_Adminhtml_Timeline extends Mage_Adminhtml_Block_Widget
 		return ($this->endtime - $this->starttime) / $this->zoom;
 	}
 
+
+
+	/**
+	 * Get "now" line
+	 *
+	 * @return float
+	 */
+	public function getNowline() {
+		return (time() - $this->starttime) / $this->zoom;
+	}
+
+
+
 	/**
 	 * Get all available job codes
 	 *
@@ -112,6 +131,8 @@ class Aoe_Scheduler_Block_Adminhtml_Timeline extends Mage_Adminhtml_Block_Widget
 	public function getAvailableJobCodes() {
 		return array_keys($this->schedules);
 	}
+
+
 
 	/**
 	 * Get schedules for given code
@@ -123,6 +144,8 @@ class Aoe_Scheduler_Block_Adminhtml_Timeline extends Mage_Adminhtml_Block_Widget
 		return $this->schedules[$code];
 	}
 
+
+
 	/**
 	 * Get starttime
 	 *
@@ -131,6 +154,8 @@ class Aoe_Scheduler_Block_Adminhtml_Timeline extends Mage_Adminhtml_Block_Widget
 	public function getStarttime() {
 		return $this->starttime;
 	}
+
+
 
 	/**
 	 * Get endtime
@@ -141,14 +166,7 @@ class Aoe_Scheduler_Block_Adminhtml_Timeline extends Mage_Adminhtml_Block_Widget
 		return $this->endtime;
 	}
 
-	/**
-	 * Get "now" line
-	 *
-	 * @return int
-	 */
-	public function getNowline() {
-		return $this->nowLine;
-	}
+
 
 	/**
 	 * Get attributes for div representing a gantt element
@@ -170,11 +188,12 @@ class Aoe_Scheduler_Block_Adminhtml_Timeline extends Mage_Adminhtml_Block_Widget
 			$offset = 0;
 		}
 
-		$style = sprintf('width: %spx; left: %spx;', $duration, $offset);
-		$class = 'task ' . $schedule->getStatus();
-		$id = 'id_'.$schedule->getScheduleId();
-
-		return sprintf('class="%s" style="%s" id="%s"', $class, $style, $id);
+		return sprintf('class="task %s" id="id_%s" style="width: %spx; left: %spx;"',
+			$schedule->getStatus(),
+			$schedule->getScheduleId(),
+			$duration,
+			$offset
+		);
 	}
 
 }

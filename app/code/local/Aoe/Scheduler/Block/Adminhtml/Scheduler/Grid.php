@@ -7,6 +7,8 @@
  */
 class Aoe_Scheduler_Block_Adminhtml_Scheduler_Grid extends Mage_Adminhtml_Block_Widget_Grid {
 
+
+
 	/**
 	 * Constructor. Set basic parameters
 	 */
