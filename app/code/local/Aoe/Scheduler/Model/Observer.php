@@ -3,7 +3,7 @@
 /**
  * Crontab observer.
  *
- * @author      Fabrizio Branca <fabrizio.branca@aoemedia.de>
+ * @author Fabrizio Branca <fabrizio.branca@aoemedia.de>
  */
 class Aoe_Scheduler_Model_Observer extends Mage_Cron_Model_Observer {
 
@@ -97,6 +97,8 @@ class Aoe_Scheduler_Model_Observer extends Mage_Cron_Model_Observer {
 		$this->cleanup();
 	}
 
+
+
 	/**
 	 * Generate jobs for config information
 	 * Rewrites the original method to filter deactivated jobs
@@ -119,6 +121,37 @@ class Aoe_Scheduler_Model_Observer extends Mage_Cron_Model_Observer {
 		}
 
 		return parent::_generateJobs($newJobs, $exists);
+	}
+
+	/**
+	 * Generate cron schedule.
+	 * Rewrites the original method to remove duplicates afterwards (that exists because of a bug)
+	 *
+	 * @return Mage_Cron_Model_Observer
+	 */
+	public function generate() {
+		$result = parent::generate();
+
+		$conn = Mage::getSingleton('core/resource')->getConnection('core_read');
+		$results = $conn->fetchAll("
+			SELECT
+				GROUP_CONCAT(schedule_id) AS ids,
+				CONCAT(job_code, scheduled_at) AS jobkey,
+				count(*) AS qty
+			FROM cron_schedule
+			WHERE status = 'pending'
+			GROUP BY jobkey
+			HAVING qty > 1;
+		");
+		foreach($results as $row) {
+			$ids = explode(',', $row['ids']);
+			$removeIds = array_slice($ids, 1);
+			foreach ($removeIds as $id) {
+				Mage::getModel('cron/schedule')->load($id)->delete();
+			}
+		}
+
+		return $result;
 	}
 
 }
