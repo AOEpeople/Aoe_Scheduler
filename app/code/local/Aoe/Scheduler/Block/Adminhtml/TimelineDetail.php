@@ -1,12 +1,23 @@
 <?php
+
+/**
+ * TimelineDetail block
+ *
+ * @author	Fabrizio Branca <fabrizio.branca@aoemedia.de>
+ */
 class Aoe_Scheduler_Block_Adminhtml_TimelineDetail extends Mage_Adminhtml_Block_Template {
 
+	/**
+	 * @var string path to default template
+	 */
 	protected $_template = 'aoe_scheduler/timeline_detail.phtml';
 
 	/**
 	 * @var Aoe_Scheduler_Model_Schedule
 	 */
 	protected $schedule;
+
+
 
 	/**
 	 * Set schedule
@@ -18,6 +29,8 @@ class Aoe_Scheduler_Block_Adminhtml_TimelineDetail extends Mage_Adminhtml_Block_
 		$this->schedule = $schedule;
 		return $this;
 	}
+
+
 
 	/**
 	 * Get schedule

@@ -3,9 +3,11 @@
 /**
  * Helper
  *
- * @author Fabrizio Branca
+ * @author Fabrizio Branca <fabrizio.branca@aoemedia.de>
  */
 class Aoe_Scheduler_Helper_Data extends Mage_Core_Helper_Abstract {
+
+
 
 	/**
 	 * Explodes a string and trims all values for whitespace in the ends.
@@ -34,6 +36,8 @@ class Aoe_Scheduler_Helper_Data extends Mage_Core_Helper_Abstract {
 
 		return $result;
 	}
+
+
 
 	/**
 	 * Decorate status values
@@ -64,6 +68,8 @@ class Aoe_Scheduler_Helper_Data extends Mage_Core_Helper_Abstract {
 		return $result;
 	}
 
+
+
 	/**
 	 * Wrapepr for decorateTime to be used a frame_callback to avoid that additional parameters
 	 * conflict with the method's optional ones
@@ -74,6 +80,8 @@ class Aoe_Scheduler_Helper_Data extends Mage_Core_Helper_Abstract {
 	public function decorateTimeFrameCallBack($value) {
 		return $this->decorateTime($value, false, NULL);
 	}
+
+
 
 	/**
 	 * Decorate time values

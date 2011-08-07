@@ -64,13 +64,13 @@
 		</layout>
 	</adminhtml>
 
-	<crontab>
+	<!-- <crontab>
 		<jobs>
 			<aoescheduler_testtask>
 				<schedule><cron_expr>*/5 * * * *</cron_expr></schedule>
 				<run><model>aoe_scheduler/testTask::run</model></run>
 			</aoescheduler_testtask>
 		</jobs>
-	</crontab>
+	</crontab> -->
 
 </config>

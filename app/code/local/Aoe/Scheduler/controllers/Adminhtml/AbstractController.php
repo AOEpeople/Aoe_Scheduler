@@ -18,6 +18,8 @@ abstract class Aoe_Scheduler_Adminhtml_AbstractController extends Mage_Adminhtml
 		$this->renderLayout();
 	}
 
+
+
 	/**
 	 * Generate schedule now
 	 *

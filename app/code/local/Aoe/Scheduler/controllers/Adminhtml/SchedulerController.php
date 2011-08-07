@@ -9,6 +9,8 @@ require_once Mage::getModuleDir('controllers', 'Aoe_Scheduler').'/Adminhtml/Abst
  */
 class Aoe_Scheduler_Adminhtml_SchedulerController extends Aoe_Scheduler_Adminhtml_AbstractController {
 
+
+
 	/**
 	 * Mass action: delete
 	 *
