@@ -117,6 +117,7 @@ div.hours {
 	position: absolute;
 	height: 24px;
 	top: 8px;
+	cursor: default;
 }
 
 .status {
