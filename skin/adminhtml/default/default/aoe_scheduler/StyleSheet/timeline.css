@@ -48,7 +48,7 @@ div.timeline-box {
 }
 
 div.timeline-panel {
-	background-image: url('hour.gif');
+	background-image: url(../Images/hour.gif);
 	border-right: 1px solid black;
 	position: relative;
 }
@@ -111,7 +111,7 @@ div.hours {
 	top: 8px;
 }
 
-.details-headline, .task { background-image: url(gradient.png); }
+.details-headline, .task { background-image: url(../Images/gradient.png); }
 
 .details-headline.success, .task.success { background-color: #36B963; }
 .details-headline.pending, .task.pending { background-color: #A9ABA8; }

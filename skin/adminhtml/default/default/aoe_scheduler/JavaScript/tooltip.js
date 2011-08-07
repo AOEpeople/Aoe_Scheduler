@@ -29,7 +29,7 @@
 			position: ['top', 'center'], 
 			offset: [0, 0],
 			relative: false,
-			appendToBody: false,
+			offsetParent: null,
 			cancelDefault: true,
 			
 			// type to event mapping 
@@ -193,12 +193,13 @@
 						tip = trigger.next();  
 						if (!tip.length) { tip = trigger.parent().next(); }
 						
-						if (conf.appendToBody) {
-							tip.appendTo(document.body);
-						}
 					}
 					
 					if (!tip.length) { throw "Cannot find tooltip for " + trigger;	}
+					
+					if (conf.offsetParent) {
+						tip.appendTo($(conf.offsetParent));
+					}
 				} 
 			 	
 			 	if (self.isShown()) { return self; }  

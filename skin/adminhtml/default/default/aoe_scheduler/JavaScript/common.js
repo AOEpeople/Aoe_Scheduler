@@ -3,7 +3,7 @@ jQuery(function() {
 	jQuery('.timeline-box').scrollLeft(jQuery('.timeline-panel').width());
 
 	jQuery('.task').tooltip({
-		appendToBody: true,
+		offsetParent: 'body',
 		predelay: 100,
 		position: 'bottom center',
 		onShow: function() { this.getTrigger().addClass('active'); },

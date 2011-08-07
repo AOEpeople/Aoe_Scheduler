@@ -52,7 +52,7 @@ $_helper = $this->helper('aoe_scheduler/data'); /* @var $_helper Aoe_Scheduler_H
 	<div id="leftcolumn">
 
 		<div class="row hours">
-			<div class="caption"><?php echo $_helper->decorateTime($this->getStarttime(), true); ?> - <?php echo $_helper->decorateTime($this->getEndtime(), true); ?></div>
+			<div class="caption"><?php echo $_helper->decorateTime($this->getStarttime(), true, 'Y-m-d H:i'); ?> - <?php echo $_helper->decorateTime($this->getEndtime(), true, 'Y-m-d H:i'); ?></div>
 		</div>
 
 		<?php foreach ($this->getAvailableJobCodes() as $jobCode): /* @var $jobCode string */ ?>
