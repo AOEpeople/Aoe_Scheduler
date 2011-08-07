@@ -65,6 +65,17 @@ class Aoe_Scheduler_Helper_Data extends Mage_Core_Helper_Abstract {
 	}
 
 	/**
+	 * Wrapepr for decorateTime to be used a frame_callback to avoid that additional parameters
+	 * conflict with the method's optional ones
+	 *
+	 * @param string $value
+	 * @return string
+	 */
+	public function decorateTimeFrameCallBack($value) {
+		return $this->decorateTime($value, false, NULL);
+	}
+
+	/**
 	 * Decorate time values
 	 *
 	 * @param string value

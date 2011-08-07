@@ -1,4 +1,5 @@
 <?php
+
 class Aoe_Scheduler_Block_Adminhtml_Cron extends Mage_Adminhtml_Block_Widget_Grid_Container {
 
 	/**
@@ -8,7 +9,6 @@ class Aoe_Scheduler_Block_Adminhtml_Cron extends Mage_Adminhtml_Block_Widget_Gri
 		$this->_blockGroup = 'aoe_scheduler';
 		$this->_controller = 'adminhtml_cron';
 		$this->_headerText = Mage::helper('aoe_scheduler')->__('Available tasks');
-
 		parent::__construct();
 	}
 
@@ -19,6 +19,14 @@ class Aoe_Scheduler_Block_Adminhtml_Cron extends Mage_Adminhtml_Block_Widget_Gri
 	 */
 	protected function _prepareLayout() {
 		$this->removeButton('add');
+		$this->_addButton('add_new', array(
+			'label'   => Mage::helper('aoe_scheduler')->__('Generate Schedule'),
+			'onclick' => "setLocation('{$this->getUrl('*/*/generateSchedule')}')",
+		));
+		$this->_addButton('configure', array(
+			'label'   => Mage::helper('aoe_scheduler')->__('Cron Configuration'),
+			'onclick' => "setLocation('{$this->getUrl('adminhtml/system_config/edit', array('section' => 'system'))}#system_cron')",
+		));
 		return parent::_prepareLayout();
 	}
 

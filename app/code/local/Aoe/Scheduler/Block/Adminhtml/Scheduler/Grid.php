@@ -69,22 +69,22 @@ class Aoe_Scheduler_Block_Adminhtml_Scheduler_Grid extends Mage_Adminhtml_Block_
 		$this->addColumn('created_at', array (
 			'header' => Mage::helper('aoe_scheduler')->__('Created'),
 			'index' => 'created_at',
-			'frame_callback' => array($viewHelper, 'decorateTime')
+			'frame_callback' => array($viewHelper, 'decorateTimeFrameCallBack')
 		));
 		$this->addColumn('scheduled_at', array (
 			'header' => Mage::helper('aoe_scheduler')->__('Scheduled'),
 			'index' => 'scheduled_at',
-			'frame_callback' => array($viewHelper, 'decorateTime')
+			'frame_callback' => array($viewHelper, 'decorateTimeFrameCallBack')
 		));
 		$this->addColumn('executed_at', array (
 			'header' => Mage::helper('aoe_scheduler')->__('Executed'),
 			'index' => 'executed_at',
-			'frame_callback' => array($viewHelper, 'decorateTime')
+			'frame_callback' => array($viewHelper, 'decorateTimeFrameCallBack')
 		));
 		$this->addColumn('finished_at', array (
 			'header' => Mage::helper('aoe_scheduler')->__('Finished'),
 			'index' => 'finished_at',
-			'frame_callback' => array($viewHelper, 'decorateTime')
+			'frame_callback' => array($viewHelper, 'decorateTimeFrameCallBack')
 		));
 		$this->addColumn('messages', array (
 			'header' => Mage::helper('aoe_scheduler')->__('Messages'),

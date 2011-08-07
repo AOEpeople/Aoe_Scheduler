@@ -24,7 +24,7 @@ class Aoe_Scheduler_Block_Adminhtml_Scheduler extends Mage_Adminhtml_Block_Widge
 			'onclick' => "setLocation('{$this->getUrl('*/*/generateSchedule')}')",
 		));
 		$this->_addButton('configure', array(
-			'label'   => Mage::helper('aoe_scheduler')->__('Configuration'),
+			'label'   => Mage::helper('aoe_scheduler')->__('Cron Configuration'),
 			'onclick' => "setLocation('{$this->getUrl('adminhtml/system_config/edit', array('section' => 'system'))}#system_cron')",
 		));
 		return parent::_prepareLayout();

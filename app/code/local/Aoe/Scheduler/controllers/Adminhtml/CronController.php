@@ -1,26 +1,13 @@
 <?php
 
+require_once Mage::getModuleDir('controllers', 'Aoe_Scheduler').'/Adminhtml/AbstractController.php';
+
 /**
- * Scheduler controller
+ * Cron controller
  *
  * @author Fabrizio Branca <fabrizio.branca@aoemedia.de>
  */
-class Aoe_Scheduler_Adminhtml_CronController extends Mage_Adminhtml_Controller_Action {
-
-
-
-	/**
-	 * Index action (display grid)
-	 *
-	 * @return void
-	 */
-	public function indexAction() {
-		$this->loadLayout();
-		$this->_setActiveMenu('system');
-		$this->renderLayout();
-	}
-
-
+class Aoe_Scheduler_Adminhtml_CronController extends Aoe_Scheduler_Adminhtml_AbstractController {
 
 	/**
 	 * Mass action: disable

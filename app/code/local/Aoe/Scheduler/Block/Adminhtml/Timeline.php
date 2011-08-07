@@ -1,5 +1,5 @@
 <?php
-class Aoe_Scheduler_Block_Adminhtml_Timeline extends Mage_Adminhtml_Block_Template {
+class Aoe_Scheduler_Block_Adminhtml_Timeline extends Mage_Adminhtml_Block_Widget_Container {
 
 	/**
 	 * @var int amount of seconds per pixel
@@ -26,6 +26,9 @@ class Aoe_Scheduler_Block_Adminhtml_Timeline extends Mage_Adminhtml_Block_Templa
 	 * @return void
 	 */
 	protected function _construct() {
+
+		$this->_headerText = Mage::helper('aoe_scheduler')->__('Scheduler Timeline');
+
 		parent::_construct();
 
 		$this->loadSchedules();
@@ -33,7 +36,27 @@ class Aoe_Scheduler_Block_Adminhtml_Timeline extends Mage_Adminhtml_Block_Templa
 		$this->starttime = $this->hourFloor(strtotime($this->minDate));
 		$this->endtime = $this->hourCeil(strtotime($this->maxDate));
 
+		// TODO: add max/min time (+-24h?)
+
 		$this->nowLine = (time() - $this->starttime) / $this->zoom;
+	}
+
+	/**
+	 * Prepare layout
+	 *
+	 * @return Aoe_Scheduler_Block_Adminhtml_Cron
+	 */
+	protected function _prepareLayout() {
+		$this->removeButton('add');
+		$this->_addButton('add_new', array(
+			'label'   => Mage::helper('aoe_scheduler')->__('Generate Schedule'),
+			'onclick' => "setLocation('{$this->getUrl('*/*/generateSchedule')}')",
+		));
+		$this->_addButton('configure', array(
+			'label'   => Mage::helper('aoe_scheduler')->__('Cron Configuration'),
+			'onclick' => "setLocation('{$this->getUrl('adminhtml/system_config/edit', array('section' => 'system'))}#system_cron')",
+		));
+		return parent::_prepareLayout();
 	}
 
 	/**
