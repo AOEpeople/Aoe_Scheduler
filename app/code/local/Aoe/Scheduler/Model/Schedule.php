@@ -100,7 +100,7 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule {
 	 */
 	public function getStarttime() {
 		$starttime = $this->getExecutedAt();
-		if ($starttime == '0000-00-00 00:00:00') {
+		if (empty($starttime) || $starttime == '0000-00-00 00:00:00') {
 			$starttime = $this->getScheduledAt();
 		}
 		return $starttime;
