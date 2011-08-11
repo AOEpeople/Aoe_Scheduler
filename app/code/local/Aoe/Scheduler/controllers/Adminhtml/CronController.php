@@ -120,7 +120,8 @@ class Aoe_Scheduler_Adminhtml_CronController extends Mage_Adminhtml_Controller_A
 	public function editAction() {
 		$id = $this->getRequest()->getParam('id', null);
     	$config = Mage::getModel('aoe_scheduler/configuration');
-		
+		$model = $this->getRequest()->getParam('model', $config->getModel());
+    	$model = str_replace('-', '/',$model);
 		if ($id) {
     		$config = $config->loadByCode($id);
 			
@@ -130,7 +131,9 @@ class Aoe_Scheduler_Adminhtml_CronController extends Mage_Adminhtml_Controller_A
 				return;
 			}
 			
-		}						
+		} else {
+            $config->setModel($model);
+        }						
 		Mage::register('config', $config);			
 		
 		// set entered data if was error when we do save
@@ -142,7 +145,8 @@ class Aoe_Scheduler_Adminhtml_CronController extends Mage_Adminhtml_Controller_A
 		$this->_initAction();
 		$this->getLayout()->getBlock('head')->setCanLoadExtJs(true);
 		$this->_addContent($this->getLayout()->createBlock('aoe_scheduler/adminhtml_cron_edit'));
-
+        $this->_addLeft($this->getLayout()->createBlock('aoe_scheduler/adminhtml_cron_edit_tabs'));
+		
 		$this->renderLayout();
 	}
 	
@@ -158,8 +162,19 @@ class Aoe_Scheduler_Adminhtml_CronController extends Mage_Adminhtml_Controller_A
 			try {
 				Mage::getSingleton('adminhtml/session')->setPageData($data);
 				
-				Mage::getModel('core/config')->saveConfig('crontab/jobs/'.$data['job_code'].'/schedule/cron_expr/', $data['cron_expr']);
-				Mage::getModel('core/config')->saveConfig('crontab/jobs/'.$data['job_code'].'/run/model/', $data['model']);
+				foreach ($data as $name => $value) {
+					if ($name == 'form_key' || $name == 'job_code') {
+						continue;
+					}
+					if ($name == 'cron_expr' ) {
+						Mage::getModel('core/config')->saveConfig('crontab/jobs/'.$data['job_code'].'/schedule/cron_expr/', $data['cron_expr']);
+					} elseif ($name == 'model') {				
+						Mage::getModel('core/config')->saveConfig('crontab/jobs/'.$data['job_code'].'/run/model/', $data['model']);
+					} else {
+						Mage::getModel('core/config')->saveConfig('crontab/jobs/'.$data['job_code'].'/'. $name .'/', $value);												
+					}
+					
+				}
 								
 				Mage::app()->getCache()->clean(Zend_Cache::CLEANING_MODE_MATCHING_TAG, array(Mage_Core_Model_Config::CACHE_TAG));
 				

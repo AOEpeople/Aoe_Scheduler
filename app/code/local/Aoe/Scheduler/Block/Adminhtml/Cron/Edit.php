@@ -28,7 +28,15 @@ class Aoe_Scheduler_Block_Adminhtml_Cron_Edit extends Mage_Adminhtml_Block_Widge
         } else {
             $this->removeButton('save');            
         }
-
+		$this->_formScripts[] = '
+			function setSettings(urlTemplate, typeElement) {
+			    templateSyntax = /(^|.|\r|\n)({{(\w+)}})/;
+			    var template = new Template(urlTemplate, templateSyntax);
+			    typeElement = $F(typeElement).replace(/\//g, "-");
+			    setLocation(template.evaluate({model:typeElement}));
+			}
+		';
+        
         $this->removeButton('delete');
     }
 
@@ -39,8 +47,10 @@ class Aoe_Scheduler_Block_Adminhtml_Cron_Edit extends Mage_Adminhtml_Block_Widge
      */
     public function getHeaderText()
     {
-        if (Mage::registry('config')) {
-            return Mage::helper('aoe_scheduler')->__('Edit Task');
+        if (Mage::registry('config') && Mage::registry('config')->getId()) { 
+            return Mage::helper('aoe_scheduler')->__('Edit Task For Model : ' . Mage::registry('config')->getModel());        	
+        } else if (Mage::registry('config') && Mage::registry('config')->getModel()) {
+            return Mage::helper('aoe_scheduler')->__('New Task For Model : ' . Mage::registry('config')->getModel());            
         } else {
             return Mage::helper('aoe_scheduler')->__('New Task');
         }

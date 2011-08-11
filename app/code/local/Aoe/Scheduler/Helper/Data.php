@@ -50,5 +50,18 @@ class Aoe_Scheduler_Helper_Data extends Mage_Core_Helper_Abstract {
 		return $result;
 	}
 	
-
+	/**
+     * Get the model options from all the crons.
+     *
+     * @return array
+     */	
+    public function getModelOptions() {
+    	$models = array();
+		$collection = Mage::getModel('aoe_scheduler/collection_crons');
+		foreach ($collection as $item) {
+			$models[$item->getModel()] = $item->getModel();
+		}
+		return $models;
+    }
+	
 }

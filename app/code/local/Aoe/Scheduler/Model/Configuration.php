@@ -53,6 +53,11 @@ class Aoe_Scheduler_Model_Configuration extends Mage_Core_Model_Abstract {
 				$this->setModel($model);
 			}
 		}
+		$globalArray = $global?$global->asArray():array();
+		unset($globalArray['schedule']); 
+		unset($globalArray['run']);
+		$this->setOptions($globalArray);
+		
 		$configurable = $this->getConfigurableCrontabJobXmlConfig();
 		if ($configurable) {
 			if (is_object($configurable->schedule)) {
@@ -67,8 +72,13 @@ class Aoe_Scheduler_Model_Configuration extends Mage_Core_Model_Abstract {
 					$this->setModel($model);
 				}
 			}
+			$configArray = $configurable->asArray();
+			unset($configArray['schedule']); 
+			unset($configArray['run']);
+			$this->setOptions(array_merge($globalArray,$configArray));			
 		}
 
+		
 		if (!$this->getModel()) {
 			Mage::throwException(sprintf('No configuration found for code "%s"', $code));
 		}
@@ -102,7 +112,6 @@ class Aoe_Scheduler_Model_Configuration extends Mage_Core_Model_Abstract {
 	}
 
 
-
 	/**
 	 * Get job xml configuration
 	 *
@@ -118,4 +127,32 @@ class Aoe_Scheduler_Model_Configuration extends Mage_Core_Model_Abstract {
 		return $xmlConfig;
 	}
 
+	/**
+	 * If a model is not set then it is not ready to create.
+	 *
+	 * @return boolean
+	 */
+	public function isCompleteToCreate()
+	{
+		return (bool)($this->getModel());
+	}
+	
+	/**
+	 * Find global configurations by model.
+	 *
+	 * @param string $model
+	 * 
+	 * @return array
+	 */
+	public function findByModel($model) {
+    	$models = array();
+		$collection = Mage::getModel('aoe_scheduler/collection_globalcrons');
+		foreach ($collection as $item) {
+			if ($item->getModel() == $model) {
+				$models[$item->getModel()] = $item; 
+			}
+		}
+		return $models;
+	}
+	
 }
