@@ -42,7 +42,7 @@ class Aoe_Scheduler_Adminhtml_CronController extends Aoe_Scheduler_Adminhtml_Abs
 		$disabledCrons = Mage::helper('aoe_scheduler')->trimExplode(',', Mage::getStoreConfig('system/cron/disabled_crons'), true);
 		foreach ($codes as $key => $code) {
 			if (in_array($code, $disabledCrons)) {
-				unset($disabledCrons[$key]);
+				unset($disabledCrons[array_search($code, $disabledCrons)]);
 				Mage::getSingleton('adminhtml/session')->addSuccess($this->__('Enabled "%s"', $code));
 			}
 		}
