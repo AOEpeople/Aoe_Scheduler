@@ -3,9 +3,11 @@
 /**
  * Crontab observer.
  *
- * @author      Fabrizio Branca <fabrizio.branca@aoemedia.de>
+ * @author Fabrizio Branca <fabrizio.branca@aoemedia.de>
  */
 class Aoe_Scheduler_Model_Observer extends Mage_Cron_Model_Observer {
+
+
 
 	/**
 	 * Process cron queue
@@ -41,8 +43,6 @@ class Aoe_Scheduler_Model_Observer extends Mage_Cron_Model_Observer {
 					Mage::throwException(Mage::helper('cron')->__('Too late for the schedule.'));
 				}
 
-				// TODO: this could be replaced by $schedule->runNow();
-
 				if ($runConfig->model) {
 					if (!preg_match(self::REGEX_RUN_MODEL, (string)$runConfig->model, $run)) {
 						Mage::throwException(Mage::helper('cron')->__('Invalid model/method definition, expecting "model/class::method".'));
@@ -61,7 +61,13 @@ class Aoe_Scheduler_Model_Observer extends Mage_Cron_Model_Observer {
 					// another cron started this job intermittently, so skip it
 					continue;
 				}
-				$schedule->setExecutedAt(strftime('%Y-%m-%d %H:%M:%S', time()))
+				/**
+					though running status is set in tryLockJob we must set it here because the object
+					was loaded with a pending status and will set it back to pending if we don't set it here
+				 */
+				$schedule
+					->setStatus(Mage_Cron_Model_Schedule::STATUS_RUNNING)
+					->setExecutedAt(strftime('%Y-%m-%d %H:%M:%S', time()))
 					->save();
 
 				$messages = call_user_func_array($callback, $arguments);
@@ -76,7 +82,8 @@ class Aoe_Scheduler_Model_Observer extends Mage_Cron_Model_Observer {
 					$schedule->setMessages($messages);
 				}
 
-				$schedule->setStatus(Mage_Cron_Model_Schedule::STATUS_SUCCESS)
+				$schedule
+					->setStatus(Mage_Cron_Model_Schedule::STATUS_SUCCESS)
 					->setFinishedAt(strftime('%Y-%m-%d %H:%M:%S', time()));
 
 			} catch (Exception $e) {
@@ -89,6 +96,8 @@ class Aoe_Scheduler_Model_Observer extends Mage_Cron_Model_Observer {
 		$this->generate();
 		$this->cleanup();
 	}
+
+
 
 	/**
 	 * Generate jobs for config information
@@ -112,6 +121,37 @@ class Aoe_Scheduler_Model_Observer extends Mage_Cron_Model_Observer {
 		}
 
 		return parent::_generateJobs($newJobs, $exists);
+	}
+
+	/**
+	 * Generate cron schedule.
+	 * Rewrites the original method to remove duplicates afterwards (that exists because of a bug)
+	 *
+	 * @return Mage_Cron_Model_Observer
+	 */
+	public function generate() {
+		$result = parent::generate();
+
+		$conn = Mage::getSingleton('core/resource')->getConnection('core_read');
+		$results = $conn->fetchAll("
+			SELECT
+				GROUP_CONCAT(schedule_id) AS ids,
+				CONCAT(job_code, scheduled_at) AS jobkey,
+				count(*) AS qty
+			FROM cron_schedule
+			WHERE status = 'pending'
+			GROUP BY jobkey
+			HAVING qty > 1;
+		");
+		foreach($results as $row) {
+			$ids = explode(',', $row['ids']);
+			$removeIds = array_slice($ids, 1);
+			foreach ($removeIds as $id) {
+				Mage::getModel('cron/schedule')->load($id)->delete();
+			}
+		}
+
+		return $result;
 	}
 
 }

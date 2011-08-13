@@ -1,0 +1,41 @@
+<?php
+/* @var $this Aoe_Scheduler_Block_Adminhtml_TimelineDetail */
+$_schedule = $this->getSchedule();
+$_helper = $this->helper('aoe_scheduler/data'); /* @var $_helper Aoe_Scheduler_Helper_Data */
+?>
+
+<div class="details">
+	<div class="details-headline <?php echo $_schedule->getStatus(); ?>">
+		<h3><?php echo $_schedule->getJobCode(); ?></h3>
+	</div>
+	<div class="details-content">
+		<table>
+			<tr>
+				<td class="label">Status:</td><td><div class="status"><?php echo $_helper->decorateStatus($_schedule->getStatus()) ?></div></td>
+			</tr>
+			<tr>
+				<td class="label">Created at:</td><td><?php echo $_helper->decorateTime($_schedule->getCreatedAt()); ?></td>
+			</tr>
+			<tr>
+				<td class="label">Scheduled at:</td><td><?php echo $_helper->decorateTime($_schedule->getScheduledAt()); ?></td>
+			</tr>
+			<tr>
+				<td class="label">Executed at:</td><td><?php echo $_helper->decorateTime($_schedule->getExecutedAt()); ?></td>
+			</tr>
+			<tr>
+				<td class="label">Finished at:</td><td><?php echo $_helper->decorateTime($_schedule->getFinishedAt()); ?></td>
+			</tr>
+			<tr>
+				<td class="label">Id:</td><td><?php echo $_schedule->getId(); ?></td>
+			</tr>
+			<?php if ($_schedule->getMessages()): ?>
+			<tr>
+				<td class="label" colspan="2">Message:</td>
+			</tr>
+			<tr>
+				<td colspan="2"><pre><?php echo $_schedule->getMessages(); ?></pre></td>
+			</tr>
+			<?php endif; ?>
+		</table>
+	</div>
+</div>

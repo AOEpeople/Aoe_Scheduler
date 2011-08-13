@@ -1,0 +1,40 @@
+.bar-red,
+.bar-red span,
+.bar-orange,
+.bar-orange span,
+.bar-yellow,
+.bar-yellow span,
+.bar-green,
+.bar-green span,
+.bar-lightblue,
+.bar-lightblue span,
+.bar-blue,
+.bar-blue span,
+.bar-lightgray,
+.bar-lightgray span,
+.bar-gray,
+.bar-gray span { display:block; height:16px; background-image:url(../Images/bg_notifications.gif); background-repeat:no-repeat; font:bold 10px/16px Arial, Helvetica, sans-serif; text-transform:uppercase; text-align:center; padding:0 0 0 7px; margin:1px 0; white-space:nowrap; color:#fff; }
+
+.bar-red { background-position:0 0; }
+.bar-red span { background-position:100% 0; padding:0 7px 0 0; }
+
+.bar-orange { background-position:0 -16px; }
+.bar-orange span { background-position:100% -16px; padding:0 7px 0 0; }
+
+.bar-yellow { background-position:0 -32px; }
+.bar-yellow span { background-position:100% -32px; padding:0 7px 0 0; }
+
+.bar-green { background-position:0 -48px; }
+.bar-green span { background-position:100% -48px; padding:0 7px 0 0; }
+
+.bar-lightblue { background-position:0 -64px; }
+.bar-lightblue span { background-position:100% -64px; padding:0 7px 0 0; }
+
+.bar-blue { background-position:0 -80px; }
+.bar-blue span { background-position:100% -80px; padding:0 7px 0 0; }
+
+.bar-lightgray { background-position:0 -96px; }
+.bar-lightgray span { background-position:100% -96px; padding:0 7px 0 0; }
+
+.bar-gray { background-position:0 -112px; }
+.bar-gray span { background-position:100% -112px; padding:0 7px 0 0; }

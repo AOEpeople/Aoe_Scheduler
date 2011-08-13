@@ -2,7 +2,7 @@
 <config>
 	<modules>
 		<Aoe_Scheduler>
-			<version>0.0.4</version>
+			<version>0.1.1</version>
 		</Aoe_Scheduler>
 	</modules>
 
@@ -55,6 +55,22 @@
 				</aoe_scheduler>
 			</modules>
 		</translate>
+		<layout>
+			<updates>
+				<aoe_scheduler>
+					<file>aoe_scheduler/aoe_scheduler.xml</file>
+				</aoe_scheduler>
+			</updates>
+		</layout>
 	</adminhtml>
+
+	<!-- <crontab>
+		<jobs>
+			<aoescheduler_testtask>
+				<schedule><cron_expr>*/5 * * * *</cron_expr></schedule>
+				<run><model>aoe_scheduler/testTask::run</model></run>
+			</aoescheduler_testtask>
+		</jobs>
+	</crontab> -->
 
 </config>

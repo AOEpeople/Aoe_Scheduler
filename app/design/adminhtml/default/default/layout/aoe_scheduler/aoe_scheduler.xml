@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<layout>
+
+	<adminhtml_timeline_index>
+		<reference name="head">
+			<action method="addCss"><stylesheet>aoe_scheduler/StyleSheet/timeline.css</stylesheet></action>
+			<action method="addCss"><stylesheet>aoe_scheduler/StyleSheet/bars.css</stylesheet></action>
+
+			<action method="addItem"><type>skin_js</type><script>aoe_scheduler/JavaScript/jquery-1.6.2.min.js</script></action>
+			<action method="addItem"><type>skin_js</type><script>aoe_scheduler/JavaScript/tooltip.js</script></action>
+			<action method="addItem"><type>skin_js</type><script>aoe_scheduler/JavaScript/tooltip.dynamic.js</script></action>
+			<action method="addItem"><type>skin_js</type><script>aoe_scheduler/JavaScript/common.js</script></action>
+		</reference>
+		<reference name="content">
+			<block type="aoe_scheduler/adminhtml_timeline" name="aoe_scheduler.timeline" template="aoe_scheduler/timeline.phtml" />
+			<!--<block type="core/text" name="fix.console" as="fix.console">
+				<action method="setText">
+					<text><![CDATA[<script type="text/javascript">
+					iframe = document.createElement('iframe');
+					iframe.style = 'display:none';
+					document.getElementsByTagName('body')[0].appendChild(iframe);
+					window.console = iframe.contentWindow.console;
+					console.firebug = "faketrue";
+					</script>]]></text>
+				</action>
+			</block>
+		--></reference>
+	</adminhtml_timeline_index>
+
+	<adminhtml_scheduler_index>
+		<reference name="head">
+			<action method="addCss"><stylesheet>aoe_scheduler/StyleSheet/bars.css</stylesheet></action>
+		</reference>
+		<reference name="content">
+			<block type="aoe_scheduler/adminhtml_scheduler" name="aoe_scheduler.scheduler" />
+		</reference>
+	</adminhtml_scheduler_index>
+
+	<adminhtml_cron_index>
+		<reference name="head">
+			<action method="addCss"><stylesheet>aoe_scheduler/StyleSheet/bars.css</stylesheet></action>
+		</reference>
+		<reference name="content">
+			<block type="aoe_scheduler/adminhtml_cron" name="aoe_scheduler.cron" />
+		</reference>
+	</adminhtml_cron_index>
+
+</layout>
