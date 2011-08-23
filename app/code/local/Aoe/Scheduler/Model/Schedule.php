@@ -41,13 +41,13 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule {
 			Mage::throwException(Mage::helper('cron')->__('No callbacks found'));
 		}
 
-		if (!$this->tryLockJob()) {
+//		if (!$this->tryLockJob()) {
 			// another cron started this job intermittently, so skip it
-			return $this;
-		}
+//			return $this;
+//		}
 		$this->setExecutedAt(strftime('%Y-%m-%d %H:%M:%S', time()));
 
-			$messages = call_user_func_array($callback, array());
+			$messages = call_user_func_array($callback, array($this));
 
 				// added by Fabrizio to also save messages when no exception was thrown
 				if (!empty($messages)) {
