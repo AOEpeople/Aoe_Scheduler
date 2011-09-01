@@ -37,7 +37,6 @@ class Aoe_Scheduler_Block_Adminhtml_Cron_Edit_Tabs extends Mage_Adminhtml_Block_
 			));
 		}
 
-		Cds_Log::traceExit();
 		return parent::_beforeToHtml();
 	}
 }
