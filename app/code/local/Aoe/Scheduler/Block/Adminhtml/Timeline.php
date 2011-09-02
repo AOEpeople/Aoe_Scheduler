@@ -88,6 +88,8 @@ class Aoe_Scheduler_Block_Adminhtml_Timeline extends Mage_Adminhtml_Block_Widget
 	protected function loadSchedules() {
 		$collection = Mage::getModel('cron/schedule')->getCollection(); /* @var $collection Mage_Cron_Model_Mysql4_Schedule_Collection */
 
+		$minDate = null; $maxDate = null;
+
 		foreach ($collection as $schedule) { /* @var $schedule Aoe_Scheduler_Model_Schedule */
 			$startTime = $schedule->getStarttime();
 			$minDate = is_null($minDate) ? $startTime : min($minDate, $startTime);
