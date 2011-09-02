@@ -1,9 +1,6 @@
 <?php
 
 class Aoe_Scheduler_Block_Adminhtml_Cron extends Mage_Adminhtml_Block_Widget_Grid_Container {
-
-
-
 	/**
 	 * Constructor for Cron Adminhtml Block
 	 */
@@ -22,7 +19,6 @@ class Aoe_Scheduler_Block_Adminhtml_Cron extends Mage_Adminhtml_Block_Widget_Gri
 	 * @return Aoe_Scheduler_Block_Adminhtml_Cron
 	 */
 	protected function _prepareLayout() {
-		$this->removeButton('add');
 		$this->_addButton('add_new', array(
 			'label'   => Mage::helper('aoe_scheduler')->__('Generate Schedule'),
 			'onclick' => "setLocation('{$this->getUrl('*/*/generateSchedule')}')",
@@ -47,6 +43,6 @@ class Aoe_Scheduler_Block_Adminhtml_Cron extends Mage_Adminhtml_Block_Widget_Gri
 	 */
 	public function getHeaderCssClass() {
 		return '';
-	}
+	}	
 
 }

@@ -67,9 +67,21 @@ class Aoe_Scheduler_Helper_Data extends Mage_Core_Helper_Abstract {
 		}
 		return $result;
 	}
-
-
-
+	
+	/**
+     * Get the model options from all the crons.
+     *
+     * @return array
+     */	
+    public function getModelOptions() {
+    	$models = array();
+		$collection = Mage::getModel('aoe_scheduler/collection_crons');
+		foreach ($collection as $item) {
+			$models[$item->getModel()] = $item->getModel();
+		}
+		return $models;
+    }
+	
 	/**
 	 * Wrapepr for decorateTime to be used a frame_callback to avoid that additional parameters
 	 * conflict with the method's optional ones
@@ -80,8 +92,6 @@ class Aoe_Scheduler_Helper_Data extends Mage_Core_Helper_Abstract {
 	public function decorateTimeFrameCallBack($value) {
 		return $this->decorateTime($value, false, NULL);
 	}
-
-
 
 	/**
 	 * Decorate time values
