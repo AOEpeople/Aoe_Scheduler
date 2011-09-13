@@ -1,7 +1,7 @@
-app/code/local/Aoe/Scheduler/							htdocs/app/code/local/Aoe/Scheduler/
-app/etc/modules/Aoe_Scheduler.xml						htdocs/app/etc/modules/Aoe_Scheduler.xml
-shell/*													htdocs/shell/
-app/locale/de_DE/Aoe_Scheduler.csv						htdocs/app/locale/de_DE/Aoe_Scheduler.csv
-app/design/adminhtml/default/default/template/aoe_scheduler/		htdocs/app/design/adminhtml/default/default/template/aoe_scheduler/
-app/design/adminhtml/default/default/layout/aoe_scheduler/		htdocs/app/design/adminhtml/default/default/layout/aoe_scheduler/
-skin/adminhtml/default/default/aoe_scheduler/			htdocs/skin/adminhtml/default/default/aoe_scheduler/
+app/code/local/Aoe/Scheduler/									app/code/local/Aoe/Scheduler/
+app/etc/modules/Aoe_Scheduler.xml								app/etc/modules/Aoe_Scheduler.xml
+shell/*															shell/
+app/locale/de_DE/Aoe_Scheduler.csv								app/locale/de_DE/Aoe_Scheduler.csv
+app/design/adminhtml/default/default/template/aoe_scheduler/	app/design/adminhtml/default/default/template/aoe_scheduler/
+app/design/adminhtml/default/default/layout/aoe_scheduler/		app/design/adminhtml/default/default/layout/aoe_scheduler/
+skin/adminhtml/default/default/aoe_scheduler/					skin/adminhtml/default/default/aoe_scheduler/
