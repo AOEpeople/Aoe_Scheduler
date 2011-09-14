@@ -82,9 +82,12 @@ class Aoe_Scheduler_Model_Observer extends Mage_Cron_Model_Observer {
 					$schedule->setMessages($messages);
 				}
 
-				$schedule
-					->setStatus(Mage_Cron_Model_Schedule::STATUS_SUCCESS)
-					->setFinishedAt(strftime('%Y-%m-%d %H:%M:%S', time()));
+				if (strtoupper(substr($messages, 0, 6)) != 'ERROR:') {
+					$schedule->setStatus(Mage_Cron_Model_Schedule::STATUS_SUCCESS);
+				} else {
+					$schedule->setStatus(Mage_Cron_Model_Schedule::STATUS_ERROR);
+				}
+				$schedule->setFinishedAt(strftime('%Y-%m-%d %H:%M:%S', time()));
 
 			} catch (Exception $e) {
 				$schedule->setStatus($errorStatus)
