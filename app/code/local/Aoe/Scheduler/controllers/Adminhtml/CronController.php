@@ -149,6 +149,10 @@ class Aoe_Scheduler_Adminhtml_CronController extends Aoe_Scheduler_Adminhtml_Abs
 			$data = $this->getRequest()->getPost();
 			try {
 				Mage::getSingleton('adminhtml/session')->setPageData($data);
+		    	$config = Mage::getModel('aoe_scheduler/configuration');
+				if ($config->existsByCode($data['job_code']) && !$this->getRequest()->getParam('id',false)) {
+					Mage::throwException('An existing code already exists.');					
+				}
 				
 				foreach ($data as $name => $value) {
 					if ($name == 'form_key' || $name == 'job_code') {
@@ -190,6 +194,29 @@ class Aoe_Scheduler_Adminhtml_CronController extends Aoe_Scheduler_Adminhtml_Abs
 		$this->_redirect('*/*/');
 	}
 	
+    /**
+     * Delete action for a single cron task.
+     *
+     * @return nothing
+     */
+    public function deleteAction()
+    {
+        if ($id = $this->getRequest()->getParam('id')) {
+            try {
+				$configResource = Mage::getResourceModel('aoe_scheduler/config');
+				$configResource->deleteConfigUsingLike('crontab/jobs/'.$id.'/%','default',0);
+																
+				Mage::app()->getCache()->clean(Zend_Cache::CLEANING_MODE_MATCHING_TAG, array(Mage_Core_Model_Config::CACHE_TAG));
+				
+                Mage::getSingleton('adminhtml/session')->addSuccess(Mage::helper('aoe_scheduler')->__('Task was successfully deleted'));
+            } catch (Exception $e) {
+                Mage::getSingleton('adminhtml/session')->addError($e->getMessage());
+                $this->_redirect('*/*/edit', array('id' => $this->getRequest()->getParam('id')));
+            }
+        }
+        $this->_redirect('*/*/');
+    }
+	    
 	/**
 	 * Init Action.  Sets active menu.
 	 * 

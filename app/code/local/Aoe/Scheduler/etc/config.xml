@@ -22,8 +22,12 @@
 		<models>
 			<aoe_scheduler>
 				<class>Aoe_Scheduler_Model</class>
+				<resourceModel>aoe_scheduler_mysql4</resourceModel>				
 			</aoe_scheduler>
-
+            <aoe_scheduler_mysql4>
+        		<class>Aoe_Scheduler_Model_Mysql4</class>
+                <resourceModel>aoe_scheduler_mysql4</resourceModel>
+			</aoe_scheduler_mysql4>
 			<cron>
 				<rewrite>
 					<observer>Aoe_Scheduler_Model_Observer</observer>

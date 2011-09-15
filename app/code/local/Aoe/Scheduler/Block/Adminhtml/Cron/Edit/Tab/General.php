@@ -19,7 +19,6 @@ class Aoe_Scheduler_Block_Adminhtml_Cron_Edit_Tab_General extends Mage_Adminhtml
              'label'     => Mage::helper('aoe_scheduler')->__('Code'),
              'class'     => 'required-entry',
              'required'  => true,
-        	 'note'   => Mage::helper('aoe_scheduler')->__('Note: If you use an existing code it will overwrite the existing task.'),
              'name'      => 'job_code'
         ));
         

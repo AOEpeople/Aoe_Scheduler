@@ -72,6 +72,8 @@ class Aoe_Scheduler_Model_Configuration extends Mage_Core_Model_Abstract {
 		
 		$configurable = $this->getConfigurableCrontabJobXmlConfig();
 		if ($configurable) {
+			$this->setConfigurableCrontab(true);
+			
 			if (is_object($configurable->schedule)) {
 				$cronExpr = (string)$configurable->schedule->cron_expr;
 				if ($cronExpr) {
@@ -89,12 +91,11 @@ class Aoe_Scheduler_Model_Configuration extends Mage_Core_Model_Abstract {
 			unset($configArray['run']);
 			$this->setOptions(array_merge($globalArray,$configArray));			
 		}
-
 		
 		if (!$this->getModel()) {
 			Mage::throwException(sprintf('No configuration found for code "%s"', $code));
 		}
-
+		
 		$disabledCrons = Mage::helper('aoe_scheduler')->trimExplode(',', Mage::getStoreConfig('system/cron/disabled_crons'), true);
 		$this->setStatus(in_array($this->getId(), $disabledCrons) ? self::STATUS_DISABLED : self::STATUS_ENABLED);
 
@@ -166,5 +167,21 @@ class Aoe_Scheduler_Model_Configuration extends Mage_Core_Model_Abstract {
 		}
 		return $models;
 	}
-	
+
+	/**
+	 * Configuration exists by code.
+	 *
+	 * @param string $code
+	 * 
+	 * @return boolean
+	 */	
+	public function existsByCode($code) {
+		try {
+			$config = Mage::getModel('aoe_scheduler/configuration');
+			$config->loadByCode($code);
+		} catch (Mage_Core_Exception $e) {
+			return false; 
+		}
+		return true;		
+	}
 }

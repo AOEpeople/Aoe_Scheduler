@@ -36,8 +36,12 @@ class Aoe_Scheduler_Block_Adminhtml_Cron_Edit extends Mage_Adminhtml_Block_Widge
 			    setLocation(template.evaluate({model:typeElement}));
 			}
 		';
-        
-        $this->removeButton('delete');
+		
+		if ($config = Mage::registry('config')) {
+	        if (!$config->getConfigurableCrontab()) {
+	        	$this->removeButton('delete');
+	        }
+		}
     }
 
     /**
