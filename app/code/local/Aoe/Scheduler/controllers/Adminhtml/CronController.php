@@ -61,12 +61,14 @@ class Aoe_Scheduler_Adminhtml_CronController extends Aoe_Scheduler_Adminhtml_Abs
 	 */
 	public function scheduleNowAction() {
 		$codes = $this->getRequest()->getParam('codes');
-		foreach ($codes as $key) {
-			Mage::getModel('cron/schedule') /* @var Aoe_Scheduler_Model_Schedule */
-				->setJobCode($key)
-				->scheduleNow()
-				->save();
-			Mage::getSingleton('adminhtml/session')->addSuccess($this->__('Scheduled "%s"', $key));
+		if (is_array($codes)) {
+			foreach ($codes as $key) {
+				Mage::getModel('cron/schedule') /* @var Aoe_Scheduler_Model_Schedule */
+					->setJobCode($key)
+					->scheduleNow()
+					->save();
+				Mage::getSingleton('adminhtml/session')->addSuccess($this->__('Scheduled "%s"', $key));
+			}
 		}
 		$this->_redirect('*/*/index');
 	}
@@ -80,12 +82,28 @@ class Aoe_Scheduler_Adminhtml_CronController extends Aoe_Scheduler_Adminhtml_Abs
 	 */
 	public function runNowAction() {
 		$codes = $this->getRequest()->getParam('codes');
-		foreach ($codes as $key) {
-			$schedule = Mage::getModel('cron/schedule') /* @var $schedule Aoe_Scheduler_Model_Schedule */
-				->setJobCode($key)
-				->runNow()
-				->save();
-			Mage::getSingleton('adminhtml/session')->addSuccess($this->__('Ran "%s" (Duration: %s sec)', $key, intval($schedule->getDuration())));
+		if (is_array($codes)) {
+			foreach ($codes as $key) {
+				$schedule = Mage::getModel('cron/schedule') /* @var $schedule Aoe_Scheduler_Model_Schedule */
+					->setJobCode($key)
+					->runNow(false) // without trying to lock the job
+					->save();
+
+				$messages = $schedule->getMessages();
+
+				if ($schedule->getStatus() == Mage_Cron_Model_Schedule::STATUS_SUCCESS) {
+					Mage::getSingleton('adminhtml/session')->addSuccess($this->__('Ran "%s" (Duration: %s sec)', $key, intval($schedule->getDuration())));
+					if ($messages) {
+						Mage::getSingleton('adminhtml/session')->addSuccess($this->__('"%s" messages:<pre>%s</pre>', $key, $messages));
+					}
+				} else {
+					Mage::getSingleton('adminhtml/session')->addError($this->__('Error while running "%s"', $key));
+					if ($messages) {
+						Mage::getSingleton('adminhtml/session')->addError($this->__('"%s" messages:<pre>%s</pre>', $key, $messages));
+					}
+				}
+
+			}
 		}
 		$this->_redirect('*/*/index');
 	}
