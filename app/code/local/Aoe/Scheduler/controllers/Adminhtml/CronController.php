@@ -85,7 +85,7 @@ class Aoe_Scheduler_Adminhtml_CronController extends Aoe_Scheduler_Adminhtml_Abs
 				->setJobCode($key)
 				->runNow()
 				->save();
-			Mage::getSingleton('adminhtml/session')->addSuccess($this->__('Ran "%s" (Duration: %s sec)', $key, $schedule->getDuration()));
+			Mage::getSingleton('adminhtml/session')->addSuccess($this->__('Ran "%s" (Duration: %s sec)', $key, intval($schedule->getDuration())));
 		}
 		$this->_redirect('*/*/index');
 	}
