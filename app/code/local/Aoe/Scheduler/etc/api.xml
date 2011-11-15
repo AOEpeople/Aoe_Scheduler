@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<config>
+    <api>
+        <resources>
+            <aoe_scheduler translate="title" module="aoe_scheduler">
+                <model>aoe_scheduler/api</model>
+                <title>Scheduler API</title>
+                <acl>aoe_scheduler/aoe_scheduler</acl>
+                <methods>
+                    <runNow translate="title" module="aoe_scheduler">
+                        <title>Run scheduler task</title>
+                        <acl>aoe_scheduler/aoe_scheduler/runNow</acl>
+                    </runNow>
+                    <schedule translate="title" module="aoe_scheduler">
+                        <title>Schedule task</title>
+                        <acl>aoe_scheduler/aoe_scheduler/schedule</acl>
+                    </schedule>
+                    <info translate="title" module="aoe_scheduler">
+                        <title>Get task information</title>
+                        <acl>aoe_scheduler/aoe_scheduler/info</acl>
+                    </info>
+                </methods>
+            </aoe_scheduler>
+        </resources>
+        <acl>
+            <resources>
+                <aoe_scheduler translate="title" module="aoe_scheduler">
+                    <title>AOE Scheduler</title>
+                    <runNow translate="title" module="aoe_scheduler">
+                        <title>Run scheduler task</title>
+                    </runNow>
+                    <schedule translate="title" module="aoe_scheduler">
+                        <title>Schedule task</title>
+                    </schedule>
+                    <info translate="title" module="aoe_scheduler">
+                        <title>Get task information</title>
+                    </info>
+                </aoe_scheduler>
+            </resources>
+        </acl>
+    </api>
+</config>

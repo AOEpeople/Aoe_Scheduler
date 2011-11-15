@@ -27,7 +27,7 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule {
 		$modelCallback = $this->getJobConfiguration()->getModel();
 
 		if (!$this->getCreatedAt()) {
-			$this->scheduleNow();
+			$this->schedule();
 		}
 
 		if (!preg_match(Mage_Cron_Model_Observer::REGEX_RUN_MODEL, $modelCallback, $run)) {
@@ -78,12 +78,28 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule {
 	/**
 	 * Schedule this task to be executed as soon as possible
 	 *
+	 * @deprecated use Aoe_Scheduler_Model_Schedule::schedule() instead
 	 * @return Aoe_Scheduler_Model_Schedule
 	 */
 	public function scheduleNow() {
+		return $this->schedule();
+	}
+
+
+
+	/**
+	 * Schedule this task to be executed at a given time
+	 *
+	 * @param int $time
+	 * @return Aoe_Scheduler_Model_Schedule
+	 */
+	public function schedule($time=NULL) {
+		if (is_null($time)) {
+			$time = time();
+		}
 		$this->setStatus(Mage_Cron_Model_Schedule::STATUS_PENDING)
 			->setCreatedAt(strftime('%Y-%m-%d %H:%M:%S', time()))
-			->setScheduledAt(strftime('%Y-%m-%d %H:%M', time()));
+			->setScheduledAt(strftime('%Y-%m-%d %H:%M:%S', $time));
 		return $this;
 	}
 

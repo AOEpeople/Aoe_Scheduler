@@ -65,7 +65,7 @@ class Aoe_Scheduler_Adminhtml_CronController extends Aoe_Scheduler_Adminhtml_Abs
 			foreach ($codes as $key) {
 				Mage::getModel('cron/schedule') /* @var Aoe_Scheduler_Model_Schedule */
 					->setJobCode($key)
-					->scheduleNow()
+					->schedule()
 					->save();
 				Mage::getSingleton('adminhtml/session')->addSuccess($this->__('Scheduled "%s"', $key));
 			}
