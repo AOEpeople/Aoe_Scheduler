@@ -7,11 +7,9 @@
  */
 class Aoe_Scheduler_Model_Observer extends Mage_Cron_Model_Observer {
 
-
-
 	/**
 	 * Process cron queue
-	 * Geterate tasks schedule
+	 * Generate tasks schedule
 	 * Cleanup tasks schedule
 	 *
 	 * @param Varien_Event_Observer $observer
