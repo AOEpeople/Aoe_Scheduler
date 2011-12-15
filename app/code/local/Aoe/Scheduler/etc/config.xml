@@ -73,4 +73,12 @@
 		</jobs>
 	</crontab> -->
 
+	<default>
+		<system>
+			<cron>
+				<max_running_time>120</max_running_time>
+			</cron>
+		</system>
+	</default>
+
 </config>

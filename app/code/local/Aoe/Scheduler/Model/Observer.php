@@ -7,6 +7,9 @@
  */
 class Aoe_Scheduler_Model_Observer extends Mage_Cron_Model_Observer {
 
+
+	const XML_PATH_MAX_RUNNING_TIME = 'system/cron/max_running_time';
+
 	/**
 	 * Process cron queue
 	 * Generate tasks schedule
@@ -21,7 +24,7 @@ class Aoe_Scheduler_Model_Observer extends Mage_Cron_Model_Observer {
 		$now = time();
 		$jobsRoot = Mage::getConfig()->getNode('crontab/jobs');
 
-		foreach ($schedules->getIterator() as $schedule) {
+		foreach ($schedules->getIterator() as $schedule) { /* @var $schedule Aoe_Scheduler_Model_Schedule */
 			try {
 				$errorStatus = Mage_Cron_Model_Schedule::STATUS_ERROR;
 				$errorMessage = Mage::helper('cron')->__('Unknown error.');
@@ -96,7 +99,32 @@ class Aoe_Scheduler_Model_Observer extends Mage_Cron_Model_Observer {
 		}
 
 		$this->generate();
+		$this->checkRunningJobs();
 		$this->cleanup();
+	}
+
+
+
+	/**
+	 * Check running jobs
+	 *
+	 * @return void
+	 */
+	public function checkRunningJobs() {
+
+		$maxAge = time() - Mage::getStoreConfig(self::XML_PATH_MAX_RUNNING_TIME) * 60;
+
+		$schedules = Mage::getModel('cron/schedule')->getCollection()
+			->addFieldToFilter('status', Mage_Cron_Model_Schedule::STATUS_RUNNING)
+			->addFieldToFilter('executed_at', array('lt' => strftime('%Y-%m-%d %H:%M:00', $maxAge)))
+			->load();
+
+		foreach ($schedules->getIterator() as $schedule) { /* @var $schedule Aoe_Scheduler_Model_Schedule */
+			$schedule
+				->setStatus(Mage_Cron_Model_Schedule::STATUS_ERROR)
+				->setMessages('Job was running longer than the configured max_running_time')
+				->save();
+		}
 	}
 
 
