@@ -22,19 +22,20 @@ class Aoe_Scheduler_Model_Observer extends Mage_Cron_Model_Observer {
 		$jobsRoot = Mage::getConfig()->getNode('crontab/jobs');
 
 		foreach ($schedules->getIterator() as $schedule) {
-			$jobConfig = $jobsRoot->{$schedule->getJobCode()};
-			if (!$jobConfig || !$jobConfig->run) {
-				continue;
-			}
-
-			$runConfig = $jobConfig->run;
-			$time = strtotime($schedule->getScheduledAt());
-			if ($time > $now) {
-				continue;
-			}
 			try {
 				$errorStatus = Mage_Cron_Model_Schedule::STATUS_ERROR;
 				$errorMessage = Mage::helper('cron')->__('Unknown error.');
+
+				$jobConfig = $jobsRoot->{$schedule->getJobCode()};
+				if (!$jobConfig || !$jobConfig->run) {
+					Mage::throwException(Mage::helper('cron')->__('No valid configuration found.'));
+				}
+
+				$runConfig = $jobConfig->run;
+				$time = strtotime($schedule->getScheduledAt());
+				if ($time > $now) {
+					continue;
+				}
 
 				if ($time < $now - $scheduleLifetime) {
 					$errorStatus = Mage_Cron_Model_Schedule::STATUS_MISSED;
