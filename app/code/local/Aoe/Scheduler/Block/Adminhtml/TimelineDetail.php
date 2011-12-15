@@ -3,7 +3,7 @@
 /**
  * TimelineDetail block
  *
- * @author	Fabrizio Branca <fabrizio.branca@aoemedia.de>
+ * @author Fabrizio Branca
  */
 class Aoe_Scheduler_Block_Adminhtml_TimelineDetail extends Mage_Adminhtml_Block_Template {
 

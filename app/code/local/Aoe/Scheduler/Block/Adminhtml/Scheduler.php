@@ -3,7 +3,7 @@
 /**
  * Scheduler Block
  *
- * @author Fabrizio Branca <fabrizio.branca@aoemedia.de>
+ * @author Fabrizio Branca
  */
 class Aoe_Scheduler_Block_Adminhtml_Scheduler extends Mage_Adminhtml_Block_Widget_Grid_Container {
 

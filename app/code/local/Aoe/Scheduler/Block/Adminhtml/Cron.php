@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * Cron block
+ *
+ * @author Fabrizio Branca
+ */
 class Aoe_Scheduler_Block_Adminhtml_Cron extends Mage_Adminhtml_Block_Widget_Grid_Container {
 
 
