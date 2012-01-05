@@ -50,7 +50,7 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule {
 		}
 		$this->setExecutedAt(strftime('%Y-%m-%d %H:%M:%S', time()));
 
-		$messages = call_user_func_array($callback, array());
+		$messages = call_user_func_array($callback, array($this));
 
 		// added by Fabrizio to also save messages when no exception was thrown
 		if (!empty($messages)) {
