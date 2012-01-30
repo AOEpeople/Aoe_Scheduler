@@ -64,19 +64,25 @@
 		</layout>
 	</adminhtml>
 
-	<!-- <crontab>
+	<crontab>
 		<jobs>
-			<aoescheduler_testtask>
+			<!-- <aoescheduler_testtask>
 				<schedule><cron_expr>*/5 * * * *</cron_expr></schedule>
 				<run><model>aoe_scheduler/testTask::run</model></run>
-			</aoescheduler_testtask>
+			</aoescheduler_testtask> -->
+
+			<aoescheduler_heartbeat>
+				<schedule><config_path>system/cron/scheduler_cron_expr_heartbeat</config_path></schedule>
+				<run><model>aoe_scheduler/heartbeatTask::run</model></run>
+			</aoescheduler_heartbeat>
 		</jobs>
-	</crontab> -->
+	</crontab>
 
 	<default>
 		<system>
 			<cron>
 				<max_running_time>120</max_running_time>
+				<scheduler_cron_expr_heartbeat>*/5 * * * *</scheduler_cron_expr_heartbeat>
 			</cron>
 		</system>
 	</default>

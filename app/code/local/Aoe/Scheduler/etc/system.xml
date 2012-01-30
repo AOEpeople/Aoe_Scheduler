@@ -22,6 +22,14 @@
 							<show_in_website>0</show_in_website>
 							<show_in_store>0</show_in_store>
 						</max_running_time>
+						<scheduler_cron_expr_heartbeat>
+							<label>Heartbeat task schedule (cron syntax)</label>
+							<frontend_type>text</frontend_type>
+							<sort_order>110</sort_order>
+							<show_in_default>1</show_in_default>
+							<show_in_website>0</show_in_website>
+							<show_in_store>0</show_in_store>
+						</scheduler_cron_expr_heartbeat>
 					</fields>
 				</cron>
 			</groups>

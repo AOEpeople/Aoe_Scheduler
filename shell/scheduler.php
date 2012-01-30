@@ -65,6 +65,53 @@ class Aoe_Scheduler_Shell_Scheduler extends Mage_Shell_Abstract {
 
 
 	/**
+	 * Returns the timestamp of the last run of a given job
+	 *
+	 * @return void
+	 */
+	public function lastRunAction() {
+
+		$code = $this->getArg('code');
+		if (empty($code)) {
+			echo "\nNo code found!\n\n";
+			echo $this->usageHelp();
+			exit(1);
+		}
+
+		$collection = Mage::getModel('cron/schedule')->getCollection(); /* @var $collection Mage_Cron_Model_Resource_Schedule_Collection */
+		$collection->addFieldToFilter('job_code', $code)
+			->addFieldToFilter('status', Mage_Cron_Model_Schedule::STATUS_SUCCESS)
+			->addOrder('finished_at', Varien_Data_Collection_Db::SORT_ORDER_DESC)
+			->getSelect()->limit(1);
+		$schedule = $collection->getFirstItem(); /* @var $schedule Aoe_Scheduler_Model_Schedule */
+		if (!$schedule || !$schedule->getId()) {
+			echo "\nNo schedule found\n\n";
+			exit(1);
+		}
+
+		$time = strtotime($schedule->getFinishedAt());
+
+		if ($this->getArg('secondsFromNow')) {
+			$time = time() - $time;
+		}
+
+		echo $time . PHP_EOL;
+	}
+
+
+
+	/**
+	 * Display extra help
+	 *
+	 * @return string
+	 */
+	public function lastRunActionHelp() {
+		return " -code <code> [-secondsFromNow]	Get the timestamp of the last successful run of a job for a given code";
+	}
+
+
+
+	/**
 	 * Schedule a job now
 	 *
 	 * @return void
