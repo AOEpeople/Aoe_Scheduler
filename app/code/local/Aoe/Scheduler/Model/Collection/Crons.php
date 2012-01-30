@@ -12,8 +12,8 @@ class Aoe_Scheduler_Model_Collection_Crons extends Varien_Data_Collection {
 	/**
 	 * Load data
 	 *
-	 * @param (not used)
-	 * @param (not used)
+	 * @param bool $printQuery
+	 * @param bool $logQuery
 	 * @return Aoe_Scheduler_Model_Collection_Crons
 	 */
 	public function loadData($printQuery = false, $logQuery = false) {
