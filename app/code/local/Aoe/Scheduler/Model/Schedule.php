@@ -8,6 +8,9 @@
  * @method string getCreatedAt()
  * @method string getScheduledAt()
  * @method string getJobCode()
+ * @method string setJobCode()
+ * @method string getParameters()
+ * @method string setParameters()
  */
 class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule {
 
