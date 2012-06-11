@@ -2,7 +2,7 @@
 <config>
 	<modules>
 		<Aoe_Scheduler>
-			<version>0.2.2</version>
+			<version>0.1.0</version>
 		</Aoe_Scheduler>
 	</modules>
 
@@ -31,6 +31,18 @@
 				</rewrite>
 			</cron>
 		</models>
+
+		<resources>
+			<aoescheduler_setup>
+				<setup>
+					<module>Aoe_Scheduler</module>
+				</setup>
+				<connection>
+					<use>core_setup</use>
+				</connection>
+			</aoescheduler_setup>
+		</resources>
+
 	</global>
 
 	<admin>
