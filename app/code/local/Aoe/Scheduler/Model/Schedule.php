@@ -19,6 +19,8 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule {
 	 */
 	protected $_jobConfiguration;
 
+	protected $jobWasLocked = false;
+
 
 	/**
 	 * Run this task now
@@ -47,8 +49,10 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule {
 
 		// lock job requires the record to be saved and having status Mage_Cron_Model_Schedule::STATUS_PENDING
 		// workaround could be to do this: $this->setStatus(Mage_Cron_Model_Schedule::STATUS_PENDING)->save();
+		$this->jobWasLocked = false;
 		if ($tryLockJob && !$this->tryLockJob()) {
 			// another cron started this job intermittently, so skip it
+			$this->jobWasLocked = true;
 			return $this;
 		}
 		$this->setExecutedAt(strftime('%Y-%m-%d %H:%M:%S', time()));
@@ -74,6 +78,17 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule {
 		$this->setFinishedAt(strftime('%Y-%m-%d %H:%M:%S', time()));
 
 		return $this;
+	}
+
+
+
+	/**
+	 * Flag that shows that a previous execution was prevented because the job was locked
+	 *
+	 * @return bool
+	 */
+	public function getJobWasLocked() {
+		return $this->jobWasLocked;
 	}
 
 
