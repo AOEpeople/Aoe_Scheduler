@@ -185,4 +185,40 @@ class Aoe_Scheduler_Model_Observer extends Mage_Cron_Model_Observer {
 		return $result;
 	}
 
+	public function getWhitelist() {
+		$whitelist = array();
+		if(getenv("SCHEDULER_WHITELIST") !== FALSE ) {
+			$whitelist = explode(',',getenv("SCHEDULER_WHITELIST"));
+		}
+		return $whitelist;
+	}
+
+	public function getBlacklist() {
+		$blacklist = array();
+		if(getenv("SCHEDULER_BLACKLIST") !== FALSE) {
+			$blacklist = explode(',',getenv("SCHEDULER_BLACKLIST"));
+		}
+		return $blacklist;
+	}
+
+	public function getPendingSchedules()
+	{
+		if (!$this->_pendingSchedules) {
+			$this->_pendingSchedules = Mage::getModel('cron/schedule')->getCollection()
+				->addFieldToFilter('status', Mage_Cron_Model_Schedule::STATUS_PENDING);
+
+			$whitelist = $this->getWhitelist();
+			if(!empty($whitelist)) {
+				$this->_pendingSchedules->addFieldToFilter('job_code', array('in'=> $whitelist));
+			}
+
+			$blacklist = $this->getBlacklist();
+			if(!empty($blacklist)) {
+				$this->_pendingSchedules->addFieldToFilter('job_code', array('nin'=> $blacklist));
+			}
+
+			$this->_pendingSchedules = $this->_pendingSchedules->load();
+		}
+		return $this->_pendingSchedules;
+	}
 }
