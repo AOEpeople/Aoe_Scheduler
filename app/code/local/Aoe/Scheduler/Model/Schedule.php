@@ -99,7 +99,8 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule {
 		}
 		$this->setStatus(Mage_Cron_Model_Schedule::STATUS_PENDING)
 			->setCreatedAt(strftime('%Y-%m-%d %H:%M:%S', time()))
-			->setScheduledAt(strftime('%Y-%m-%d %H:%M:%S', $time));
+			->setScheduledAt(strftime('%Y-%m-%d %H:%M:%S', $time))
+			->save();
 		return $this;
 	}
 
