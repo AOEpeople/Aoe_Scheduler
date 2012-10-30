@@ -1,0 +1,17 @@
+{
+    "name": "fbrnc/Aoe_Scheduler",
+    "license": "OSL-3.0",
+    "type": "magento-module",
+    "description": "Magento Cron Scheduler",
+    "homepage": "http://www.fabrizio-branca.de/magento-cron-scheduler.html",
+    "require": {
+        "magento-hackathon/magento-composer-installer": "dev-master"
+    },
+    "authors":[
+        {
+            "name":"Fabrizio Branca",
+            "email":"mail@{firstname}-{lastname}.de"
+        }
+    ]
+}
+
