@@ -3,7 +3,7 @@
 	<modules>
 		<Aoe_Scheduler>
 			<active>true</active>
-			<codePool>local</codePool>
+			<codePool>community</codePool>
 		</Aoe_Scheduler>
 	</modules>
 </config>
