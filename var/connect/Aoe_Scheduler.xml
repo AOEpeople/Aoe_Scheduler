@@ -1,0 +1,114 @@
+<_>
+   <form_key>2AI3z5X0skMR8pd3</form_key>
+   <_create/>
+   <name>Aoe_Scheduler</name>
+   <channel>community</channel>
+   <version_ids>
+      <version_ids>1</version_ids>
+   </version_ids>
+   <summary>Scheduler / Cron Management</summary>
+   <description>This extension allows you to manage your scheduler task. Schedules can be disabled. From version 0.1.0 this extension also comes with a graphical timeline view.</description>
+   <license>OSL v3.0</license>
+   <license_uri>http://www.opensource.org/licenses/osl-3.0.php</license_uri>
+   <version>0.2.2</version>
+   <stability>stable</stability>
+   <notes>Added heartbeat.
+Fixed acl bug.
+
+Check http://www.fabrizio-branca.de/magento-cron-scheduler.html for a summary of new features and bugfixes</notes>
+   <authors>
+      <name>
+         <name>Fabrizio Branca</name>
+      </name>
+      <user>
+         <user>fbrnc</user>
+      </user>
+      <email>
+         <email>magento@fabrizio-branca.de</email>
+      </email>
+   </authors>
+   <depends_php_min>5.2.0</depends_php_min>
+   <depends_php_max>6.0.0</depends_php_max>
+   <depends>
+      <package>
+         <name>
+            <name/>
+         </name>
+         <channel>
+            <channel/>
+         </channel>
+         <min>
+            <min/>
+         </min>
+         <max>
+            <max/>
+         </max>
+         <files>
+            <files>                                          </files>
+         </files>
+      </package>
+      <extension>
+         <name>
+            <name>Core</name>
+         </name>
+         <min>
+            <min/>
+         </min>
+         <max>
+            <max/>
+         </max>
+      </extension>
+   </depends>
+   <contents>
+      <target>
+         <target>magelocal</target>
+         <target>magecommunity</target>
+         <target>mageetc</target>
+         <target>mage</target>
+         <target>magelocale</target>
+         <target>magedesign</target>
+         <target>magedesign</target>
+         <target>mageskin</target>
+      </target>
+      <path>
+         <path/>
+         <path>/Aoe/Scheduler/</path>
+         <path>/modules/Aoe_Scheduler.xml</path>
+         <path>/shell/scheduler.php</path>
+         <path>/de_DE/Aoe_Scheduler.csv</path>
+         <path>/adminhtml/default/default/template/aoe_scheduler/</path>
+         <path>/adminhtml/default/default/layout/aoe_scheduler/</path>
+         <path>/adminhtml/default/default/aoe_scheduler/</path>
+      </path>
+      <type>
+         <type>file</type>
+         <type>dir</type>
+         <type>file</type>
+         <type>file</type>
+         <type>file</type>
+         <type>dir</type>
+         <type>dir</type>
+         <type>dir</type>
+      </type>
+      <include>
+         <include/>
+         <include/>
+         <include/>
+         <include/>
+         <include/>
+         <include/>
+         <include/>
+         <include/>
+      </include>
+      <ignore>
+         <ignore/>
+         <ignore/>
+         <ignore/>
+         <ignore/>
+         <ignore/>
+         <ignore/>
+         <ignore/>
+         <ignore/>
+      </ignore>
+   </contents>
+</_>
