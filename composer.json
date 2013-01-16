@@ -5,7 +5,7 @@
     "description": "Magento Cron Scheduler",
     "homepage": "http://www.fabrizio-branca.de/magento-cron-scheduler.html",
     "require": {
-        "magento-hackathon/magento-composer-installer": "dev-master"
+        "magento-hackathon/magento-composer-installer": "*"
     },
     "authors":[
         {
