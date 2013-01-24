@@ -86,6 +86,8 @@ class Aoe_Scheduler_Model_Observer extends Mage_Cron_Model_Observer {
 						$messages = var_export($messages, 1);
 					}
 					$schedule->setMessages($messages);
+				} else {
+					$messages = '';
 				}
 
 				// schedules can report an error state by returning a string that starts with "ERROR:"
