@@ -2,7 +2,7 @@
 <config>
 	<modules>
 		<Aoe_Scheduler>
-			<version>0.3.0</version>
+			<version>0.3.1</version>
 		</Aoe_Scheduler>
 	</modules>
 

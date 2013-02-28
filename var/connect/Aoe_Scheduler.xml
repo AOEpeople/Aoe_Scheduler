@@ -10,9 +10,9 @@
    <description>This extension allows you to manage your scheduler task. Schedules can be disabled. From version 0.1.0 this extension also comes with a graphical timeline view.</description>
    <license>OSL v3.0</license>
    <license_uri>http://www.opensource.org/licenses/osl-3.0.php</license_uri>
-   <version>0.3.0</version>
+   <version>0.3.1</version>
    <stability>stable</stability>
-   <notes>Moved to community code pool</notes>
+   <notes></notes>
    <authors>
       <name>
          <name>Fabrizio Branca</name>
@@ -58,7 +58,6 @@
    </depends>
    <contents>
       <target>
-         <target>magelocal</target>
          <target>magecommunity</target>
          <target>mageetc</target>
          <target>mage</target>
@@ -68,7 +67,6 @@
          <target>mageskin</target>
       </target>
       <path>
-         <path/>
          <path>/Aoe/Scheduler/</path>
          <path>/modules/Aoe_Scheduler.xml</path>
          <path>/shell/scheduler.php</path>
@@ -78,7 +76,6 @@
          <path>/adminhtml/default/default/aoe_scheduler/</path>
       </path>
       <type>
-         <type>file</type>
          <type>dir</type>
          <type>file</type>
          <type>file</type>
@@ -95,10 +92,8 @@
          <include/>
          <include/>
          <include/>
-         <include/>
       </include>
       <ignore>
-         <ignore/>
          <ignore/>
          <ignore/>
          <ignore/>
