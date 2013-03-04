@@ -72,6 +72,8 @@ class Aoe_Scheduler_Model_Observer extends Mage_Cron_Model_Observer {
 					->setExecutedAt(strftime('%Y-%m-%d %H:%M:%S', time()))
 					->save();
 
+				Mage::dispatchEvent('cron_' . $schedule->getJobCode() . '_before', array('schedule' => $schedule));
+
 				$messages = call_user_func_array($callback, $arguments);
 
 				// added by Fabrizio to also save messages when no exception was thrown
@@ -87,15 +89,19 @@ class Aoe_Scheduler_Model_Observer extends Mage_Cron_Model_Observer {
 				// schedules can report an error state by returning a string that starts with "ERROR:"
 				if (is_string($messages) && strtoupper(substr($messages, 0, 6)) == 'ERROR:') {
 					$schedule->setStatus(Mage_Cron_Model_Schedule::STATUS_ERROR);
+					Mage::dispatchEvent('cron_' . $schedule->getJobCode() . '_after_error', array('schedule' => $schedule));
 				} else {
 					$schedule->setStatus(Mage_Cron_Model_Schedule::STATUS_SUCCESS);
+					Mage::dispatchEvent('cron_' . $schedule->getJobCode() . '_after_success', array('schedule' => $schedule));
 				}
 				
 				$schedule->setFinishedAt(strftime('%Y-%m-%d %H:%M:%S', time()));
+				Mage::dispatchEvent('cron_' . $schedule->getJobCode() . '_after', array('schedule' => $schedule));
 
 			} catch (Exception $e) {
 				$schedule->setStatus($errorStatus)
 					->setMessages($e->__toString());
+				Mage::dispatchEvent('cron_' . $schedule->getJobCode() . '_exception', array('schedule' => $schedule, 'exception' => $e));
 			}
 			$schedule->save();
 		}
