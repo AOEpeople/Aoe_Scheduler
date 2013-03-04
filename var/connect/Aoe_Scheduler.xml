@@ -1,5 +1,5 @@
 <_>
-   <form_key>2AI3z5X0skMR8pd3</form_key>
+   <form_key>KPSFo822WySjqMCh</form_key>
    <_create/>
    <name>Aoe_Scheduler</name>
    <channel>community</channel>
@@ -12,7 +12,7 @@
    <license_uri>http://www.opensource.org/licenses/osl-3.0.php</license_uri>
    <version>0.3.1</version>
    <stability>stable</stability>
-   <notes></notes>
+   <notes>GIT Revision: 8c9777e11f720bf99ba8cb6c2329c8e2780295dc, Build Date: 2013-03-04 07:00:51</notes>
    <authors>
       <name>
          <name>Fabrizio Branca</name>
@@ -41,7 +41,7 @@
             <max/>
          </max>
          <files>
-            <files>                                           </files>
+            <files>                                                  </files>
          </files>
       </package>
       <extension>
@@ -58,28 +58,34 @@
    </depends>
    <contents>
       <target>
+         <target/>
          <target>magecommunity</target>
          <target>mageetc</target>
-         <target>mage</target>
+         <target>mageweb</target>
+         <target>magelocale</target>
          <target>magelocale</target>
          <target>magedesign</target>
          <target>magedesign</target>
          <target>mageskin</target>
       </target>
       <path>
+         <path/>
          <path>/Aoe/Scheduler/</path>
          <path>/modules/Aoe_Scheduler.xml</path>
          <path>/shell/scheduler.php</path>
          <path>/de_DE/Aoe_Scheduler.csv</path>
+         <path>/en_US/template/email/aoe_scheduler/</path>
          <path>/adminhtml/default/default/template/aoe_scheduler/</path>
          <path>/adminhtml/default/default/layout/aoe_scheduler/</path>
          <path>/adminhtml/default/default/aoe_scheduler/</path>
       </path>
       <type>
+         <type/>
          <type>dir</type>
          <type>file</type>
          <type>file</type>
          <type>file</type>
+         <type>dir</type>
          <type>dir</type>
          <type>dir</type>
          <type>dir</type>
@@ -92,8 +98,12 @@
          <include/>
          <include/>
          <include/>
+         <include/>
+         <include/>
       </include>
       <ignore>
+         <ignore/>
+         <ignore/>
          <ignore/>
          <ignore/>
          <ignore/>
