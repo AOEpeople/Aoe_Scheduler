@@ -7,8 +7,10 @@
  */
 class Aoe_Scheduler_Model_Observer extends Mage_Cron_Model_Observer {
 
-
 	const XML_PATH_MAX_RUNNING_TIME = 'system/cron/max_running_time';
+	const XML_PATH_EMAIL_TEMPLATE   = 'system/cron/error_email_template';
+	const XML_PATH_EMAIL_IDENTITY   = 'system/cron/error_email_identity';
+	const XML_PATH_EMAIL_RECIPIENT  = 'system/cron/error_email';
 
 	/**
 	 * Process cron queue
@@ -89,6 +91,7 @@ class Aoe_Scheduler_Model_Observer extends Mage_Cron_Model_Observer {
 				// schedules can report an error state by returning a string that starts with "ERROR:"
 				if (is_string($messages) && strtoupper(substr($messages, 0, 6)) == 'ERROR:') {
 					$schedule->setStatus(Mage_Cron_Model_Schedule::STATUS_ERROR);
+					$this->sendErrorMail($schedule, $messages);
 					Mage::dispatchEvent('cron_' . $schedule->getJobCode() . '_after_error', array('schedule' => $schedule));
 				} else {
 					$schedule->setStatus(Mage_Cron_Model_Schedule::STATUS_SUCCESS);
@@ -102,6 +105,9 @@ class Aoe_Scheduler_Model_Observer extends Mage_Cron_Model_Observer {
 				$schedule->setStatus($errorStatus)
 					->setMessages($e->__toString());
 				Mage::dispatchEvent('cron_' . $schedule->getJobCode() . '_exception', array('schedule' => $schedule, 'exception' => $e));
+
+				$this->sendErrorMail($schedule, $e->__toString());
+
 			}
 			$schedule->save();
 		}
@@ -161,6 +167,8 @@ class Aoe_Scheduler_Model_Observer extends Mage_Cron_Model_Observer {
 		return parent::_generateJobs($newJobs, $exists);
 	}
 
+
+
 	/**
 	 * Generate cron schedule.
 	 * Rewrites the original method to remove duplicates afterwards (that exists because of a bug)
@@ -191,6 +199,37 @@ class Aoe_Scheduler_Model_Observer extends Mage_Cron_Model_Observer {
 		}
 
 		return $result;
+	}
+
+
+	/**
+	 * Send error mail
+	 *
+	 * @param Aoe_Scheduler_Model_Schedule $schedule
+	 * @param $error
+	 * @return Aoe_Scheduler_Model_Observer
+	 */
+	protected function sendErrorMail(Aoe_Scheduler_Model_Schedule $schedule, $error) {
+		if (!Mage::getStoreConfig(self::XML_PATH_EMAIL_RECIPIENT)) {
+			return $this;
+		}
+
+		$translate = Mage::getSingleton('core/translate'); /* @var $translate Mage_Core_Model_Translate */
+		$translate->setTranslateInline(false);
+
+		$emailTemplate = Mage::getModel('core/email_template'); /* @var $emailTemplate Mage_Core_Model_Email_Template */
+		$emailTemplate->setDesignConfig(array('area' => 'backend'));
+		$emailTemplate->sendTransactional(
+			Mage::getStoreConfig(self::XML_PATH_EMAIL_TEMPLATE),
+			Mage::getStoreConfig(self::XML_PATH_EMAIL_IDENTITY),
+			Mage::getStoreConfig(self::XML_PATH_EMAIL_RECIPIENT),
+			null,
+			array('error' => $error, 'schedule' => $schedule)
+		);
+
+		$translate->setTranslateInline(true);
+
+		return $this;
 	}
 
 }

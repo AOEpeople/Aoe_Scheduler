@@ -1,6 +1,8 @@
 <?php
 
 /**
+ * Schedule
+ *
  * @method string getExecutedAt()
  * @method string getFinishedAt()
  * @method string getStatus()
@@ -8,6 +10,12 @@
  * @method string getCreatedAt()
  * @method string getScheduledAt()
  * @method string getJobCode()
+ * @method string setMessages()
+ * @method string setExecutedAt()
+ * @method string setCreatedAt()
+ * @method string setScheduledAt()
+ * @method string setStatus()
+ * @method string setFinishedAt()
  */
 class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule {
 

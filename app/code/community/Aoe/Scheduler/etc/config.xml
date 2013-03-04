@@ -31,6 +31,18 @@
 				</rewrite>
 			</cron>
 		</models>
+
+
+		<template>
+			<email>
+				<system_cron_error_email_template translate="label" module="aoe_scheduler">
+					<label>Cron error</label>
+					<file>aoe_scheduler/cron_error.html</file>
+					<type>text</type>
+				</system_cron_error_email_template>
+			</email>
+		</template>
+
 	</global>
 
 	<admin>
@@ -83,6 +95,9 @@
 			<cron>
 				<max_running_time>120</max_running_time>
 				<scheduler_cron_expr_heartbeat>*/5 * * * *</scheduler_cron_expr_heartbeat>
+
+				<error_email_identity>general</error_email_identity>
+    			<error_email_template>system_cron_error_email_template</error_email_template>
 			</cron>
 		</system>
 	</default>
