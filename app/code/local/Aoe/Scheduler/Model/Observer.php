@@ -22,7 +22,14 @@ class Aoe_Scheduler_Model_Observer extends Mage_Cron_Model_Observer {
 		$schedules = $this->getPendingSchedules();
 		$scheduleLifetime = Mage::getStoreConfig(self::XML_PATH_SCHEDULE_LIFETIME) * 60;
 		$now = time();
-		$jobsRoot = Mage::getConfig()->getNode('crontab/jobs');
+
+        // fetch global cronjob config
+        $jobsRoot = Mage::getConfig()->getNode('crontab/jobs');
+
+        // extend cronjob config with the configurable ones
+        $jobsRoot->extend(
+            Mage::getConfig()->getNode('default/crontab/jobs')
+        );
 
 		foreach ($schedules->getIterator() as $schedule) { /* @var $schedule Aoe_Scheduler_Model_Schedule */
 			try {
