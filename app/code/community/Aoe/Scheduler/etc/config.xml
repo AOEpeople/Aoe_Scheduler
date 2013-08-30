@@ -43,6 +43,18 @@
 			</email>
 		</template>
 
+
+		<resources>
+			<aoescheduler_setup>
+				<setup>
+					<module>Aoe_Scheduler</module>
+				</setup>
+				<connection>
+					<use>core_setup</use>
+				</connection>
+			</aoescheduler_setup>
+		</resources>
+
 	</global>
 
 	<admin>

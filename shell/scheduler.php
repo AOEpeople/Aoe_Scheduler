@@ -125,7 +125,7 @@ class Aoe_Scheduler_Shell_Scheduler extends Mage_Shell_Abstract {
 		}
 		$schedule = Mage::getModel('cron/schedule'); /* @var $schedule Aoe_Scheduler_Model_Schedule */
 		$schedule->setJobCode($code);
-		$schedule->scheduleNow();
+		$schedule->schedule();
 		$schedule->save();
 	}
 
@@ -156,7 +156,11 @@ class Aoe_Scheduler_Shell_Scheduler extends Mage_Shell_Abstract {
 		}
 		$schedule = Mage::getModel('cron/schedule'); /* @var $schedule Aoe_Scheduler_Model_Schedule */
 		$schedule->setJobCode($code);
-		$schedule->runNow();
+		$schedule->runNow(false);
+		if ($schedule->getJobWasLocked()) {
+			echo "\nJob was not executed because it was locked!\n\n";
+			exit(1);
+		}
 		$schedule->save();
 	}
 
