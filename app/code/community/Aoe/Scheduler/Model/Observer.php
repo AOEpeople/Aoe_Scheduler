@@ -75,6 +75,7 @@ class Aoe_Scheduler_Model_Observer extends Mage_Cron_Model_Observer {
 					->save();
 
 				Mage::dispatchEvent('cron_' . $schedule->getJobCode() . '_before', array('schedule' => $schedule));
+                Mage::dispatchEvent('cron_before', array('schedule' => $schedule));
 
 				$messages = call_user_func_array($callback, $arguments);
 
@@ -93,18 +94,22 @@ class Aoe_Scheduler_Model_Observer extends Mage_Cron_Model_Observer {
 					$schedule->setStatus(Mage_Cron_Model_Schedule::STATUS_ERROR);
 					$this->sendErrorMail($schedule, $messages);
 					Mage::dispatchEvent('cron_' . $schedule->getJobCode() . '_after_error', array('schedule' => $schedule));
+                    Mage::dispatchEvent('cron_after_error', array('schedule' => $schedule));
 				} else {
 					$schedule->setStatus(Mage_Cron_Model_Schedule::STATUS_SUCCESS);
 					Mage::dispatchEvent('cron_' . $schedule->getJobCode() . '_after_success', array('schedule' => $schedule));
+                    Mage::dispatchEvent('cron_after_success', array('schedule' => $schedule));
 				}
 				
 				$schedule->setFinishedAt(strftime('%Y-%m-%d %H:%M:%S', time()));
 				Mage::dispatchEvent('cron_' . $schedule->getJobCode() . '_after', array('schedule' => $schedule));
+                Mage::dispatchEvent('cron_after', array('schedule' => $schedule));
 
 			} catch (Exception $e) {
 				$schedule->setStatus($errorStatus)
 					->setMessages($e->__toString());
 				Mage::dispatchEvent('cron_' . $schedule->getJobCode() . '_exception', array('schedule' => $schedule, 'exception' => $e));
+                Mage::dispatchEvent('cron_exception', array('schedule' => $schedule, 'exception' => $e));
 
 				$this->sendErrorMail($schedule, $e->__toString());
 
