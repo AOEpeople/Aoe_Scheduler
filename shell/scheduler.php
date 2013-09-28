@@ -158,6 +158,8 @@ class Aoe_Scheduler_Shell_Scheduler extends Mage_Shell_Abstract {
 		$schedule->setJobCode($code);
 		$schedule->runNow();
 		$schedule->save();
+
+		echo "Status: " . $schedule->getStatus() . "\nMessages:\n" . trim($schedule->getMessages(), "\n") . "\n";
 	}
 
 
