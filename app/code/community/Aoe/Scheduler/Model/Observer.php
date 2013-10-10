@@ -24,7 +24,14 @@ class Aoe_Scheduler_Model_Observer extends Mage_Cron_Model_Observer {
 		$schedules = $this->getPendingSchedules();
 		$scheduleLifetime = Mage::getStoreConfig(self::XML_PATH_SCHEDULE_LIFETIME) * 60;
 		$now = time();
-		$jobsRoot = Mage::getConfig()->getNode('crontab/jobs');
+
+        // fetch global cronjob config
+        $jobsRoot = Mage::getConfig()->getNode('crontab/jobs');
+
+        // extend cronjob config with the configurable ones
+        $jobsRoot->extend(
+            Mage::getConfig()->getNode('default/crontab/jobs')
+        );
 
 		foreach ($schedules->getIterator() as $schedule) { /* @var $schedule Aoe_Scheduler_Model_Schedule */
 			try {
@@ -87,6 +94,8 @@ class Aoe_Scheduler_Model_Observer extends Mage_Cron_Model_Observer {
 						$messages = var_export($messages, 1);
 					}
 					$schedule->setMessages($messages);
+				} else {
+					$messages = '';
 				}
 
 				// schedules can report an error state by returning a string that starts with "ERROR:"
@@ -206,7 +215,6 @@ class Aoe_Scheduler_Model_Observer extends Mage_Cron_Model_Observer {
 		return $result;
 	}
 
-
 	/**
 	 * Send error mail
 	 *
@@ -237,4 +245,41 @@ class Aoe_Scheduler_Model_Observer extends Mage_Cron_Model_Observer {
 		return $this;
 	}
 
+	public function getWhitelist() {
+		$whitelist = array();
+		if(getenv("SCHEDULER_WHITELIST") !== FALSE ) {
+			$whitelist = explode(',',getenv("SCHEDULER_WHITELIST"));
+		}
+		return $whitelist;
+	}
+
+	public function getBlacklist() {
+		$blacklist = array();
+		if(getenv("SCHEDULER_BLACKLIST") !== FALSE) {
+			$blacklist = explode(',',getenv("SCHEDULER_BLACKLIST"));
+		}
+		return $blacklist;
+	}
+
+	public function getPendingSchedules()
+	{
+		if (!$this->_pendingSchedules) {
+			$this->_pendingSchedules = Mage::getModel('cron/schedule')->getCollection()
+				->addFieldToFilter('status', Mage_Cron_Model_Schedule::STATUS_PENDING);
+
+			$whitelist = $this->getWhitelist();
+			if(!empty($whitelist)) {
+				$this->_pendingSchedules->addFieldToFilter('job_code', array('in'=> $whitelist));
+			}
+
+			$blacklist = $this->getBlacklist();
+			if(!empty($blacklist)) {
+				$this->_pendingSchedules->addFieldToFilter('job_code', array('nin'=> $blacklist));
+			}
+
+			$this->_pendingSchedules = $this->_pendingSchedules->load();
+		}
+		return $this->_pendingSchedules;
+	}
+    
 }

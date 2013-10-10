@@ -2,7 +2,7 @@
 <config>
 	<modules>
 		<Aoe_Scheduler>
-			<version>0.3.2</version>
+			<version>0.4.0</version>
 		</Aoe_Scheduler>
 	</modules>
 
@@ -32,7 +32,6 @@
 			</cron>
 		</models>
 
-
 		<template>
 			<email>
 				<system_cron_error_email_template translate="label" module="aoe_scheduler">
@@ -42,6 +41,17 @@
 				</system_cron_error_email_template>
 			</email>
 		</template>
+
+		<resources>
+			<aoescheduler_setup>
+				<setup>
+					<module>Aoe_Scheduler</module>
+				</setup>
+				<connection>
+					<use>core_setup</use>
+				</connection>
+			</aoescheduler_setup>
+		</resources>
 
 	</global>
 
