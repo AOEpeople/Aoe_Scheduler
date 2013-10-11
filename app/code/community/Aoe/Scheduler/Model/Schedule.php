@@ -18,6 +18,14 @@
  * @method string setFinishedAt()
  * @method string getParameters()
  * @method string setParameters()
+ * @method string setEta()
+ * @method string getEta()
+ * @method string setHost()
+ * @method string getHost()
+ * @method string setPid()
+ * @method string getPid()
+ * @method string setProgressMessage()
+ * @method string getProgressMessage()
  */
 class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule {
 
@@ -26,7 +34,10 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule {
 	 */
 	protected $_jobConfiguration;
 
-	protected $jobWasLocked = false;
+    /**
+     * @var bool
+     */
+    protected $jobWasLocked = false;
 
 
 	/**
@@ -63,6 +74,9 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule {
 			return $this;
 		}
 		$this->setExecutedAt(strftime('%Y-%m-%d %H:%M:%S', time()));
+        $this->setHost(gethostname());
+        $this->setPid(getmypid());
+        $this->save();
 
 		$messages = call_user_func_array($callback, array($this));
 
