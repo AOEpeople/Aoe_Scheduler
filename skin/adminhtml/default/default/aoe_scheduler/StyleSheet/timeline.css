@@ -130,5 +130,7 @@ div.hours {
 .details-headline.error, .task.error { background-color: #E41300; }
 .details-headline.missed, .task.missed { background-color: #F75300; }
 .details-headline.running, .task.running { background-color: #FE9D00; }
+.details-headline.running, .task.running { background-image: url(../Images/animation.gif); background-position: center; background-repeat: repeat-x; }
+
 
 div.task.active, div.task:hover { background-color: #00A2FA; }
