@@ -73,10 +73,15 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule {
 			$this->jobWasLocked = true;
 			return $this;
 		}
+
 		$this->setExecutedAt(strftime('%Y-%m-%d %H:%M:%S', time()));
+        $this->setStatus(Mage_Cron_Model_Schedule::STATUS_RUNNING);
         $this->setHost(gethostname());
         $this->setPid(getmypid());
         $this->save();
+
+        Mage::dispatchEvent('cron_' . $this->getJobCode() . '_before', array('schedule' => $this));
+        Mage::dispatchEvent('cron_before', array('schedule' => $this));
 
 		$messages = call_user_func_array($callback, array($this));
 
@@ -90,16 +95,26 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule {
 			$this->setMessages($messages);
 		}
 
-		if (strtoupper(substr($messages, 0, 6)) != 'ERROR:') {
-			$this->setStatus(Mage_Cron_Model_Schedule::STATUS_SUCCESS);
-		} else {
-			$this->setStatus(Mage_Cron_Model_Schedule::STATUS_ERROR);
-		}
+        // schedules can report an error state by returning a string that starts with "ERROR:"
+        if (is_string($messages) && strtoupper(substr($messages, 0, 6)) == 'ERROR:') {
+            $this->setStatus(Mage_Cron_Model_Schedule::STATUS_ERROR);
+            Mage::helper('aoe_scheduler')->sendErrorMail($this, $messages);
+            Mage::dispatchEvent('cron_' . $this->getJobCode() . '_after_error', array('schedule' => $this));
+            Mage::dispatchEvent('cron_after_error', array('schedule' => $this));
+        } else {
+            $this->setStatus(Mage_Cron_Model_Schedule::STATUS_SUCCESS);
+            Mage::dispatchEvent('cron_' . $this->getJobCode() . '_after_success', array('schedule' => $this));
+            Mage::dispatchEvent('cron_after_success', array('schedule' => $this));
+        }
 
-		$this->setFinishedAt(strftime('%Y-%m-%d %H:%M:%S', time()));
+        $this->setFinishedAt(strftime('%Y-%m-%d %H:%M:%S', time()));
+        Mage::dispatchEvent('cron_' . $this->getJobCode() . '_after', array('schedule' => $this));
+        Mage::dispatchEvent('cron_after', array('schedule' => $this));
 
-		return $this;
-	}
+        $this->save();
+
+        return $this;
+    }
 
 
 

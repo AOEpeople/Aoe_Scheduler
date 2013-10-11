@@ -7,11 +7,6 @@
  */
 class Aoe_Scheduler_Model_Observer extends Mage_Cron_Model_Observer {
 
-	const XML_PATH_MAX_RUNNING_TIME = 'system/cron/max_running_time';
-	const XML_PATH_EMAIL_TEMPLATE   = 'system/cron/error_email_template';
-	const XML_PATH_EMAIL_IDENTITY   = 'system/cron/error_email_identity';
-	const XML_PATH_EMAIL_RECIPIENT  = 'system/cron/error_email';
-
 	/**
 	 * Process cron queue
 	 * Generate tasks schedule
@@ -36,14 +31,12 @@ class Aoe_Scheduler_Model_Observer extends Mage_Cron_Model_Observer {
 		foreach ($schedules->getIterator() as $schedule) { /* @var $schedule Aoe_Scheduler_Model_Schedule */
 			try {
 				$errorStatus = Mage_Cron_Model_Schedule::STATUS_ERROR;
-				$errorMessage = Mage::helper('cron')->__('Unknown error.');
 
 				$jobConfig = $jobsRoot->{$schedule->getJobCode()};
 				if (!$jobConfig || !$jobConfig->run) {
 					Mage::throwException(Mage::helper('cron')->__('No valid configuration found.'));
 				}
 
-				$runConfig = $jobConfig->run;
 				$time = strtotime($schedule->getScheduledAt());
 				if ($time > $now) {
 					continue;
@@ -54,75 +47,19 @@ class Aoe_Scheduler_Model_Observer extends Mage_Cron_Model_Observer {
 					Mage::throwException(Mage::helper('cron')->__('Too late for the schedule.'));
 				}
 
-				if ($runConfig->model) {
-					if (!preg_match(self::REGEX_RUN_MODEL, (string)$runConfig->model, $run)) {
-						Mage::throwException(Mage::helper('cron')->__('Invalid model/method definition, expecting "model/class::method".'));
-					}
-					if (!($model = Mage::getModel($run[1])) || !method_exists($model, $run[2])) {
-						Mage::throwException(Mage::helper('cron')->__('Invalid callback: %s::%s does not exist', $run[1], $run[2]));
-					}
-					$callback = array($model, $run[2]);
-					$arguments = array($schedule);
-				}
-				if (empty($callback)) {
-					Mage::throwException(Mage::helper('cron')->__('No callbacks found'));
-				}
-
-				if (!$schedule->tryLockJob()) {
-					// another cron started this job intermittently, so skip it
-					continue;
-				}
-				/**
-					though running status is set in tryLockJob we must set it here because the object
-					was loaded with a pending status and will set it back to pending if we don't set it here
-				 */
-				$schedule
-					->setStatus(Mage_Cron_Model_Schedule::STATUS_RUNNING)
-					->setExecutedAt(strftime('%Y-%m-%d %H:%M:%S', time()))
-					->save();
-
-				Mage::dispatchEvent('cron_' . $schedule->getJobCode() . '_before', array('schedule' => $schedule));
-                Mage::dispatchEvent('cron_before', array('schedule' => $schedule));
-
-				$messages = call_user_func_array($callback, $arguments);
-
-				// added by Fabrizio to also save messages when no exception was thrown
-				if (!empty($messages)) {
-					if (is_object($messages)) {
-						$messages = get_class($messages);
-					} elseif (!is_scalar($messages)) {
-						$messages = var_export($messages, 1);
-					}
-					$schedule->setMessages($messages);
-				} else {
-					$messages = '';
-				}
-
-				// schedules can report an error state by returning a string that starts with "ERROR:"
-				if (is_string($messages) && strtoupper(substr($messages, 0, 6)) == 'ERROR:') {
-					$schedule->setStatus(Mage_Cron_Model_Schedule::STATUS_ERROR);
-					$this->sendErrorMail($schedule, $messages);
-					Mage::dispatchEvent('cron_' . $schedule->getJobCode() . '_after_error', array('schedule' => $schedule));
-                    Mage::dispatchEvent('cron_after_error', array('schedule' => $schedule));
-				} else {
-					$schedule->setStatus(Mage_Cron_Model_Schedule::STATUS_SUCCESS);
-					Mage::dispatchEvent('cron_' . $schedule->getJobCode() . '_after_success', array('schedule' => $schedule));
-                    Mage::dispatchEvent('cron_after_success', array('schedule' => $schedule));
-				}
-				
-				$schedule->setFinishedAt(strftime('%Y-%m-%d %H:%M:%S', time()));
-				Mage::dispatchEvent('cron_' . $schedule->getJobCode() . '_after', array('schedule' => $schedule));
-                Mage::dispatchEvent('cron_after', array('schedule' => $schedule));
+				$schedule->runNow(true);
 
 			} catch (Exception $e) {
-				$schedule->setStatus($errorStatus)
+				$schedule
+                    ->setStatus($errorStatus)
 					->setMessages($e->__toString());
 				Mage::dispatchEvent('cron_' . $schedule->getJobCode() . '_exception', array('schedule' => $schedule, 'exception' => $e));
                 Mage::dispatchEvent('cron_exception', array('schedule' => $schedule, 'exception' => $e));
 
-				$this->sendErrorMail($schedule, $e->__toString());
+				Mage::helper('aoe_scheduler')->sendErrorMail($schedule, $e->__toString());
 
 			}
+
 			$schedule->save();
 		}
 
@@ -213,36 +150,6 @@ class Aoe_Scheduler_Model_Observer extends Mage_Cron_Model_Observer {
 		}
 
 		return $result;
-	}
-
-	/**
-	 * Send error mail
-	 *
-	 * @param Aoe_Scheduler_Model_Schedule $schedule
-	 * @param $error
-	 * @return Aoe_Scheduler_Model_Observer
-	 */
-	protected function sendErrorMail(Aoe_Scheduler_Model_Schedule $schedule, $error) {
-		if (!Mage::getStoreConfig(self::XML_PATH_EMAIL_RECIPIENT)) {
-			return $this;
-		}
-
-		$translate = Mage::getSingleton('core/translate'); /* @var $translate Mage_Core_Model_Translate */
-		$translate->setTranslateInline(false);
-
-		$emailTemplate = Mage::getModel('core/email_template'); /* @var $emailTemplate Mage_Core_Model_Email_Template */
-		$emailTemplate->setDesignConfig(array('area' => 'backend'));
-		$emailTemplate->sendTransactional(
-			Mage::getStoreConfig(self::XML_PATH_EMAIL_TEMPLATE),
-			Mage::getStoreConfig(self::XML_PATH_EMAIL_IDENTITY),
-			Mage::getStoreConfig(self::XML_PATH_EMAIL_RECIPIENT),
-			null,
-			array('error' => $error, 'schedule' => $schedule)
-		);
-
-		$translate->setTranslateInline(true);
-
-		return $this;
 	}
 
 	public function getWhitelist() {

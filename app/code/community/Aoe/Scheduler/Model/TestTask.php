@@ -30,7 +30,7 @@ class Aoe_Scheduler_Model_TestTask {
         $schedule
             ->setProgressMessage('')
             ->save();
-        
+
         /*
         if (rand(0, 1) == 0) {
             throw new Exception('This is a dummy exception');
