@@ -13,7 +13,19 @@
 .bar-lightgray,
 .bar-lightgray span,
 .bar-gray,
-.bar-gray span { display:block; height:16px; background-image:url(../Images/bg_notifications.gif); background-repeat:no-repeat; font:bold 10px/16px Arial, Helvetica, sans-serif; text-transform:uppercase; text-align:center; padding:0 0 0 7px; margin:1px 0; white-space:nowrap; color:#fff; }
+.bar-gray span {
+    display:block;
+    height:16px;
+    background-image:url(../Images/bg_notifications.gif);
+    background-repeat:no-repeat;
+    font:bold 10px/16px Arial, Helvetica, sans-serif;
+    text-transform:uppercase;
+    text-align:center;
+    padding:0 0 0 7px;
+    margin:1px 0;
+    white-space:nowrap;
+    color:#fff;
+}
 
 .bar-red { background-position:0 0; }
 .bar-red span { background-position:100% 0; padding:0 7px 0 0; }
