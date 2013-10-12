@@ -227,13 +227,7 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule {
                     $this->setLastSeen(strftime('%Y-%m-%d %H:%M:%S', time()))->save();
                     return true;
                 } else {
-                    $this
-                        ->setStatus(self::STATUS_DISAPPEARED)
-                        ->setFinishedAt($this->getLastSeen())
-                        ->save();
-                    if ($logFile = Mage::getStoreConfig('system/cron/logFile')) {
-                        Mage::log(sprintf('Job "%s" (id: %s) disappeared', $this->getJobCode(), $this->getId()), null, $logFile);
-                    }
+                    $this->markAsDisappeared(sprintf('Process "%s" on host "%s" cannot be found anymore', $this->getPid(), $this->getHost()));
                     return false; // dead
                 }
             } else {
@@ -242,6 +236,25 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule {
             }
         }
         return false;
+    }
+
+    /**
+     * Mark task as disappeared
+     *
+     * @param string $message
+     * @return void
+     */
+    public function markAsDisappeared($message=NULL) {
+        if (!is_null($message)) {
+            $this->setMessages($message);
+        }
+        $this
+            ->setStatus(self::STATUS_DISAPPEARED)
+            ->setFinishedAt($this->getLastSeen())
+            ->save();
+        if ($logFile = Mage::getStoreConfig('system/cron/logFile')) {
+            Mage::log(sprintf('Job "%s" (id: %s) disappeared. Message: ', $this->getJobCode(), $this->getId(), $message), null, $logFile);
+        }
     }
 
     /**

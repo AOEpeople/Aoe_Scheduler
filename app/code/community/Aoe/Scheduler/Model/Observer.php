@@ -7,6 +7,8 @@
  */
 class Aoe_Scheduler_Model_Observer extends Mage_Cron_Model_Observer {
 
+    CONST XML_PATH_MARK_AS_ERROR = 'system/cron/mark_as_error_after';
+
 
     /**
      * Process cron queue
@@ -110,19 +112,17 @@ class Aoe_Scheduler_Model_Observer extends Mage_Cron_Model_Observer {
         }
 
         // fallback (where process cannot be checked or if one of the servers disappeared)
-        // if a task wasn't seen
-		$maxAge = time() - Mage::getStoreConfig(self::XML_PATH_MAX_RUNNING_TIME) * 60;
+        // if a task wasn't seen for some time it will be marked as error
+        // I'm reusing the
+		$maxAge = time() - Mage::getStoreConfig(self::XML_PATH_MARK_AS_ERROR) * 60;
 
 		$schedules = Mage::getModel('cron/schedule')->getCollection()
 			->addFieldToFilter('status', Mage_Cron_Model_Schedule::STATUS_RUNNING)
-			->addFieldToFilter('executed_at', array('lt' => strftime('%Y-%m-%d %H:%M:00', $maxAge)))
+			->addFieldToFilter('last_seen', array('lt' => strftime('%Y-%m-%d %H:%M:00', $maxAge)))
 			->load();
 
 		foreach ($schedules->getIterator() as $schedule) { /* @var $schedule Aoe_Scheduler_Model_Schedule */
-			$schedule
-				->setStatus(Mage_Cron_Model_Schedule::STATUS_ERROR)
-				->setMessages('Job was running longer than the configured max_running_time')
-				->save();
+			$schedule->markAsDisappeared(sprintf('Host "%s" has not been available for a while now to update the status of this task and the task is not reporting back by itself', $schedule->getHost()));
 		}
 	}
 
