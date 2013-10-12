@@ -79,15 +79,20 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule {
 			return $this;
 		}
 
-		$this->setExecutedAt(strftime('%Y-%m-%d %H:%M:%S', time()));
-        $this->setStatus(Mage_Cron_Model_Schedule::STATUS_RUNNING);
-        $this->setHost(gethostname());
-        $this->setPid(getmypid());
-        $this->save();
+        $startTime = time();
+
+        $this
+            ->setExecutedAt(strftime('%Y-%m-%d %H:%M:%S', $startTime))
+            ->setLastSeen(strftime('%Y-%m-%d %H:%M:%S', $startTime))
+            ->setStatus(Mage_Cron_Model_Schedule::STATUS_RUNNING)
+            ->setHost(gethostname())
+            ->setPid(getmypid())
+            ->save();
 
         Mage::dispatchEvent('cron_' . $this->getJobCode() . '_before', array('schedule' => $this));
         Mage::dispatchEvent('cron_before', array('schedule' => $this));
 
+        // this is where the actual task will be executed ...
 		$messages = call_user_func_array($callback, array($this));
 
 		// added by Fabrizio to also save messages when no exception was thrown
@@ -222,7 +227,10 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule {
                     $this->setLastSeen(strftime('%Y-%m-%d %H:%M:%S', time()))->save();
                     return true;
                 } else {
-                    $this->setStatus(self::STATUS_DISAPPEARED)->save();
+                    $this
+                        ->setStatus(self::STATUS_DISAPPEARED)
+                        ->setFinishedAt($this->getLastSeen())
+                        ->save();
                     if ($logFile = Mage::getStoreConfig('system/cron/logFile')) {
                         Mage::log(sprintf('Job "%s" (id: %s) disappeared', $this->getJobCode(), $this->getId()), null, $logFile);
                     }
@@ -273,7 +281,10 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule {
             }
         }
 
-        $this->setStatus(self::STATUS_KILLED)->save();
+        $this
+            ->setStatus(self::STATUS_KILLED)
+            ->setFinishedAt(strftime('%Y-%m-%d %H:%M:%S', time()))
+            ->save();
     }
 
 

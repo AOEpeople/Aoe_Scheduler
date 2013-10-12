@@ -64,6 +64,8 @@ class Aoe_Scheduler_Helper_Data extends Mage_Core_Helper_Abstract {
 				$result = '<span class="bar-orange"><span>'.$status.'</span></span>';
 				break;
 			case Mage_Cron_Model_Schedule::STATUS_ERROR:
+            case Aoe_Scheduler_Model_Schedule::STATUS_DISAPPEARED:
+            case Aoe_Scheduler_Model_Schedule::STATUS_KILLED:
 				$result = '<span class="bar-red"><span>'.$status.'</span></span>';
 				break;
 			default:
@@ -193,3 +195,4 @@ class Aoe_Scheduler_Helper_Data extends Mage_Core_Helper_Abstract {
     }
 
 }
+

@@ -190,7 +190,7 @@ class Aoe_Scheduler_Shell_Scheduler extends Mage_Shell_Abstract {
             if (is_null($status)) {
                 $status = '?';
             } else {
-                $status = $status ? 'alive' : 'dead';
+                $status = $status ? 'alive' : 'dead (updating status to "disappeared")';
             }
             echo sprintf("%-30s %-10s %-10s %-10s %-10s\n",
                 $schedule->getJobCode(),
@@ -202,10 +202,11 @@ class Aoe_Scheduler_Shell_Scheduler extends Mage_Shell_Abstract {
         }
     }
 
-    public function checkProcessStatusAction() {
-
-    }
-
+    /**
+     * Kill all
+     *
+     * @return void
+     */
     public function killAllAction() {
         $processManager = Mage::getModel('aoe_scheduler/processManager'); /* @var $processManager Aoe_Scheduler_Model_ProcessManager */
         foreach ($processManager->getAllRunningSchedules(gethostname()) as $schedule) { /* @var $schedule Aoe_Scheduler_Model_Schedule */
