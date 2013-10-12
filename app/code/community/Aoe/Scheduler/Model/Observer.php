@@ -47,6 +47,20 @@ class Aoe_Scheduler_Model_Observer extends Mage_Cron_Model_Observer {
 
 
 
+    /**
+     * Process cron queue for tasks marked as always
+     *
+     * @param Varien_Event_Observer $observer
+     */
+    public function dispatchAlways($observer) {
+
+        // Aoe_Scheduler: additional stuff added
+        $this->processKillRequests();
+
+        parent::dispatchAlways($observer);
+    }
+
+
 
 
     /**
@@ -80,7 +94,8 @@ class Aoe_Scheduler_Model_Observer extends Mage_Cron_Model_Observer {
 
             // Aoe_Scheduler: stuff from the original method was removed and refactored into the schedule module
 
-            $schedule->runNow(true);
+            /* @var $schedule Aoe_Scheduler_Model_Schedule */
+            $schedule->runNow(!$isAlways);
 
         } catch (Exception $e) {
             $schedule->setStatus($errorStatus)
@@ -237,5 +252,17 @@ class Aoe_Scheduler_Model_Observer extends Mage_Cron_Model_Observer {
 		}
 		return $this->_pendingSchedules;
 	}
-    
+
+    /**
+     * Process kill requests
+     *
+     * @return void
+     */
+    public function processKillRequests() {
+        $processManager = Mage::getModel('aoe_scheduler/processManager'); /* @var $processManager Aoe_Scheduler_Model_ProcessManager */
+        foreach ($processManager->getAllKillRequests(gethostname()) as $schedule) { /* @var $schedule Aoe_Scheduler_Model_Schedule */
+            $schedule->kill();
+        }
+    }
+
 }

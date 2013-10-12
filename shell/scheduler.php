@@ -194,9 +194,9 @@ class Aoe_Scheduler_Shell_Scheduler extends Mage_Shell_Abstract {
             }
             echo sprintf("%-30s %-10s %-10s %-10s %-10s\n",
                 $schedule->getJobCode(),
-                $schedule->getHost(),
-                $schedule->getPid(),
-                $schedule->getLastSeen(),
+                $schedule->getHost() ? $schedule->getHost() : '(no host)',
+                $schedule->getPid() ? $schedule->getPid() : '(no pid)',
+                $schedule->getLastSeen() ? $schedule->getLastSeen() : '(never)',
                 $status
             );
         }

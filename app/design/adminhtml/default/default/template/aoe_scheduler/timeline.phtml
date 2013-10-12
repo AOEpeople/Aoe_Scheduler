@@ -55,10 +55,10 @@ $_jobCodes = $this->getAvailableJobCodes(); /* @var $_jobCodes array */
 				<div class="caption"><?php echo $_helper->decorateTime($this->getStarttime(), true, 'Y-m-d H:i'); ?> - <?php echo $_helper->decorateTime($this->getEndtime(), true, 'Y-m-d H:i'); ?></div>
 			</div>
 
-			<?php foreach ($this->getAvailableJobCodes() as $jobCode): /* @var $jobCode string */ ?>
+			<?php foreach ($_jobCodes as $jobCode): /* @var $jobCode string */ ?>
 				<div class="row">
 					<div class="configuration">
-						<?php echo $jobCode; ?>
+						<?php echo $jobCode; ?><?php if (Mage::getModel('aoe_scheduler/configuration')->loadByCode($jobCode)->isAlwaysTask()): ?>*<?php endif; ?>
 					</div>
 				</div>
 			<?php endforeach; ?>

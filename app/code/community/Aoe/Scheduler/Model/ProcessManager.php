@@ -23,4 +23,37 @@ class Aoe_Scheduler_Model_ProcessManager {
         return $collection;
     }
 
+    /**
+     * Get all schedules marked as to be killed
+     *
+     * @param null $host
+     * @return object
+     */
+    public function getAllKillRequests($host=null) {
+        $collection = $this->getAllRunningSchedules($host);
+        $collection->addFieldToFilter('kill_request', array('lt' => strftime('%Y-%m-%d %H:%M:00', time())));
+        return $collection;
+    }
+
+    /**
+     * Check if there's alread a job running with the given code
+     *
+     * @param Aoe_Scheduler_Model_Schedule $schedule
+     * @return bool
+     */
+    public function isJobCodeRunning(Aoe_Scheduler_Model_Schedule $schedule) {
+        $collection = Mage::getModel('cron/schedule')
+            ->getCollection()
+            ->addFieldToFilter('status', Mage_Cron_Model_Schedule::STATUS_RUNNING)
+            ->addFieldToFilter('job_code', $schedule->getJobCode())
+            ->addFieldToFilter('schedule_id', array('neq' => $schedule->getId()));
+        foreach ($collection as $s) { /* @var $s Aoe_Scheduler_Model_Schedule */
+            $alive = $s->isAlive();
+            if ($alive !== false) { // TODO: how do we handle null (= we don't know because might be running on a different server?
+                return true;
+            }
+        }
+        return false;
+    }
+
 }

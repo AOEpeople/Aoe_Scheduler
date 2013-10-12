@@ -35,10 +35,10 @@ abstract class Aoe_Scheduler_Adminhtml_AbstractController extends Mage_Adminhtml
 			} else {
 				$timespan = Mage::helper('aoe_scheduler')->dateDiff($lastHeartbeat);
 				if ($timespan <= 5 * 60) {
-					$this->_getSession()->addSuccess(sprintf('Scheduler is working. (Last execution: %s minute(s) ago)', round($timespan/60)));
+					$this->_getSession()->addSuccess(sprintf('Scheduler is working. (Last heart beat: %s minute(s) ago)', round($timespan/60)));
 				} elseif ($timespan > 5 * 60 && $timespan <= 60 * 60 ) {
-					// heartbeat wasn't executed in the last 5 minutes. Heartbeat schedule could be modified to not run every five minutes!
-					$this->_getSession()->addNotice(sprintf('Last heartbeat is older than %s minutes.', round($timespan/60)));
+					// heartbeat wasn't executed in the last 5 minutes. Heartbeat schedule could have been modified to not run every five minutes!
+					$this->_getSession()->addNotice(sprintf('Last heart beat is older than %s minutes.', round($timespan/60)));
 				} else {
 					// everything ok
 					$this->_getSession()->addError('Last heartbeat is older than one hour. Please check your settings and your configuration!');

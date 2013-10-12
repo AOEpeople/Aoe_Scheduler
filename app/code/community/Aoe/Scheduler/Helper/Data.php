@@ -173,7 +173,7 @@ class Aoe_Scheduler_Helper_Data extends Mage_Core_Helper_Abstract {
      * @param $error
      * @return void
      */
-    protected function sendErrorMail(Aoe_Scheduler_Model_Schedule $schedule, $error) {
+    public function sendErrorMail(Aoe_Scheduler_Model_Schedule $schedule, $error) {
         if (!Mage::getStoreConfig(self::XML_PATH_EMAIL_RECIPIENT)) {
             return $this;
         }
