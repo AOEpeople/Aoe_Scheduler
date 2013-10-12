@@ -59,6 +59,14 @@
 							<show_in_store>0</show_in_store>
 						</error_email_template>
 
+                        <logFile translate="label">
+                            <label>Log file</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>160</sort_order>
+                            <comment><![CDATA[Keep empty to disable logging]]></comment>
+                            <show_in_default>1</show_in_default>
+                        </logFile>
+
 					</fields>
 				</cron>
 			</groups>

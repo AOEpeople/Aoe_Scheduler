@@ -177,6 +177,49 @@ class Aoe_Scheduler_Shell_Scheduler extends Mage_Shell_Abstract {
 		return " -code <code>	        Run a job directly";
 	}
 
+
+    /**
+     * Print all running schedules
+     *
+     * @return void
+     */
+    public function listAllRunningSchedulesAction() {
+        $processManager = Mage::getModel('aoe_scheduler/processManager'); /* @var $processManager Aoe_Scheduler_Model_ProcessManager */
+        foreach ($processManager->getAllRunningSchedules() as $schedule) { /* @var $schedule Aoe_Scheduler_Model_Schedule */
+            $status = $schedule->isAlive();
+            if (is_null($status)) {
+                $status = '?';
+            } else {
+                $status = $status ? 'alive' : 'dead';
+            }
+            echo sprintf("%-30s %-10s %-10s %-10s %-10s\n",
+                $schedule->getJobCode(),
+                $schedule->getHost(),
+                $schedule->getPid(),
+                $schedule->getLastSeen(),
+                $status
+            );
+        }
+    }
+
+    public function checkProcessStatusAction() {
+
+    }
+
+    public function killAllAction() {
+        $processManager = Mage::getModel('aoe_scheduler/processManager'); /* @var $processManager Aoe_Scheduler_Model_ProcessManager */
+        foreach ($processManager->getAllRunningSchedules(gethostname()) as $schedule) { /* @var $schedule Aoe_Scheduler_Model_Schedule */
+            if ($schedule->isAlive() === true) {
+                $schedule->kill();
+                echo sprintf("%-30s %-10s %-10s: Killed\n",
+                    $schedule->getJobCode(),
+                    $schedule->getHost(),
+                    $schedule->getPid()
+                );
+            }
+        }
+    }
+
 }
 
 $shell = new Aoe_Scheduler_Shell_Scheduler();

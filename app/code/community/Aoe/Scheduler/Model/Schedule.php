@@ -26,8 +26,13 @@
  * @method string getPid()
  * @method string setProgressMessage()
  * @method string getProgressMessage()
+ * @method string getLastSeen()
+ * @method string setLastSeen()
  */
 class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule {
+
+    CONST STATUS_KILLED = 'killed';
+    CONST STATUS_DISAPPEARED = 'disappeared';
 
 	/**
 	 * @var Aoe_Scheduler_Model_Configuration
@@ -202,6 +207,74 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule {
 		}
 		return $duration;
 	}
+
+    /**
+     * Is this process still alive?
+     *
+     * @return bool
+     */
+    public function isAlive() {
+        if ($this->getStatus() == Mage_Cron_Model_Schedule::STATUS_RUNNING) {
+            if (time() - strtotime($this->getLastSeen()) < 2 * 60) { // TODO: make this configurable
+                return true;
+            } elseif ($this->getHost() == gethostname()) {
+                if ($this->checkPid()) {
+                    $this->setLastSeen(strftime('%Y-%m-%d %H:%M:%S', time()))->save();
+                    return true;
+                } else {
+                    $this->setStatus(self::STATUS_DISAPPEARED)->save();
+                    if ($logFile = Mage::getStoreConfig('system/cron/logFile')) {
+                        Mage::log(sprintf('Job "%s" (id: %s) disappeared', $this->getJobCode(), $this->getId()), null, $logFile);
+                    }
+                    return false; // dead
+                }
+            } else {
+                // we don't know because the task is running on a different server
+                return null;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Check if process is running (linux only)
+     *
+     * @return bool
+     */
+    public function checkPid() {
+        $pid = intval($this->getPid());
+        return $pid && file_exists('/proc/' . $pid);
+    }
+
+    /**
+     * Kill this process
+     *
+     * @return void
+     */
+    public function kill() {
+
+        posix_kill($this->getPid(), SIGINT); // let's be nice first (a.k.a. "Could you please stop running now?")
+
+        // check if process terminates within 60 seconds
+        $startTime = time();
+        while (($waitTime = (time() - $startTime) < 60) && $this->checkPid()) {
+            sleep(2);
+        }
+
+        if ($this->checkPid()) {
+            // What, you're still alive? OK, time to say goodbye now. You had your chance...
+            posix_kill($this->getPid(), SIGKILL);
+            if ($logFile = Mage::getStoreConfig('system/cron/logFile')) {
+                Mage::log(sprintf('Killed job "%s" (id: %s) with SIGKILL', $this->getJobCode(), $this->getId()), null, $logFile);
+            }
+        } else {
+            if ($logFile = Mage::getStoreConfig('system/cron/logFile')) {
+                Mage::log(sprintf('Killed job "%s" (id: %s) with SIGINT. Job terminated after %s second(s)', $this->getJobCode(), $this->getId(), $waitTime), null, $logFile);
+            }
+        }
+
+        $this->setStatus(self::STATUS_KILLED)->save();
+    }
 
 
 }
