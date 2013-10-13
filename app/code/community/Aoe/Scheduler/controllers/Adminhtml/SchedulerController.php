@@ -19,9 +19,15 @@ class Aoe_Scheduler_Adminhtml_SchedulerController extends Aoe_Scheduler_Adminhtm
 	public function deleteAction() {
 		$ids = $this->getRequest()->getParam('schedule_ids');
 		foreach ($ids as $id) {
-			$schedule = Mage::getModel('cron/schedule')->load($id)->delete(); /* @var $schedule Aoe_Scheduler_Model_Schedule */
+			$schedule = Mage::getModel('cron/schedule') /* @var $schedule Aoe_Scheduler_Model_Schedule */
+                ->load($id)
+                ->delete();
 		}
-		Mage::getSingleton('adminhtml/session')->addSuccess($this->__('Deleted task(s) "%s"', implode(', ', $ids)));
+        $message = $this->__('Deleted task(s) "%s"', implode(', ', $ids));
+		Mage::getSingleton('adminhtml/session')->addSuccess($message);
+        if ($logFile = Mage::getStoreConfig('system/cron/logFile')) {
+            Mage::log($message, null, $logFile);
+        }
 		$this->_redirect('*/*/index');
 	}
 
@@ -38,7 +44,11 @@ class Aoe_Scheduler_Adminhtml_SchedulerController extends Aoe_Scheduler_Adminhtm
                 ->setKillRequest(strftime('%Y-%m-%d %H:%M:%S', time()))
                 ->save();
         }
-        Mage::getSingleton('adminhtml/session')->addSuccess($this->__('Kill requests saved for task(s) "%s" (will be killed via cron)', implode(', ', $ids)));
+        $message = $this->__('Kill requests saved for task(s) "%s" (will be killed via cron)', implode(', ', $ids));
+        Mage::getSingleton('adminhtml/session')->addSuccess($message);
+        if ($logFile = Mage::getStoreConfig('system/cron/logFile')) {
+            Mage::log($message, null, $logFile);
+        }
         $this->_redirect('*/*/index');
     }
 

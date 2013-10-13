@@ -295,7 +295,12 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule {
             return true;
         }
 
-        posix_kill($this->getPid(), SIGINT); // let's be nice first (a.k.a. "Could you please stop running now?")
+        // let's be nice first (a.k.a. "Could you please stop running now?")
+        if (posix_kill($this->getPid(), SIGINT)) {
+            $this->log(sprintf('Sending SIGINT to job "%s" (id: %s)', $this->getJobCode(), $this->getId()));
+        } else {
+            $this->log(sprintf('Error while sending SIGINT to job "%s" (id: %s)', $this->getJobCode(), $this->getId()), Zend_Log::ERR);
+        }
 
         // check if process terminates within 60 seconds
         $startTime = time();
@@ -305,10 +310,21 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule {
 
         if ($this->checkPid()) {
             // What, you're still alive? OK, time to say goodbye now. You had your chance...
-            posix_kill($this->getPid(), SIGKILL);
-            $this->log(sprintf('Killed job "%s" (id: %s) with SIGKILL', $this->getJobCode(), $this->getId()));
+            if (posix_kill($this->getPid(), SIGKILL)) {
+                $this->log(sprintf('Sending SIGKILL to job "%s" (id: %s)', $this->getJobCode(), $this->getId()));
+            } else {
+                $this->log(sprintf('Error while sending SIGKILL to job "%s" (id: %s)', $this->getJobCode(), $this->getId()), Zend_Log::ERR);
+            }
         } else {
             $this->log(sprintf('Killed job "%s" (id: %s) with SIGINT. Job terminated after %s second(s)', $this->getJobCode(), $this->getId(), $waitTime));
+        }
+
+        if ($this->checkPid()) {
+            sleep(5);
+            if ($this->checkPid()) {
+                $this->log(sprintf('Killed job "%s" (id: %s) is still alive!', $this->getJobCode(), $this->getId()), Zend_Log::ERR);
+                return; // without setting the status to "killed"
+            }
         }
 
         $this
