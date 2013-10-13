@@ -132,10 +132,10 @@ div.hours {
 .details-headline.success, .task.success { background-color: #36B963; }
 .details-headline.pending, .task.pending { background-color: #A9ABA8; }
 .details-headline.missed, .task.missed { background-color: #F75300; }
-.details-headline.running, .task.running { background-color: #FE9D00; }
+.details-headline.running, .task.running { background-color: #FE9D00 !important; }
 .details-headline.running, .task.running { background-image: url(../Images/animation.gif); background-position: center; background-repeat: repeat-x; }
 
-.estimation { background-color: #FE9D00; }
+.estimation { background-color: #B1C5D1; }
 .estimation { background-image: url(../Images/animation2.gif); background-position: center; background-repeat: repeat-x; }
 
 
