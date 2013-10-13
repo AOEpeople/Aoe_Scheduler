@@ -112,7 +112,7 @@ div.hours {
 	overflow: hidden;
 }
 
-.task {
+.task, .estimation {
 	position: absolute;
 	height: 24px;
 	top: 8px;
@@ -134,6 +134,9 @@ div.hours {
 .details-headline.missed, .task.missed { background-color: #F75300; }
 .details-headline.running, .task.running { background-color: #FE9D00; }
 .details-headline.running, .task.running { background-image: url(../Images/animation.gif); background-position: center; background-repeat: repeat-x; }
+
+.estimation { background-color: #FE9D00; }
+.estimation { background-image: url(../Images/animation2.gif); background-position: center; background-repeat: repeat-x; }
 
 
 div.task.active, div.task:hover { background-color: #00A2FA; }

@@ -175,7 +175,6 @@ class Aoe_Scheduler_Block_Adminhtml_Timeline extends Mage_Adminhtml_Block_Widget
 	}
 
 
-
 	/**
 	 * Get attributes for div representing a gantt element
 	 *
@@ -200,12 +199,27 @@ class Aoe_Scheduler_Block_Adminhtml_Timeline extends Mage_Adminhtml_Block_Widget
 			$offset = 0;
 		}
 
-		return sprintf('class="task %s" id="id_%s" style="width: %spx; left: %spx;"',
+		$result = sprintf('<div class="task %s" id="id_%s" style="width: %spx; left: %spx;" ></div>',
 			$schedule->getStatus(),
 			$schedule->getScheduleId(),
 			$duration,
 			$offset
 		);
+
+        if ($schedule->getStatus() == Mage_Cron_Model_Schedule::STATUS_RUNNING) {
+
+            $offset += $duration;
+
+            $duration = strtotime($schedule->getEta()) - time();
+            $duration = $duration / $this->zoom;
+
+            $result = sprintf('<div class="estimation" style="width: %spx; left: %spx;" ></div>',
+                $duration,
+                $offset
+            ) . $result;
+        }
+
+        return $result;
 	}
 
 }
