@@ -236,7 +236,8 @@ class Aoe_Scheduler_Model_Observer extends Mage_Cron_Model_Observer {
 	{
 		if (!$this->_pendingSchedules) {
 			$this->_pendingSchedules = Mage::getModel('cron/schedule')->getCollection()
-				->addFieldToFilter('status', Mage_Cron_Model_Schedule::STATUS_PENDING);
+				->addFieldToFilter('status', Mage_Cron_Model_Schedule::STATUS_PENDING)
+                ->addFieldToFilter('scheduled_at', array('lt' => strftime('%Y-%m-%d %H:%M:%S', time())));
 
 			$whitelist = $this->getWhitelist();
 			if (!empty($whitelist)) {
@@ -249,8 +250,29 @@ class Aoe_Scheduler_Model_Observer extends Mage_Cron_Model_Observer {
 			}
 
 			$this->_pendingSchedules = $this->_pendingSchedules->load();
-		}
-		return $this->_pendingSchedules;
+
+            // let's do a cleanup and not execute multiple schedule from the same job in a run but mark them as missed
+            // this happens if the cron was blocked by another task and jobs keep piling up.
+
+            $tmp = array();
+            foreach ($this->_pendingSchedules as $key => $schedule) { /* @var $schedule Aoe_Scheduler_Model_Schedule */
+                $tmp[$schedule->getJobCode()][$schedule->getScheduledAt()] = array('key' => $key, 'schedule' => $schedule);
+            }
+
+            foreach ($tmp as $schedules) {
+                ksort($schedules);
+                array_pop($schedules); // we remove the newest one
+                foreach ($schedules as $data) { /* @var $data array */
+                    $this->_pendingSchedules->removeItemByKey($data['key']);
+                    $schedule = $data['schedule']; /* @var $schedule Aoe_Scheduler_Model_Schedule */
+                    $schedule
+                        ->setStatus(Mage_Cron_Model_Schedule::STATUS_MISSED)
+                        ->save();
+                }
+            }
+        }
+
+        return $this->_pendingSchedules;
 	}
 
     /**
