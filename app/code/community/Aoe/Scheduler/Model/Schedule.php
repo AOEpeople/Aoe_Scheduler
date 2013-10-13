@@ -354,5 +354,23 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule {
         return $this->getJobConfiguration()->isAlwaysTask();
     }
 
+    /**
+     * Processing object before save data
+     *
+     * @return Mage_Core_Model_Abstract
+     */
+    protected function _beforeSave() {
+        $collection = Mage::getModel('cron/schedule') /* @var $collection Mage_Cron_Model_Resource_Schedule_Collection */
+            ->getCollection()
+            ->addFieldToFilter('status', Mage_Cron_Model_Schedule::STATUS_PENDING)
+            ->addFieldToFilter('job_code', $this->getJobCode())
+            ->addFieldToFilter('scheduled_at', $this->getScheduledAt());
+        if ($collection->count() > 0) {
+            $this->_dataSaveAllowed = false;
+            $this->log(sprintf('Pending schedule for "%s" at "%s" already exists. Skipping.', $this->getJobCode(), $this->getScheduledAt()));
+        }
+        return parent::_beforeSave();
+    }
+
 
 }

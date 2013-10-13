@@ -186,7 +186,7 @@ class Aoe_Scheduler_Model_Observer extends Mage_Cron_Model_Observer {
 				CONCAT(job_code, scheduled_at) AS jobkey,
 				count(*) AS qty
 			FROM {$cron_schedule}
-			WHERE status = 'pending'
+			WHERE status = '" . Mage_Cron_Model_Schedule::STATUS_PENDING . "'
 			GROUP BY jobkey
 			HAVING qty > 1;
 		");
@@ -259,11 +259,6 @@ class Aoe_Scheduler_Model_Observer extends Mage_Cron_Model_Observer {
      * @return void
      */
     public function processKillRequests() {
-
-        if ($logFile = Mage::getStoreConfig('system/cron/logFile')) {
-            Mage::log('Processing kill requests', null, $logFile);
-        }
-
         $processManager = Mage::getModel('aoe_scheduler/processManager'); /* @var $processManager Aoe_Scheduler_Model_ProcessManager */
         foreach ($processManager->getAllKillRequests(gethostname()) as $schedule) { /* @var $schedule Aoe_Scheduler_Model_Schedule */
             $schedule->kill();
