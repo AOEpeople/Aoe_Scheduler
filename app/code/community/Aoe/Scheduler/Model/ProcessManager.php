@@ -38,15 +38,18 @@ class Aoe_Scheduler_Model_ProcessManager {
     /**
      * Check if there's alread a job running with the given code
      *
-     * @param Aoe_Scheduler_Model_Schedule $schedule
+     * @param string $jobCode
+     * @param int $ignoreId
      * @return bool
      */
-    public function isJobCodeRunning(Aoe_Scheduler_Model_Schedule $schedule) {
+    public function isJobCodeRunning($jobCode, $ignoreId=NULL) {
         $collection = Mage::getModel('cron/schedule')
             ->getCollection()
             ->addFieldToFilter('status', Mage_Cron_Model_Schedule::STATUS_RUNNING)
-            ->addFieldToFilter('job_code', $schedule->getJobCode())
-            ->addFieldToFilter('schedule_id', array('neq' => $schedule->getId()));
+            ->addFieldToFilter('job_code', $jobCode);
+        if (!is_null($ignoreId)) {
+            $collection->addFieldToFilter('schedule_id', array('neq' => $ignoreId));
+        }
         foreach ($collection as $s) { /* @var $s Aoe_Scheduler_Model_Schedule */
             $alive = $s->isAlive();
             if ($alive !== false) { // TODO: how do we handle null (= we don't know because might be running on a different server?

@@ -265,4 +265,33 @@ class Aoe_Scheduler_Model_Observer extends Mage_Cron_Model_Observer {
         }
     }
 
+
+
+    /**
+     * Get job for task marked as always
+     *
+     * (Instead of reusing existing one - which results in loosing the history - create a new one every time)
+     *
+     * @param $jobCode
+     * @return bool|Mage_Cron_Model_Schedule
+     */
+    protected function _getAlwaysJobSchedule($jobCode) {
+
+        $processManager = Mage::getModel('aoe_scheduler/processManager'); /* @var $processManager Aoe_Scheduler_Model_ProcessManager */
+        if (!$processManager->isJobCodeRunning($jobCode)) {
+            $ts = strftime('%Y-%m-%d %H:%M:00', time());
+            $schedule = Mage::getModel('cron/schedule') /* @var $schedule Mage_Cron_Model_Schedule */
+                ->setJobCode($jobCode)
+                ->setStatus(Mage_Cron_Model_Schedule::STATUS_RUNNING)
+                ->setCreatedAt($ts)
+                ->setScheduledAt($ts)
+                ->save();
+            return $schedule;
+        }
+
+        return false;
+    }
+
+
+
 }

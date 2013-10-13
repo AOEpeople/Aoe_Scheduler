@@ -74,8 +74,8 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule {
         // lock job (see below) prevents the exact same schedule from being executed from more than one process (or server)
         // the following check will prevent multiple schedules of the same type to be run in parallel
 
-        $processManager = Mage::getModel('aoe_scheduler/processManager'); /* @var $processManager Aoe_Scheduler_Model_ProcessManager */
-        if ($processManager->isJobCodeRunning($this)) {
+            $processManager = Mage::getModel('aoe_scheduler/processManager'); /* @var $processManager Aoe_Scheduler_Model_ProcessManager */
+        if ($processManager->isJobCodeRunning($this->getJobCode(), $this->getId())) {
             $this->log(sprintf('Job "%s" (id: %s) will not be executed because there is already another process with the same job code running. Skipping.', $this->getJobCode(), $this->getId()));
             return $this;
         }
@@ -357,6 +357,8 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule {
     /**
      * Processing object before save data
      *
+     * Check if there are other schedules for the same job at the same time and skip saving in this case.
+     *
      * @return Mage_Core_Model_Abstract
      */
     protected function _beforeSave() {
@@ -365,9 +367,13 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule {
             ->addFieldToFilter('status', Mage_Cron_Model_Schedule::STATUS_PENDING)
             ->addFieldToFilter('job_code', $this->getJobCode())
             ->addFieldToFilter('scheduled_at', $this->getScheduledAt());
-        if ($collection->count() > 0) {
-            $this->_dataSaveAllowed = false;
-            $this->log(sprintf('Pending schedule for "%s" at "%s" already exists. Skipping.', $this->getJobCode(), $this->getScheduledAt()));
+        if ($this->getId() !== null) {
+            $collection->addFieldToFilter('schedule_id', array('neq' => $this->getId()));
+        }
+        $count = $collection->count();
+        if ($count > 0) {
+            $this->_dataSaveAllowed = false; // prevents this object from being stored to database
+            $this->log(sprintf('Pending schedule for "%s" at "%s" already exists %s times. Skipping.', $this->getJobCode(), $this->getScheduledAt(), $count));
         }
         return parent::_beforeSave();
     }
