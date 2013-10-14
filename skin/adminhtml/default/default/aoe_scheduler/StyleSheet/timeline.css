@@ -90,11 +90,12 @@ div.hours {
 
 .details-headline {
 	width: 100%;
-	height: 28px;
+	height: 24px;
+    background-position: top center;
 }
 
 .details-headline h3 {
-	padding: 5px;
+	padding: 2px 5px;
 	color: white;
 	margin: 0;
 }
