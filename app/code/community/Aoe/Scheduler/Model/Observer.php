@@ -259,13 +259,14 @@ class Aoe_Scheduler_Model_Observer extends Mage_Cron_Model_Observer {
                 $tmp[$schedule->getJobCode()][$schedule->getScheduledAt()] = array('key' => $key, 'schedule' => $schedule);
             }
 
-            foreach ($tmp as $schedules) {
+            foreach ($tmp as $jobCode => $schedules) {
                 ksort($schedules);
                 array_pop($schedules); // we remove the newest one
                 foreach ($schedules as $data) { /* @var $data array */
                     $this->_pendingSchedules->removeItemByKey($data['key']);
                     $schedule = $data['schedule']; /* @var $schedule Aoe_Scheduler_Model_Schedule */
                     $schedule
+                        ->setMessages('Mulitple tasks with the same job code were piling up. Skipping execution of duplicates.')
                         ->setStatus(Mage_Cron_Model_Schedule::STATUS_MISSED)
                         ->save();
                 }
