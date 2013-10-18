@@ -8,12 +8,18 @@
 abstract class Aoe_Scheduler_Adminhtml_AbstractController extends Mage_Adminhtml_Controller_Action {
 
 	/**
-	 * Index action (display grid)
+	 * Index action
 	 *
 	 * @return void
 	 */
 	public function indexAction() {
-		$this->checkHeartbeat();
+
+        if (!Mage::getStoreConfigFlag('system/cron/enable')) {
+            $this->_getSession()->addNotice('Scheduler is disabled in configuration (system/cron/enable). No schedules will be executed.');
+        } else {
+            $this->checkHeartbeat();
+        }
+
 
 		$this->loadLayout();
 

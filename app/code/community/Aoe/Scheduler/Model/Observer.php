@@ -22,6 +22,11 @@ class Aoe_Scheduler_Model_Observer extends Mage_Cron_Model_Observer {
      */
     public function dispatch($observer)
     {
+
+        if (!Mage::getStoreConfigFlag('system/cron/enable')) {
+            return;
+        }
+
         $schedules = $this->getPendingSchedules();
         $jobsRoot = Mage::getConfig()->getNode('crontab/jobs');
         $defaultJobsRoot = Mage::getConfig()->getNode('default/crontab/jobs');
@@ -53,6 +58,10 @@ class Aoe_Scheduler_Model_Observer extends Mage_Cron_Model_Observer {
      * @param Varien_Event_Observer $observer
      */
     public function dispatchAlways($observer) {
+
+        if (!Mage::getStoreConfigFlag('system/cron/enable')) {
+            return;
+        }
 
         // Aoe_Scheduler: additional stuff added
         $this->processKillRequests();

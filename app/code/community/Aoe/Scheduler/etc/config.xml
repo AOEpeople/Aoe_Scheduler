@@ -103,6 +103,8 @@
 	<default>
 		<system>
 			<cron>
+                <enable>1</enable>
+
 				<mark_as_error_after>15</mark_as_error_after>
 				<scheduler_cron_expr_heartbeat>*/5 * * * *</scheduler_cron_expr_heartbeat>
 
