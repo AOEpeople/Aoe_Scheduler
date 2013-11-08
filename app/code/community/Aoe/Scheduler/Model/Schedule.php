@@ -351,7 +351,13 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule {
      * @return bool
      */
     public function isAlwaysTask() {
-        return $this->getJobConfiguration()->isAlwaysTask();
+        $isAlwaysTask = false;
+        try {
+            $isAlwaysTask = $this->getJobConfiguration()->isAlwaysTask();
+        } catch (Exception $e) {
+            Mage::logException($e);
+        }
+        return $isAlwaysTask;
     }
 
     /**
