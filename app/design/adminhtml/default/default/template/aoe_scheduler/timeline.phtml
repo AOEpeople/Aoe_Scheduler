@@ -58,7 +58,7 @@ $_jobCodes = $this->getAvailableJobCodes(); /* @var $_jobCodes array */
 			<?php foreach ($_jobCodes as $jobCode): /* @var $jobCode string */ ?>
 				<div class="row">
 					<div class="configuration">
-						<?php echo $jobCode; ?><?php if (Mage::getModel('aoe_scheduler/configuration')->loadByCode($jobCode)->isAlwaysTask()): ?>*<?php endif; ?>
+						<?php echo $jobCode; ?>
 					</div>
 				</div>
 			<?php endforeach; ?>
