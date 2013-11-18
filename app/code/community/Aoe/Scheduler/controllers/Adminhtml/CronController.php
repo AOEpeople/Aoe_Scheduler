@@ -92,7 +92,7 @@ class Aoe_Scheduler_Adminhtml_CronController extends Aoe_Scheduler_Adminhtml_Abs
 				$messages = $schedule->getMessages();
 
 				if ($schedule->getStatus() == Mage_Cron_Model_Schedule::STATUS_SUCCESS) {
-					Mage::getSingleton('adminhtml/session')->addSuccess($this->__('Ran "%s" (Duration: %s sec)', $key, intval($schedule->getDuration())));
+					Mage::getSingleton('adminhtml/session')->addSuccess($this->__('Run "%s" (Duration: %s sec)', $key, intval($schedule->getDuration())));
 					if ($messages) {
 						Mage::getSingleton('adminhtml/session')->addSuccess($this->__('"%s" messages:<pre>%s</pre>', $key, $messages));
 					}
