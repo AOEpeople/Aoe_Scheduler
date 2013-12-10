@@ -32,7 +32,7 @@
 class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule {
 
     CONST STATUS_KILLED = 'killed';
-    CONST STATUS_DISAPPEARED = 'disappeared';
+    CONST STATUS_DISAPPEARED = 'gone'; // the status field is limited to 7 characters
 
 	/**
 	 * @var Aoe_Scheduler_Model_Configuration
