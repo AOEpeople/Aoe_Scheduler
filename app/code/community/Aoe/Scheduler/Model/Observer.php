@@ -325,5 +325,42 @@ class Aoe_Scheduler_Model_Observer extends Mage_Cron_Model_Observer {
     }
 
 
+    /**
+     * Clean up the history of tasks
+     * This override deals with custom states added in Aoe_Scheduler
+     *
+     * @return Mage_Cron_Model_Observer
+     */
+    public function cleanup()
+    {
+        // check if history cleanup is needed
+        $lastCleanup = Mage::app()->loadCache(self::CACHE_KEY_LAST_HISTORY_CLEANUP_AT);
+        if ($lastCleanup > time() - Mage::getStoreConfig(self::XML_PATH_HISTORY_CLEANUP_EVERY)*60) {
+            return $this;
+        }
+
+        $history = Mage::getModel('cron/schedule')->getCollection()
+            ->addFieldToFilter('status', array('in'=>array(
+                Aoe_Scheduler_Model_Schedule::STATUS_KILLED,
+                Aoe_Scheduler_Model_Schedule::STATUS_DISAPPEARED,
+                Aoe_Scheduler_Model_Schedule::STATUS_DIDNTDOANYTHING,
+            )))
+            ->load();
+
+        $historyLifetimes = array(
+            Aoe_Scheduler_Model_Schedule::STATUS_KILLED => Mage::getStoreConfig(self::XML_PATH_HISTORY_SUCCESS)*60,
+            Aoe_Scheduler_Model_Schedule::STATUS_DISAPPEARED => Mage::getStoreConfig(self::XML_PATH_HISTORY_FAILURE)*60,
+            Aoe_Scheduler_Model_Schedule::STATUS_DIDNTDOANYTHING => Mage::getStoreConfig(self::XML_PATH_HISTORY_SUCCESS)*60,
+        );
+
+        $now = time();
+        foreach ($history->getIterator() as $record) {
+            if (strtotime($record->getExecutedAt()) < $now-$historyLifetimes[$record->getStatus()]) {
+                $record->delete();
+            }
+        }
+
+        return parent::cleanup();
+    }
 
 }
