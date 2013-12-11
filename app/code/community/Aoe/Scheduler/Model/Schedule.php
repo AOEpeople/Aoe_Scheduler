@@ -105,6 +105,9 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule {
 
         $this->log('Start: '.$this->getJobCode());
 
+        Mage::unregister('current_cron_task');
+        Mage::register('current_cron_task', $this);
+
         // this is where the actual task will be executed ...
 		$messages = call_user_func_array($callback, array($this));
 
