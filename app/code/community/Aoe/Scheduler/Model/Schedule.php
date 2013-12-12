@@ -310,9 +310,9 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule {
             $this->log(sprintf('Error while sending SIGINT to job "%s" (id: %s)', $this->getJobCode(), $this->getId()), Zend_Log::ERR);
         }
 
-        // check if process terminates within 60 seconds
+        // check if process terminates within 30 seconds
         $startTime = time();
-        while (($waitTime = (time() - $startTime) < 60) && $this->checkPid()) {
+        while (($waitTime = (time() - $startTime) < 30) && $this->checkPid()) {
             sleep(2);
         }
 
