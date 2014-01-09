@@ -53,6 +53,39 @@
 			</aoescheduler_setup>
 		</resources>
 
+        <aoe_logviewer>
+            <logs>
+                <cron.log>
+                    <label>cron.log</label>
+                    <file_path>###LOGDIR###/cron.log</file_path>
+                    <model>aoe_logviewer/log_file</model>
+                    <sort_order>10</sort_order>
+                    <!--<disabled>1</disabled>-->
+                    <commands>
+                        <tail>
+                            <label>Last n lines (newest first)</label>
+                            <command_string>tail -n %2$s '%1$s' | tac</command_string>
+                            <model>aoe_logviewer/command_shell</model>
+                            <sort_order>10</sort_order>
+                            <!--<disabled>1</disabled>-->
+                        </tail>
+                        <tail_err>
+                            <label>Last n error lines (newest first)</label>
+                            <command_string>grep 'ERR (3)' '%1$s' | tail -n %2$s | tac</command_string>
+                            <model>aoe_logviewer/command_shell</model>
+                            <sort_order>20</sort_order>
+                        </tail_err>
+                        <duplicates>
+                            <label>Find duplicates</label>
+                            <command_string>cat '%1$s' | cut -c27- | sort | uniq -c | sort -rn | head -n %2$s</command_string>
+                            <model>aoe_logviewer/command_shell</model>
+                            <sort_order>30</sort_order>
+                        </duplicates>
+                    </commands>
+                </cron.log>
+            </logs>
+        </aoe_logviewer>
+
 	</global>
 
 	<admin>
@@ -117,3 +150,8 @@
 	</default>
 
 </config>
+
+
+
+
+
