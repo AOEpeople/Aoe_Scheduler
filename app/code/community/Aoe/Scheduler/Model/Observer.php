@@ -184,6 +184,17 @@ class Aoe_Scheduler_Model_Observer extends Mage_Cron_Model_Observer {
 	 * @return Mage_Cron_Model_Observer
 	 */
 	public function generate() {
+
+        /**
+         * check if schedule generation is needed
+         */
+        $lastRun = Mage::app()->loadCache(self::CACHE_KEY_LAST_SCHEDULE_GENERATE_AT);
+        if ($lastRun > time() - Mage::getStoreConfig(self::XML_PATH_SCHEDULE_GENERATE_EVERY)*60) {
+            return $this;
+        }
+
+        $startTime = microtime(true);
+
 		$result = parent::generate();
 
 		$cron_schedule = Mage::getSingleton('core/resource')->getTableName('cron_schedule');
@@ -207,6 +218,11 @@ class Aoe_Scheduler_Model_Observer extends Mage_Cron_Model_Observer {
 				Mage::getModel('cron/schedule')->load($id)->delete();
 			}
 		}
+
+        if ($logFile = Mage::getStoreConfig('system/cron/logFile')) {
+            $duration = microtime(true) - $startTime;
+            Mage::log('Generated schedule (Duration: ' . round($duration, 2) . ' sec)', null, $logFile);
+        }
 
 		return $result;
 	}
@@ -387,7 +403,7 @@ class Aoe_Scheduler_Model_Observer extends Mage_Cron_Model_Observer {
         }
 
         if ($logFile = Mage::getStoreConfig('system/cron/logFile')) {
-            $duration = $startTime - microtime(true);
+            $duration = microtime(true) - $startTime;
             Mage::log('History cleanup (Duration: ' . round($duration, 2) . ' sec)', null, $logFile);
         }
 
