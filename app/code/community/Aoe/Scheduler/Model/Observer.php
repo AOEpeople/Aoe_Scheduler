@@ -3,11 +3,12 @@
 /**
  * Crontab observer.
  *
- * @author Fabrizio Branca <fabrizio.branca@aoemedia.de>
+ * @author Fabrizio Branca
  */
 class Aoe_Scheduler_Model_Observer extends Mage_Cron_Model_Observer {
 
     CONST XML_PATH_MARK_AS_ERROR = 'system/cron/mark_as_error_after';
+    CONST XML_PATH_HISTORY_MAXNO = 'system/cron/maxNoOfSuccessfulTasks';
 
 
     /**
@@ -339,6 +340,8 @@ class Aoe_Scheduler_Model_Observer extends Mage_Cron_Model_Observer {
             return $this;
         }
 
+        $startTime = microtime(true);
+
         $history = Mage::getModel('cron/schedule')->getCollection()
             ->addFieldToFilter('status', array('in'=>array(
                 Aoe_Scheduler_Model_Schedule::STATUS_KILLED,
@@ -354,13 +357,41 @@ class Aoe_Scheduler_Model_Observer extends Mage_Cron_Model_Observer {
         );
 
         $now = time();
-        foreach ($history->getIterator() as $record) {
+        foreach ($history->getIterator() as $record) { /* @var $record Aoe_Scheduler_Model_Schedule */
             if (strtotime($record->getExecutedAt()) < $now-$historyLifetimes[$record->getStatus()]) {
                 $record->delete();
             }
         }
 
-        return parent::cleanup();
+        parent::cleanup();
+
+        // delete successful tasks
+        $maxNo = Mage::getStoreConfig(self::XML_PATH_HISTORY_MAXNO);
+        if ($maxNo) {
+            $history = Mage::getModel('cron/schedule')->getCollection()
+                ->addFieldToFilter('status', Mage_Cron_Model_Schedule::STATUS_SUCCESS)
+                ->addAttributeToSort('finished_at', 'desc')
+                ->load();
+
+            $counter = array();
+            foreach ($history->getIterator() as $record) { /* @var $record Aoe_Scheduler_Model_Schedule */
+                $jobCode = $record->getJobCode();
+                if (!isset($counter[$jobCode])) {
+                    $counter[$jobCode] = 0;
+                }
+                $counter[$jobCode]++;
+                if ($counter[$jobCode] > $maxNo) {
+                    $record->delete();
+                }
+            }
+        }
+
+        if ($logFile = Mage::getStoreConfig('system/cron/logFile')) {
+            $duration = $startTime - microtime(true);
+            Mage::log('History cleanup (Duration: ' . round($duration, 2) . ' sec)', null, $logFile);
+        }
+
+        return $this;
     }
 
 }
