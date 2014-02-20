@@ -220,8 +220,16 @@ class Aoe_Scheduler_Model_Observer extends Mage_Cron_Model_Observer {
 		}
 
         if ($logFile = Mage::getStoreConfig('system/cron/logFile')) {
+
+            $history = Mage::getModel('cron/schedule')->getCollection()
+                ->setPageSize(1)
+                ->setOrder('scheduled_at', 'desc')
+                ->load();
+
+            $newestSchedule = $history->getFirstItem(); /* @var $newestSchedule Aoe_Scheduler_Model_Schedule  */
+
             $duration = microtime(true) - $startTime;
-            Mage::log('Generated schedule (Duration: ' . round($duration, 2) . ' sec)', null, $logFile);
+            Mage::log('Generated schedule. Newest task is scheduled at "'.$newestSchedule->getScheduledAt().'". (Duration: ' . round($duration, 2) . ' sec)', null, $logFile);
         }
 
 		return $result;
