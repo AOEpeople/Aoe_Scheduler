@@ -386,9 +386,8 @@ class Aoe_Scheduler_Model_Observer extends Mage_Cron_Model_Observer {
         if ($maxNo) {
             $history = Mage::getModel('cron/schedule')->getCollection()
                 ->addFieldToFilter('status', Mage_Cron_Model_Schedule::STATUS_SUCCESS)
-                ->addAttributeToSort('finished_at', 'desc')
+                ->setOrder('finished_at', 'desc')
                 ->load();
-
             $counter = array();
             foreach ($history->getIterator() as $record) { /* @var $record Aoe_Scheduler_Model_Schedule */
                 $jobCode = $record->getJobCode();
