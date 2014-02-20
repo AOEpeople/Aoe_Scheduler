@@ -7,4 +7,4 @@ app/locale/en_US/template/email/aoe_scheduler/					app/locale/en_US/template/ema
 app/design/adminhtml/default/default/template/aoe_scheduler/	app/design/adminhtml/default/default/template/aoe_scheduler/
 app/design/adminhtml/default/default/layout/aoe_scheduler/		app/design/adminhtml/default/default/layout/aoe_scheduler/
 skin/adminhtml/default/default/aoe_scheduler/					skin/adminhtml/default/default/aoe_scheduler/
-var/connect/*													var/connect/
+# var/connect/*													var/connect/
