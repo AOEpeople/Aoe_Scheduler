@@ -35,7 +35,7 @@
 					<system>
 						<children>
 							<aoe_scheduler translate="title" module="aoe_scheduler">
-								<title>AOE Scheduler</title>
+								<title>Scheduler</title>
 								<sort_order>1</sort_order>
 								<children>
 									<aoe_scheduler_cron translate="title">
