@@ -1,0 +1,16 @@
+{
+    "name": "aoepeople/aoe_scheduler",
+    "license": "GPLv3",
+    "type": "magento-module",
+    "description": "Running multiple scheduler jobs in parallel",
+    "homepage": "https://github.com/AOEpeople/Aoe_Scheduler",
+    "authors": [
+        {
+            "name": "Fabrizio Branca",
+            "email": "fabrizio.branca@aoe.com"
+        }
+    ],
+    "require": {
+        "magento-hackathon/magento-composer-installer": "*"
+    }
+}
