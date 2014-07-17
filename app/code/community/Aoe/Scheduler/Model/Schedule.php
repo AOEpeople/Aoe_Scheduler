@@ -19,6 +19,13 @@
  */
 class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule {
 
+    /**
+     * Prefix of model events names
+     *
+         * @var string
+     */
+    protected $_eventPrefix = 'aoe_scheduler_schedule';
+
 	/**
 	 * @var Aoe_Scheduler_Model_Configuration
 	 */
