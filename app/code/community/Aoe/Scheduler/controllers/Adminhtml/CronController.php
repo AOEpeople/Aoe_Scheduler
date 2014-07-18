@@ -108,5 +108,15 @@ class Aoe_Scheduler_Adminhtml_CronController extends Aoe_Scheduler_Adminhtml_Abs
 		$this->_redirect('*/*/index');
 	}
 
+
+    /**
+     * Acl checking
+     *
+     * @return bool
+     */
+    protected function _isAllowed() {
+        return Mage::getSingleton('admin/session')->isAllowed('system/aoe_scheduler/aoe_scheduler_cron');
+    }
+
 }
 
