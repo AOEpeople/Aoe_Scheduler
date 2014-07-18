@@ -148,6 +148,7 @@
                 <error_email_identity>general</error_email_identity>
                 <error_email_template>system_cron_error_email_template</error_email_template>
                 <logFile>cron.log</logFile>
+                <enableRunNow>0</enableRunNow>
             </cron>
         </system>
     </default>

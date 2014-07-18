@@ -46,10 +46,12 @@ class Aoe_Scheduler_Block_Adminhtml_Cron_Grid extends Mage_Adminhtml_Block_Widge
 			'label'         => Mage::helper('aoe_scheduler')->__('Schedule now'),
 			'url'           => $this->getUrl('*/*/scheduleNow'),
 		));
-		$this->getMassactionBlock()->addItem('run', array(
-			'label'    => Mage::helper('aoe_scheduler')->__('Run now'),
-			'url'      => $this->getUrl('*/*/runNow'),
-		));
+        if (Mage::getStoreConfig('system/cron/enableRunNow')) {
+            $this->getMassactionBlock()->addItem('run', array(
+                'label'    => Mage::helper('aoe_scheduler')->__('Run now'),
+                'url'      => $this->getUrl('*/*/runNow'),
+            ));
+        }
 		$this->getMassactionBlock()->addItem('disable', array(
 			'label'    => Mage::helper('aoe_scheduler')->__('Disable'),
 			'url'      => $this->getUrl('*/*/disable'),

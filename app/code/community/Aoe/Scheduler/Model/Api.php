@@ -16,6 +16,9 @@ class Aoe_Scheduler_Model_Api extends Mage_Api_Model_Resource_Abstract
      */
     public function runNow($code)
     {
+        if (!Mage::getStoreConfig('system/cron/enableRunNow')) {
+            Mage::throwException("'Run now' disabled by configuration (system/cron/enableRunNow)");
+        }
         $schedule = Mage::getModel('cron/schedule')/* @var $schedule Aoe_Scheduler_Model_Schedule */
             ->setJobCode($code)
             ->runNow(false) // without trying to lock the job

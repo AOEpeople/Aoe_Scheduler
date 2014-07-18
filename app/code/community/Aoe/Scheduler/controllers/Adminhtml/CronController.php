@@ -77,6 +77,9 @@ class Aoe_Scheduler_Adminhtml_CronController extends Aoe_Scheduler_Adminhtml_Abs
      */
     public function runNowAction()
     {
+        if (!Mage::getStoreConfig('system/cron/enableRunNow')) {
+            Mage::throwException("'Run now' disabled by configuration (system/cron/enableRunNow)");
+        }
         $codes = $this->getRequest()->getParam('codes');
         if (is_array($codes)) {
             foreach ($codes as $key) {
