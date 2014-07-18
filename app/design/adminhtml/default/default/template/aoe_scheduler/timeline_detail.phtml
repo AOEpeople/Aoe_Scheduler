@@ -11,46 +11,46 @@ $_helper = $this->helper('aoe_scheduler/data'); /* @var $_helper Aoe_Scheduler_H
     <div class="details-content">
         <table>
             <tr>
-                <td class="label">Status:</td>
+                <td class="label"><?php echo $this->__('Status') ?>:</td>
                 <td>
                     <div class="status"><?php echo $_helper->decorateStatus($_schedule->getStatus()) ?></div>
                 </td>
             </tr>
             <tr>
-                <td class="label">Created at:</td>
+                <td class="label"><?php echo $this->__('Created at') ?>:</td>
                 <td><?php echo $_helper->decorateTime($_schedule->getCreatedAt()); ?></td>
             </tr>
             <tr>
-                <td class="label">Scheduled at:</td>
+                <td class="label"><?php echo $this->__('Scheduled at') ?>:</td>
                 <td><?php echo $_helper->decorateTime($_schedule->getScheduledAt()); ?></td>
             </tr>
             <tr>
-                <td class="label">Executed at:</td>
+                <td class="label"><?php echo $this->__('Executed at') ?>:</td>
                 <td><?php echo $_helper->decorateTime($_schedule->getExecutedAt()); ?></td>
             </tr>
             <tr>
-                <td class="label">Finished at:</td>
+                <td class="label"><?php echo $this->__('Finished at') ?>:</td>
                 <td><?php echo $_helper->decorateTime($_schedule->getFinishedAt()); ?></td>
             </tr>
             <tr>
-                <td class="label">Last seen at:</td>
+                <td class="label"><?php echo $this->__('Last seen at') ?>:</td>
                 <td><?php echo $_helper->decorateTime($_schedule->getLastSeen()); ?></td>
             </tr>
             <tr>
-                <td class="label">Id:</td>
+                <td class="label"><?php echo $this->__('Id') ?>:</td>
                 <td><?php echo $_schedule->getId(); ?></td>
             </tr>
             <tr>
-                <td class="label">Pid:</td>
+                <td class="label"><?php echo $this->__('Pid') ?>:</td>
                 <td><?php echo $_schedule->getPid(); ?></td>
             </tr>
             <tr>
-                <td class="label">Host:</td>
+                <td class="label"><?php echo $this->__('Host') ?>:</td>
                 <td><?php echo $_schedule->getHost(); ?></td>
             </tr>
             <?php if ($_schedule->getMessages()): ?>
                 <tr>
-                    <td class="label" colspan="2">Message:</td>
+                    <td class="label" colspan="2"><?php echo $this->__('Message') ?>:</td>
                 </tr>
                 <tr>
                     <td colspan="2">
