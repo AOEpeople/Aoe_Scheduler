@@ -48,6 +48,10 @@ class Aoe_Scheduler_Block_Adminhtml_Scheduler_Grid extends Mage_Adminhtml_Block_
 			'label' => Mage::helper('aoe_scheduler')->__('Delete'),
 			'url' => $this->getUrl('*/*/delete'),
 		));
+        $this->getMassactionBlock()->addItem('kill', array(
+            'label' => Mage::helper('aoe_scheduler')->__('Kill'),
+            'url' => $this->getUrl('*/*/kill'),
+        ));
 		return $this;
 	}
 
@@ -62,6 +66,10 @@ class Aoe_Scheduler_Block_Adminhtml_Scheduler_Grid extends Mage_Adminhtml_Block_
 
 		$viewHelper = $this->helper('aoe_scheduler/data');
 
+        $this->addColumn('schedule_id', array (
+            'header' => Mage::helper('aoe_scheduler')->__('Id'),
+            'index' => 'schedule_id',
+        ));
 		$this->addColumn('job_code', array (
 			'header' => Mage::helper('aoe_scheduler')->__('Code'),
 			'index' => 'job_code',
@@ -83,6 +91,16 @@ class Aoe_Scheduler_Block_Adminhtml_Scheduler_Grid extends Mage_Adminhtml_Block_
 			'index' => 'executed_at',
 			'frame_callback' => array($viewHelper, 'decorateTimeFrameCallBack')
 		));
+        $this->addColumn('last_seen', array (
+            'header' => Mage::helper('aoe_scheduler')->__('Last seen'),
+            'index' => 'last_seen',
+            'frame_callback' => array($viewHelper, 'decorateTimeFrameCallBack')
+        ));
+        $this->addColumn('eta', array (
+            'header' => Mage::helper('aoe_scheduler')->__('ETA'),
+            'index' => 'eta',
+            'frame_callback' => array($viewHelper, 'decorateTimeFrameCallBack')
+        ));
 		$this->addColumn('finished_at', array (
 			'header' => Mage::helper('aoe_scheduler')->__('Finished'),
 			'index' => 'finished_at',
@@ -93,6 +111,14 @@ class Aoe_Scheduler_Block_Adminhtml_Scheduler_Grid extends Mage_Adminhtml_Block_
 			'index' => 'messages',
 			'frame_callback' => array($this, 'decorateMessages')
 		));
+        $this->addColumn('host', array (
+            'header' => Mage::helper('aoe_scheduler')->__('Host'),
+            'index' => 'host',
+        ));
+        $this->addColumn('pid', array (
+            'header' => Mage::helper('aoe_scheduler')->__('Pid'),
+            'index' => 'pid',
+        ));
 		$this->addColumn('status', array (
 			'header' => Mage::helper('aoe_scheduler')->__('Status'),
 			'index' => 'status',
@@ -104,6 +130,8 @@ class Aoe_Scheduler_Block_Adminhtml_Scheduler_Grid extends Mage_Adminhtml_Block_
 				Mage_Cron_Model_Schedule::STATUS_ERROR => Mage_Cron_Model_Schedule::STATUS_ERROR,
 				Mage_Cron_Model_Schedule::STATUS_MISSED => Mage_Cron_Model_Schedule::STATUS_MISSED,
 				Mage_Cron_Model_Schedule::STATUS_RUNNING => Mage_Cron_Model_Schedule::STATUS_RUNNING,
+                Aoe_Scheduler_Model_Schedule::STATUS_DISAPPEARED => Aoe_Scheduler_Model_Schedule::STATUS_DISAPPEARED,
+                Aoe_Scheduler_Model_Schedule::STATUS_KILLED => Aoe_Scheduler_Model_Schedule::STATUS_KILLED,
 			)
 		));
 

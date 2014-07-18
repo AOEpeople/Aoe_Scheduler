@@ -3,9 +3,14 @@
 /**
  * Helper
  *
- * @author Fabrizio Branca <fabrizio.branca@aoemedia.de>
+ * @author Fabrizio Branca
  */
 class Aoe_Scheduler_Helper_Data extends Mage_Core_Helper_Abstract {
+
+    const XML_PATH_MAX_RUNNING_TIME = 'system/cron/max_running_time';
+    const XML_PATH_EMAIL_TEMPLATE = 'system/cron/error_email_template';
+    const XML_PATH_EMAIL_IDENTITY = 'system/cron/error_email_identity';
+    const XML_PATH_EMAIL_RECIPIENT = 'system/cron/error_email';
 
 
 	/**
@@ -59,6 +64,8 @@ class Aoe_Scheduler_Helper_Data extends Mage_Core_Helper_Abstract {
 				$result = '<span class="bar-orange"><span>'.$status.'</span></span>';
 				break;
 			case Mage_Cron_Model_Schedule::STATUS_ERROR:
+            case Aoe_Scheduler_Model_Schedule::STATUS_DISAPPEARED:
+            case Aoe_Scheduler_Model_Schedule::STATUS_KILLED:
 				$result = '<span class="bar-red"><span>'.$status.'</span></span>';
 				break;
 			default:
@@ -71,7 +78,7 @@ class Aoe_Scheduler_Helper_Data extends Mage_Core_Helper_Abstract {
 
 
 	/**
-	 * Wrapepr for decorateTime to be used a frame_callback to avoid that additional parameters
+	 * Wrapper for decorateTime to be used a frame_callback to avoid that additional parameters
 	 * conflict with the method's optional ones
 	 *
 	 * @param string $value
@@ -158,4 +165,34 @@ class Aoe_Scheduler_Helper_Data extends Mage_Core_Helper_Abstract {
 		return in_array($jobCode, $disabledJobs);
 	}
 
+
+    /**
+     * Send error mail
+     *
+     * @param Aoe_Scheduler_Model_Schedule $schedule
+     * @param $error
+     * @return void
+     */
+    public function sendErrorMail(Aoe_Scheduler_Model_Schedule $schedule, $error) {
+        if (!Mage::getStoreConfig(self::XML_PATH_EMAIL_RECIPIENT)) {
+            return $this;
+        }
+
+        $translate = Mage::getSingleton('core/translate'); /* @var $translate Mage_Core_Model_Translate */
+        $translate->setTranslateInline(false);
+
+        $emailTemplate = Mage::getModel('core/email_template'); /* @var $emailTemplate Mage_Core_Model_Email_Template */
+        $emailTemplate->setDesignConfig(array('area' => 'backend'));
+        $emailTemplate->sendTransactional(
+            Mage::getStoreConfig(self::XML_PATH_EMAIL_TEMPLATE),
+            Mage::getStoreConfig(self::XML_PATH_EMAIL_IDENTITY),
+            Mage::getStoreConfig(self::XML_PATH_EMAIL_RECIPIENT),
+            null,
+            array('error' => $error, 'schedule' => $schedule)
+        );
+
+        $translate->setTranslateInline(true);
+    }
+
 }
+

@@ -1,10 +1,9 @@
 <?php
 
 /**
+ * Configuration Model
  *
- * Enter description here ...
- *
- * @author Fabrizio
+ * @author Fabrizio Branca
  *
  * @method string getModel()
  * @method string getStatus()
@@ -43,7 +42,8 @@ class Aoe_Scheduler_Model_Configuration extends Mage_Core_Model_Abstract {
 	 * Load configuration object by code
 	 *
 	 * @param string $code
-	 */
+     * @return $this
+     */
 	public function loadByCode($code) {
 		$this->setId($code);
 		$this->setName($code);
@@ -125,5 +125,14 @@ class Aoe_Scheduler_Model_Configuration extends Mage_Core_Model_Abstract {
 		}
 		return $xmlConfig;
 	}
+
+    /**
+     * Check if this is an "always" task
+     *
+     * @return bool
+     */
+    public function isAlwaysTask() {
+        return $this->getCronExpr() == 'always';
+    }
 
 }

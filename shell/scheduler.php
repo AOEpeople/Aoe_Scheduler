@@ -125,7 +125,7 @@ class Aoe_Scheduler_Shell_Scheduler extends Mage_Shell_Abstract {
 		}
 		$schedule = Mage::getModel('cron/schedule'); /* @var $schedule Aoe_Scheduler_Model_Schedule */
 		$schedule->setJobCode($code);
-		$schedule->scheduleNow();
+		$schedule->schedule();
 		$schedule->save();
 	}
 
@@ -156,7 +156,11 @@ class Aoe_Scheduler_Shell_Scheduler extends Mage_Shell_Abstract {
 		}
 		$schedule = Mage::getModel('cron/schedule'); /* @var $schedule Aoe_Scheduler_Model_Schedule */
 		$schedule->setJobCode($code);
-		$schedule->runNow();
+		$schedule->runNow(false);
+		if ($schedule->getJobWasLocked()) {
+			echo "\nJob was not executed because it was locked!\n\n";
+			exit(1);
+		}
 		$schedule->save();
 
 		echo "Status: " . $schedule->getStatus() . "\nMessages:\n" . trim($schedule->getMessages(), "\n") . "\n";
@@ -172,6 +176,50 @@ class Aoe_Scheduler_Shell_Scheduler extends Mage_Shell_Abstract {
 	public function runNowActionHelp() {
 		return " -code <code>	        Run a job directly";
 	}
+
+
+    /**
+     * Print all running schedules
+     *
+     * @return void
+     */
+    public function listAllRunningSchedulesAction() {
+        $processManager = Mage::getModel('aoe_scheduler/processManager'); /* @var $processManager Aoe_Scheduler_Model_ProcessManager */
+        foreach ($processManager->getAllRunningSchedules() as $schedule) { /* @var $schedule Aoe_Scheduler_Model_Schedule */
+            $status = $schedule->isAlive();
+            if (is_null($status)) {
+                $status = '?';
+            } else {
+                $status = $status ? 'alive' : 'dead (updating status to "disappeared")';
+            }
+            echo sprintf("%-30s %-10s %-10s %-10s %-10s\n",
+                $schedule->getJobCode(),
+                $schedule->getHost() ? $schedule->getHost() : '(no host)',
+                $schedule->getPid() ? $schedule->getPid() : '(no pid)',
+                $schedule->getLastSeen() ? $schedule->getLastSeen() : '(never)',
+                $status
+            );
+        }
+    }
+
+    /**
+     * Kill all
+     *
+     * @return void
+     */
+    public function killAllAction() {
+        $processManager = Mage::getModel('aoe_scheduler/processManager'); /* @var $processManager Aoe_Scheduler_Model_ProcessManager */
+        foreach ($processManager->getAllRunningSchedules(gethostname()) as $schedule) { /* @var $schedule Aoe_Scheduler_Model_Schedule */
+            if ($schedule->isAlive() === true) {
+                $schedule->kill();
+                echo sprintf("%-30s %-10s %-10s: Killed\n",
+                    $schedule->getJobCode(),
+                    $schedule->getHost(),
+                    $schedule->getPid()
+                );
+            }
+        }
+    }
 
 }
 

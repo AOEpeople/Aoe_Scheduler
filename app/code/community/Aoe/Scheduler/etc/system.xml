@@ -5,6 +5,18 @@
 			<groups>
 				<cron translate="label comment" module="cron">
 					<fields>
+
+                        <enable translate="label">
+                            <label>Enable Scheduler</label>
+                            <sort_order>1</sort_order>
+                            <comment><![CDATA[If this is disabled no scheduled jobs will be executed]]></comment>
+                            <show_in_default>1</show_in_default>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </enable>
+
 						<disabled_crons translate="label">
 							<label>Disabled cron tasks</label>
 							<frontend_type>text</frontend_type>
@@ -14,15 +26,17 @@
 							<show_in_website>0</show_in_website>
 							<show_in_store>0</show_in_store>
 						</disabled_crons>
-						<max_running_time translate="label">
-							<label>Mark jobs as failed after</label>
-							<comment><![CDATA[Maximum time in minutes. The will only marked as failed. It won't be killed (if it should actually be still running).]]></comment>
+
+						<mark_as_error_after translate="label">
+							<label>Mark job as failed after</label>
+							<comment><![CDATA[A job will be marked es failed after it hasn't been seen for this many minutes (in cases where the process cannot be checked)]]></comment>
 							<frontend_type>text</frontend_type>
 							<sort_order>110</sort_order>
 							<show_in_default>1</show_in_default>
 							<show_in_website>0</show_in_website>
 							<show_in_store>0</show_in_store>
-						</max_running_time>
+						</mark_as_error_after>
+
 						<scheduler_cron_expr_heartbeat>
 							<label>Heartbeat task schedule (cron syntax)</label>
 							<frontend_type>text</frontend_type>
@@ -58,6 +72,22 @@
 							<show_in_website>0</show_in_website>
 							<show_in_store>0</show_in_store>
 						</error_email_template>
+
+                        <logFile translate="label">
+                            <label>Log file</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>160</sort_order>
+                            <comment><![CDATA[Keep empty to disable logging]]></comment>
+                            <show_in_default>1</show_in_default>
+                        </logFile>
+
+                        <maxNoOfSuccessfulTasks translate="label">
+                            <label>Maximum number of successful tasks to keep</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>170</sort_order>
+                            <comment><![CDATA[Only keeps this number of entries for every tasks even if it is shorter than the configured success lifetime. Set to 0 to keep them all until they hit the lifetime.]]></comment>
+                            <show_in_default>1</show_in_default>
+                        </maxNoOfSuccessfulTasks>
 
 					</fields>
 				</cron>

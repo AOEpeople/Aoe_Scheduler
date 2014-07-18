@@ -2,7 +2,7 @@
 <config>
 	<modules>
 		<Aoe_Scheduler>
-			<version>0.3.2</version>
+			<version>0.4.3</version>
 		</Aoe_Scheduler>
 	</modules>
 
@@ -32,7 +32,6 @@
 			</cron>
 		</models>
 
-
 		<template>
 			<email>
 				<system_cron_error_email_template translate="label" module="aoe_scheduler">
@@ -42,6 +41,50 @@
 				</system_cron_error_email_template>
 			</email>
 		</template>
+
+		<resources>
+			<aoescheduler_setup>
+				<setup>
+					<module>Aoe_Scheduler</module>
+				</setup>
+				<connection>
+					<use>core_setup</use>
+				</connection>
+			</aoescheduler_setup>
+		</resources>
+
+        <aoe_logviewer>
+            <logs>
+                <cron.log>
+                    <label>cron.log</label>
+                    <file_path>###LOGDIR###/cron.log</file_path>
+                    <model>aoe_logviewer/log_file</model>
+                    <sort_order>10</sort_order>
+                    <!--<disabled>1</disabled>-->
+                    <commands>
+                        <tail>
+                            <label>Last n lines (newest first)</label>
+                            <command_string>tail -n %2$s '%1$s' | tac</command_string>
+                            <model>aoe_logviewer/command_shell</model>
+                            <sort_order>10</sort_order>
+                            <!--<disabled>1</disabled>-->
+                        </tail>
+                        <tail_err>
+                            <label>Last n error lines (newest first)</label>
+                            <command_string>grep 'ERR (3)' '%1$s' | tail -n %2$s | tac</command_string>
+                            <model>aoe_logviewer/command_shell</model>
+                            <sort_order>20</sort_order>
+                        </tail_err>
+                        <duplicates>
+                            <label>Find duplicates</label>
+                            <command_string>cat '%1$s' | cut -c27- | sort | uniq -c | sort -rn | head -n %2$s</command_string>
+                            <model>aoe_logviewer/command_shell</model>
+                            <sort_order>30</sort_order>
+                        </duplicates>
+                    </commands>
+                </cron.log>
+            </logs>
+        </aoe_logviewer>
 
 	</global>
 
@@ -78,10 +121,10 @@
 
 	<crontab>
 		<jobs>
-			<!-- <aoescheduler_testtask>
-				<schedule><cron_expr>*/5 * * * *</cron_expr></schedule>
+			<aoescheduler_testtask>
+				<!--<schedule><cron_expr>*/5 * * * *</cron_expr></schedule>-->
 				<run><model>aoe_scheduler/testTask::run</model></run>
-			</aoescheduler_testtask> -->
+			</aoescheduler_testtask>
 
 			<aoescheduler_heartbeat>
 				<schedule><config_path>system/cron/scheduler_cron_expr_heartbeat</config_path></schedule>
@@ -93,13 +136,22 @@
 	<default>
 		<system>
 			<cron>
-				<max_running_time>120</max_running_time>
+                <enable>1</enable>
+
+				<mark_as_error_after>15</mark_as_error_after>
 				<scheduler_cron_expr_heartbeat>*/5 * * * *</scheduler_cron_expr_heartbeat>
 
 				<error_email_identity>general</error_email_identity>
     			<error_email_template>system_cron_error_email_template</error_email_template>
+
+                <logFile>cron.log</logFile>
 			</cron>
 		</system>
 	</default>
 
 </config>
+
+
+
+
+

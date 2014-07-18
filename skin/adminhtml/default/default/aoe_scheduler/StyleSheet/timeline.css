@@ -90,11 +90,12 @@ div.hours {
 
 .details-headline {
 	width: 100%;
-	height: 28px;
+	height: 24px;
+    background-position: top center;
 }
 
 .details-headline h3 {
-	padding: 5px;
+	padding: 2px 5px;
 	color: white;
 	margin: 0;
 }
@@ -112,7 +113,7 @@ div.hours {
 	overflow: hidden;
 }
 
-.task {
+.task, .estimation {
 	position: absolute;
 	height: 24px;
 	top: 8px;
@@ -125,10 +126,19 @@ div.hours {
 
 .details-headline, .task { background-image: url(../Images/gradient.png); }
 
+.details-headline.error, .task.error,
+.details-headline.killed, .task.killed,
+.details-headline.gone, .task.gone { background-color: #E41300; }
+
 .details-headline.success, .task.success { background-color: #36B963; }
+.details-headline.nothing, .task.nothing { background-color: #92D6A9; }
 .details-headline.pending, .task.pending { background-color: #A9ABA8; }
-.details-headline.error, .task.error { background-color: #E41300; }
 .details-headline.missed, .task.missed { background-color: #F75300; }
-.details-headline.running, .task.running { background-color: #FE9D00; }
+.details-headline.running, .task.running { background-color: #FE9D00 !important; }
+.details-headline.running, .task.running { background-image: url(../Images/animation.gif); background-position: center; background-repeat: repeat-x; }
+
+.estimation { background-color: #B1C5D1; }
+.estimation { background-image: url(../Images/animation2.gif); background-position: center; background-repeat: repeat-x; }
+
 
 div.task.active, div.task:hover { background-color: #00A2FA; }
