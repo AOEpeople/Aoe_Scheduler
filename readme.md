@@ -15,8 +15,10 @@ Aoe Scheduler comes with whitelist/blacklist feature enabling you to do so.
 1. symlink cron.php to cron2.php
 2. add crontab configuration (crontab -e) like this:
 
+```
 * * * * * /usr/bin/env SCHEDULER_BLACKLIST='job_key1,job_key2' /bin/sh  /home/webapps/htdocs/cron.sh
 * * * * * /usr/bin/env SCHEDULER_WHITELIST='job_key1,job_key2' /bin/sh  /home/webapps/htdocs/cron.sh cron2.php
+```
 
 cron.sh script takes name of the php script to run as a parameter (by default it is cron.php).
 This way the first cron job will execute all scheduler jobs except job_key1 and job_key2, and the second one will execute only them.

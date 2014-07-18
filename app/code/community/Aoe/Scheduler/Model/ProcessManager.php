@@ -6,7 +6,8 @@
  * @author Fabrizio Branca
  * @since 2013-10-11
  */
-class Aoe_Scheduler_Model_ProcessManager {
+class Aoe_Scheduler_Model_ProcessManager
+{
 
     /**
      * Get all schedules running on this server
@@ -14,7 +15,8 @@ class Aoe_Scheduler_Model_ProcessManager {
      * @param string host
      * @return object
      */
-    public function getAllRunningSchedules($host=null) {
+    public function getAllRunningSchedules($host = null)
+    {
         $collection = Mage::getModel('cron/schedule')->getCollection();
         $collection->addFieldToFilter('status', Mage_Cron_Model_Schedule::STATUS_RUNNING);
         if (!is_null($host)) {
@@ -29,7 +31,8 @@ class Aoe_Scheduler_Model_ProcessManager {
      * @param null $host
      * @return object
      */
-    public function getAllKillRequests($host=null) {
+    public function getAllKillRequests($host = null)
+    {
         $collection = $this->getAllRunningSchedules($host);
         $collection->addFieldToFilter('kill_request', array('lt' => strftime('%Y-%m-%d %H:%M:00', time())));
         return $collection;
@@ -42,7 +45,8 @@ class Aoe_Scheduler_Model_ProcessManager {
      * @param int $ignoreId
      * @return bool
      */
-    public function isJobCodeRunning($jobCode, $ignoreId=NULL) {
+    public function isJobCodeRunning($jobCode, $ignoreId = NULL)
+    {
         $collection = Mage::getModel('cron/schedule')
             ->getCollection()
             ->addFieldToFilter('status', Mage_Cron_Model_Schedule::STATUS_RUNNING)
@@ -50,7 +54,8 @@ class Aoe_Scheduler_Model_ProcessManager {
         if (!is_null($ignoreId)) {
             $collection->addFieldToFilter('schedule_id', array('neq' => $ignoreId));
         }
-        foreach ($collection as $s) { /* @var $s Aoe_Scheduler_Model_Schedule */
+        foreach ($collection as $s) {
+            /* @var $s Aoe_Scheduler_Model_Schedule */
             $alive = $s->isAlive();
             if ($alive !== false) { // TODO: how do we handle null (= we don't know because might be running on a different server?
                 return true;

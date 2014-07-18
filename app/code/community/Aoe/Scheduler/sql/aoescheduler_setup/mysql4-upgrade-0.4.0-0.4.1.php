@@ -1,6 +1,7 @@
 <?php
 
-$installer = $this; /* @var $installer Mage_Core_Model_Resource_Setup */
+$installer = $this;
+/* @var $installer Mage_Core_Model_Resource_Setup */
 
 $installer->startSetup();
 
@@ -14,8 +15,8 @@ try {
 
 $installer->getConnection()->addColumn(
     $tableName,
-	'parameters',
-	"TEXT NULL COMMENT 'Serialized Parameters'"
+    'parameters',
+    "TEXT NULL COMMENT 'Serialized Parameters'"
 );
 
 $installer->getConnection()->addColumn(

@@ -6,14 +6,16 @@
  * @author Fabrizio Branca
  * @since 2013-10-10
  */
-class Aoe_Scheduler_Model_TestTask {
+class Aoe_Scheduler_Model_TestTask
+{
 
     /**
      * Run a test task
      *
      * @param Aoe_Scheduler_Model_Schedule $schedule
      */
-    public function run(Aoe_Scheduler_Model_Schedule $schedule) {
+    public function run(Aoe_Scheduler_Model_Schedule $schedule)
+    {
         $starttime = time();
         $endtime = $starttime + rand(180, 360);
         $schedule

@@ -1,9 +1,9 @@
 <?xml version="1.0" ?>
 <config>
-	<modules>
-		<Aoe_Scheduler>
-			<active>true</active>
-			<codePool>community</codePool>
-		</Aoe_Scheduler>
-	</modules>
+    <modules>
+        <Aoe_Scheduler>
+            <active>true</active>
+            <codePool>community</codePool>
+        </Aoe_Scheduler>
+    </modules>
 </config>

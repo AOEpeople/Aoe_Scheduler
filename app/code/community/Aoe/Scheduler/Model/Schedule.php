@@ -29,23 +29,24 @@
  * @method string getLastSeen()
  * @method string setLastSeen()
  */
-class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule {
+class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
+{
 
     CONST STATUS_KILLED = 'killed';
     CONST STATUS_DISAPPEARED = 'gone'; // the status field is limited to 7 characters
     CONST STATUS_DIDNTDOANYTHING = 'nothing';
 
     /**
-    * Prefix of model events names
-    *
-    * @var string
-    */
+     * Prefix of model events names
+     *
+     * @var string
+     */
     protected $_eventPrefix = 'aoe_scheduler_schedule';
 
-	/**
-	 * @var Aoe_Scheduler_Model_Configuration
-	 */
-	protected $_jobConfiguration;
+    /**
+     * @var Aoe_Scheduler_Model_Configuration
+     */
+    protected $_jobConfiguration;
 
     /**
      * @var bool
@@ -53,50 +54,52 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule {
     protected $jobWasLocked = false;
 
 
-	/**
-	 * Run this task now
-	 *
-	 * @param bool $tryLockJob
-	 * @return Aoe_Scheduler_Model_Schedule
-	 */
-	public function runNow($tryLockJob=true) {
+    /**
+     * Run this task now
+     *
+     * @param bool $tryLockJob
+     * @return Aoe_Scheduler_Model_Schedule
+     */
+    public function runNow($tryLockJob = true)
+    {
 
-		$modelCallback = $this->getJobConfiguration()->getModel();
+        $modelCallback = $this->getJobConfiguration()->getModel();
 
-		if (!$this->getCreatedAt()) {
-			$this->schedule();
-		}
+        if (!$this->getCreatedAt()) {
+            $this->schedule();
+        }
 
-		if (!preg_match(Mage_Cron_Model_Observer::REGEX_RUN_MODEL, $modelCallback, $run)) {
-			Mage::throwException(Mage::helper('cron')->__('Invalid model/method definition, expecting "model/class::method".'));
-		}
-		if (!($model = Mage::getModel($run[1])) || !method_exists($model, $run[2])) {
-			Mage::throwException(Mage::helper('cron')->__('Invalid callback: %s::%s does not exist', $run[1], $run[2]));
-		}
-		$callback = array($model, $run[2]);
+        if (!preg_match(Mage_Cron_Model_Observer::REGEX_RUN_MODEL, $modelCallback, $run)) {
+            Mage::throwException(Mage::helper('cron')->__('Invalid model/method definition, expecting "model/class::method".'));
+        }
+        if (!($model = Mage::getModel($run[1])) || !method_exists($model, $run[2])) {
+            Mage::throwException(Mage::helper('cron')->__('Invalid callback: %s::%s does not exist', $run[1], $run[2]));
+        }
+        $callback = array($model, $run[2]);
 
-		if (empty($callback)) {
-			Mage::throwException(Mage::helper('cron')->__('No callbacks found'));
-		}
+        if (empty($callback)) {
+            Mage::throwException(Mage::helper('cron')->__('No callbacks found'));
+        }
 
         // lock job (see below) prevents the exact same schedule from being executed from more than one process (or server)
         // the following check will prevent multiple schedules of the same type to be run in parallel
 
-            $processManager = Mage::getModel('aoe_scheduler/processManager'); /* @var $processManager Aoe_Scheduler_Model_ProcessManager */
+        $processManager = Mage::getModel('aoe_scheduler/processManager');
+        /* @var $processManager Aoe_Scheduler_Model_ProcessManager */
         if ($processManager->isJobCodeRunning($this->getJobCode(), $this->getId())) {
             $this->log(sprintf('Job "%s" (id: %s) will not be executed because there is already another process with the same job code running. Skipping.', $this->getJobCode(), $this->getId()));
             return $this;
         }
 
-		// lock job requires the record to be saved and having status Mage_Cron_Model_Schedule::STATUS_PENDING
-		// workaround could be to do this: $this->setStatus(Mage_Cron_Model_Schedule::STATUS_PENDING)->save();
-		$this->jobWasLocked = false;
-		if ($tryLockJob && !$this->tryLockJob()) {
-			// another cron started this job intermittently, so skip it
-			$this->jobWasLocked = true;
+        // lock job requires the record to be saved and having status Mage_Cron_Model_Schedule::STATUS_PENDING
+        // workaround could be to do this: $this->setStatus(Mage_Cron_Model_Schedule::STATUS_PENDING)->save();
+        $this->jobWasLocked = false;
+        if ($tryLockJob && !$this->tryLockJob()) {
+            // another cron started this job intermittently, so skip it
+            $this->jobWasLocked = true;
             $this->log(sprintf('Job "%s" (id: %s) is locked. Skipping.', $this->getJobCode(), $this->getId()));
-			return $this;
-		}
+            return $this;
+        }
 
         $startTime = time();
         $this
@@ -110,25 +113,25 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule {
         Mage::dispatchEvent('cron_' . $this->getJobCode() . '_before', array('schedule' => $this));
         Mage::dispatchEvent('cron_before', array('schedule' => $this));
 
-        $this->log('Start: '.$this->getJobCode());
+        $this->log('Start: ' . $this->getJobCode());
 
         Mage::unregister('current_cron_task');
         Mage::register('current_cron_task', $this);
 
         // this is where the actual task will be executed ...
-		$messages = call_user_func_array($callback, array($this));
+        $messages = call_user_func_array($callback, array($this));
 
-        $this->log('Stop: '.$this->getJobCode());
+        $this->log('Stop: ' . $this->getJobCode());
 
-		// added by Fabrizio to also save messages when no exception was thrown
-		if (!empty($messages)) {
-			if (is_object($messages)) {
-				$messages = get_class($messages);
-			} elseif (!is_scalar($messages)) {
-				$messages = var_export($messages, 1);
-			}
-			$this->setMessages($messages);
-		}
+        // added by Fabrizio to also save messages when no exception was thrown
+        if (!empty($messages)) {
+            if (is_object($messages)) {
+                $messages = get_class($messages);
+            } elseif (!is_scalar($messages)) {
+                $messages = var_export($messages, 1);
+            }
+            $this->setMessages($messages);
+        }
 
         // schedules can report an error state by returning a string that starts with "ERROR:"
         if (is_string($messages) && strtoupper(substr($messages, 0, 6)) == 'ERROR:') {
@@ -156,98 +159,100 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule {
     }
 
 
-
-	/**
-	 * Flag that shows that a previous execution was prevented because the job was locked
-	 *
-	 * @return bool
-	 */
-	public function getJobWasLocked() {
-		return $this->jobWasLocked;
-	}
-
-
-
-	/**
-	 * Schedule this task to be executed as soon as possible
-	 *
-	 * @deprecated use Aoe_Scheduler_Model_Schedule::schedule() instead
-	 * @return Aoe_Scheduler_Model_Schedule
-	 */
-	public function scheduleNow() {
-		return $this->schedule();
-	}
+    /**
+     * Flag that shows that a previous execution was prevented because the job was locked
+     *
+     * @return bool
+     */
+    public function getJobWasLocked()
+    {
+        return $this->jobWasLocked;
+    }
 
 
-
-	/**
-	 * Schedule this task to be executed at a given time
-	 *
-	 * @param int $time
-	 * @return Aoe_Scheduler_Model_Schedule
-	 */
-	public function schedule($time=NULL) {
-		if (is_null($time)) {
-			$time = time();
-		}
-		$this->setStatus(Mage_Cron_Model_Schedule::STATUS_PENDING)
-			->setCreatedAt(strftime('%Y-%m-%d %H:%M:%S', time()))
-			->setScheduledAt(strftime('%Y-%m-%d %H:%M:00', $time))
-			->save();
-		return $this;
-	}
+    /**
+     * Schedule this task to be executed as soon as possible
+     *
+     * @deprecated use Aoe_Scheduler_Model_Schedule::schedule() instead
+     * @return Aoe_Scheduler_Model_Schedule
+     */
+    public function scheduleNow()
+    {
+        return $this->schedule();
+    }
 
 
-
-	/**
-	 * Get job configuration
-	 *
-	 * @return Aoe_Scheduler_Model_Configuration
-	 */
-	public function getJobConfiguration() {
-		if (is_null($this->_jobConfiguration)) {
-			$this->_jobConfiguration = Mage::getModel('aoe_scheduler/configuration')->loadByCode($this->getJobCode());
-		}
-		return $this->_jobConfiguration;
-	}
-
-
-
-	/**
-	 * Get start time (planned or actual)
-	 *
-	 * @return string
-	 */
-	public function getStarttime() {
-		$starttime = $this->getExecutedAt();
-		if (empty($starttime) || $starttime == '0000-00-00 00:00:00') {
-			$starttime = $this->getScheduledAt();
-		}
-		return $starttime;
-	}
+    /**
+     * Schedule this task to be executed at a given time
+     *
+     * @param int $time
+     * @return Aoe_Scheduler_Model_Schedule
+     */
+    public function schedule($time = NULL)
+    {
+        if (is_null($time)) {
+            $time = time();
+        }
+        $this->setStatus(Mage_Cron_Model_Schedule::STATUS_PENDING)
+            ->setCreatedAt(strftime('%Y-%m-%d %H:%M:%S', time()))
+            ->setScheduledAt(strftime('%Y-%m-%d %H:%M:00', $time))
+            ->save();
+        return $this;
+    }
 
 
+    /**
+     * Get job configuration
+     *
+     * @return Aoe_Scheduler_Model_Configuration
+     */
+    public function getJobConfiguration()
+    {
+        if (is_null($this->_jobConfiguration)) {
+            $this->_jobConfiguration = Mage::getModel('aoe_scheduler/configuration')->loadByCode($this->getJobCode());
+        }
+        return $this->_jobConfiguration;
+    }
 
-	/**
-	 * Get job duration
-	 *
-	 * @return bool|int time in seconds, or false
-	 */
-	public function getDuration() {
-		$duration = false;
-		if ($this->getExecutedAt() && ($this->getExecutedAt() != '0000-00-00 00:00:00')
-			&& $this->getFinishedAt() && ($this->getFinishedAt() != '0000-00-00 00:00:00')) {
-			$duration = strtotime($this->getFinishedAt()) - strtotime($this->getExecutedAt());
-		}
-		return $duration;
-	}
+
+    /**
+     * Get start time (planned or actual)
+     *
+     * @return string
+     */
+    public function getStarttime()
+    {
+        $starttime = $this->getExecutedAt();
+        if (empty($starttime) || $starttime == '0000-00-00 00:00:00') {
+            $starttime = $this->getScheduledAt();
+        }
+        return $starttime;
+    }
+
+
+    /**
+     * Get job duration
+     *
+     * @return bool|int time in seconds, or false
+     */
+    public function getDuration()
+    {
+        $duration = false;
+        if ($this->getExecutedAt() && ($this->getExecutedAt() != '0000-00-00 00:00:00')
+            && $this->getFinishedAt() && ($this->getFinishedAt() != '0000-00-00 00:00:00')
+        ) {
+            $duration = strtotime($this->getFinishedAt()) - strtotime($this->getExecutedAt());
+        }
+        return $duration;
+    }
 
     /**
      * Is this process still alive?
      *
      * @return bool
      */
-    public function isAlive() {
+    public function isAlive()
+    {
         if ($this->getStatus() == Mage_Cron_Model_Schedule::STATUS_RUNNING) {
             if (time() - strtotime($this->getLastSeen()) < 2 * 60) { // TODO: make this configurable
                 return true;
@@ -275,7 +280,8 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule {
      * @param string $message
      * @return void
      */
-    public function markAsDisappeared($message=NULL) {
+    public function markAsDisappeared($message = NULL)
+    {
         if (!is_null($message)) {
             $this->setMessages($message);
         }
@@ -292,7 +298,8 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule {
      *
      * @return bool
      */
-    public function checkPid() {
+    public function checkPid()
+    {
         $pid = intval($this->getPid());
         return $pid && file_exists('/proc/' . $pid);
     }
@@ -302,7 +309,8 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule {
      *
      * @return void
      */
-    public function kill() {
+    public function kill()
+    {
 
         if (!$this->checkPid()) {
             // already dead
@@ -354,7 +362,8 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule {
      * @param $message
      * @param null $level
      */
-    protected function log($message, $level=NULL) {
+    protected function log($message, $level = NULL)
+    {
         if ($logFile = Mage::getStoreConfig('system/cron/logFile')) {
             Mage::log($message, $level, $logFile);
         }
@@ -365,7 +374,8 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule {
      *
      * @return bool
      */
-    public function isAlwaysTask() {
+    public function isAlwaysTask()
+    {
         $isAlwaysTask = false;
         try {
             $isAlwaysTask = $this->getJobConfiguration()->isAlwaysTask();
@@ -382,8 +392,9 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule {
      *
      * @return Mage_Core_Model_Abstract
      */
-    protected function _beforeSave() {
-        $collection = Mage::getModel('cron/schedule') /* @var $collection Mage_Cron_Model_Resource_Schedule_Collection */
+    protected function _beforeSave()
+    {
+        $collection = Mage::getModel('cron/schedule')/* @var $collection Mage_Cron_Model_Resource_Schedule_Collection */
             ->getCollection()
             ->addFieldToFilter('status', Mage_Cron_Model_Schedule::STATUS_PENDING)
             ->addFieldToFilter('job_code', $this->getJobCode())
