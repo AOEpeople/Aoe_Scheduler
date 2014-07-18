@@ -36,6 +36,15 @@
 	background-color: red;
 }
 
+#now .arrow {
+    background-image: url(../Images/red.png);
+    width: 16px;
+    height: 16px;
+    position: absolute;
+    top: -3px;
+    left: -7.5px;
+}
+
 div.row {
 	border-bottom: 1px solid #DADFE0;
 	padding: 0;
@@ -85,7 +94,11 @@ div.hours {
 .hour {
 	width: 240px;
 	float: left;
-	text-align: center;
+}
+
+.hour span {
+    margin-left: 5px;
+    font-weight: bold;
 }
 
 .details-headline {

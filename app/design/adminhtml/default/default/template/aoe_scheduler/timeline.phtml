@@ -23,13 +23,12 @@ $_jobCodes = $this->getAvailableJobCodes(); /* @var $_jobCodes array */
                 <div class="timeline-box">
                     <div class="timeline-panel" style="width: <?php echo $this->getTimelinePanelWidth(); ?>px;">
 
-                        <div id="now" style="left: <?php echo $this->getNowline(); ?>px"></div>
+                        <div id="now" style="left: <?php echo $this->getNowline(); ?>px"><div class="arrow"></div></div>
 
                         <div class="row hours">
                             <div class="timeline">
                                 <?php for ($i = $this->getStarttime(); $i < $this->getEndtime(); $i += 60 * 60): ?>
-                                    <div
-                                        class="hour"><?php echo $_helper->decorateTime($i, false, 'Y-m-d H:i'); ?></div>
+                                    <div class="hour"><span><?php echo $_helper->decorateTime($i, false, 'Y-m-d H:i'); ?></span></div>
                                 <?php endfor; ?>
                             </div>
                         </div>
