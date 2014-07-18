@@ -15,7 +15,7 @@ abstract class Aoe_Scheduler_Adminhtml_AbstractController extends Mage_Adminhtml
 	public function indexAction() {
 
         if (!Mage::getStoreConfigFlag('system/cron/enable')) {
-            $this->_getSession()->addNotice('Scheduler is disabled in configuration (system/cron/enable). No schedules will be executed.');
+            $this->_getSession()->addNotice($this->__('Scheduler is disabled in configuration (system/cron/enable). No schedules will be executed.'));
         } else {
             $this->checkHeartbeat();
         }
@@ -37,17 +37,17 @@ abstract class Aoe_Scheduler_Adminhtml_AbstractController extends Mage_Adminhtml
 			$lastHeartbeat = Mage::helper('aoe_scheduler')->getLastHeartbeat();
 			if ($lastHeartbeat === false) {
 				// no heartbeat task found
-				$this->_getSession()->addError('No heartbeat task found. Check if cron is configured correctly.');
+				$this->_getSession()->addError($this->__('No heartbeat task found. Check if cron is configured correctly.'));
 			} else {
 				$timespan = Mage::helper('aoe_scheduler')->dateDiff($lastHeartbeat);
 				if ($timespan <= 5 * 60) {
-					$this->_getSession()->addSuccess(sprintf('Scheduler is working. (Last heart beat: %s minute(s) ago)', round($timespan/60)));
+					$this->_getSession()->addSuccess($this->__('Scheduler is working. (Last heart beat: %s minute(s) ago)', round($timespan/60)));
 				} elseif ($timespan > 5 * 60 && $timespan <= 60 * 60 ) {
 					// heartbeat wasn't executed in the last 5 minutes. Heartbeat schedule could have been modified to not run every five minutes!
-					$this->_getSession()->addNotice(sprintf('Last heart beat is older than %s minutes.', round($timespan/60)));
+					$this->_getSession()->addNotice($this->__('Last heartbeat is older than %s minutes.', round($timespan/60)));
 				} else {
 					// everything ok
-					$this->_getSession()->addError('Last heartbeat is older than one hour. Please check your settings and your configuration!');
+					$this->_getSession()->addError($this->__('Last heartbeat is older than one hour. Please check your settings and your configuration!'));
 				}
 			}
 
