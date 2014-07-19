@@ -17,7 +17,8 @@ class Aoe_Scheduler_Model_TestTask
     public function run(Aoe_Scheduler_Model_Schedule $schedule)
     {
         $starttime = time();
-        $endtime = $starttime + rand(180, 360);
+        // $endtime = $starttime + rand(180, 360);
+        $endtime = $starttime + 5;
         $schedule
             ->setEta(strftime('%Y-%m-%d %H:%M:%S', $endtime))
             ->save();

@@ -153,6 +153,14 @@
         </system>
     </default>
 
+    <phpunit>
+        <suite>
+            <modules>
+                <Aoe_Scheduler/>
+            </modules>
+        </suite>
+    </phpunit>
+
 </config>
 
 
