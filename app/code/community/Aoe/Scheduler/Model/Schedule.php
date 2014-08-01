@@ -406,6 +406,8 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
         if ($count > 0) {
             $this->_dataSaveAllowed = false; // prevents this object from being stored to database
             $this->log(sprintf('Pending schedule for "%s" at "%s" already exists %s times. Skipping.', $this->getJobCode(), $this->getScheduledAt(), $count));
+        } else {
+            $this->_dataSaveAllowed = true; // allow the next object to save (because it's not reset automatically)
         }
         return parent::_beforeSave();
     }
