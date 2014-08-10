@@ -16,7 +16,7 @@ class Aoe_Scheduler_Block_Adminhtml_Cron extends Mage_Adminhtml_Block_Widget_Gri
     {
         $this->_blockGroup = 'aoe_scheduler';
         $this->_controller = 'adminhtml_cron';
-        $this->_headerText = Mage::helper('aoe_scheduler')->__('Available tasks');
+        $this->_headerText = Mage::helper('aoe_scheduler')->__('Available Jobs');
         parent::__construct();
     }
 

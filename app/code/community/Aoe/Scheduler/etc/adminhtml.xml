@@ -8,7 +8,7 @@
                     <sort_order>1</sort_order>
                     <children>
                         <aoe_scheduler_cron translate="title">
-                            <title>Schedule Configuration</title>
+                            <title>Job Configuration</title>
                             <sort_order>10</sort_order>
                             <action>adminhtml/cron/index</action>
                         </aoe_scheduler_cron>
