@@ -10,7 +10,7 @@
                         <aoe_scheduler_cron translate="title">
                             <title>Job Configuration</title>
                             <sort_order>10</sort_order>
-                            <action>adminhtml/cron/index</action>
+                            <action>adminhtml/job/index</action>
                         </aoe_scheduler_cron>
                         <aoe_scheduler_scheduler translate="title">
                             <title>List View</title>

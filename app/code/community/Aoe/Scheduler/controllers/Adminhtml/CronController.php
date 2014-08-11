@@ -107,6 +107,134 @@ class Aoe_Scheduler_Adminhtml_CronController extends Aoe_Scheduler_Adminhtml_Abs
         $this->_redirect('*/*/index');
     }
 
+
+
+
+
+    /**
+     * Init job instance and set it to registry
+     *
+     * @return Aoe_Scheduler_Model_Job
+     */
+    protected function _initJob()
+    {
+        $jobId = $this->getRequest()->getParam('job_id', null);
+        $job = Mage::getModel('aoe_scheduler/job'); /* @var $job Aoe_Scheduler_Model_Job */
+        if ($jobId) {
+            $job->load($jobId);
+            if (!$job->getId()) {
+                $this->_getSession()->addError(Mage::helper('aoe_scheduler')->__('Could not find job.'));
+                return false;
+            }
+        }
+        Mage::register('current_job_instance', $job);
+        return $job;
+    }
+
+
+
+
+    /**
+     * New cron (forward to edit action)
+     */
+    public function newAction()
+    {
+        $this->_forward('edit');
+    }
+
+    /**
+     * Edit cron action
+     */
+    public function editAction()
+    {
+        $job = $this->_initJob();
+        if (!$job) {
+            $this->_redirect('*/*/');
+            return;
+        }
+        $this->loadLayout();
+        $this->renderLayout();
+    }
+
+    /**
+     * Save action
+     *
+     */
+    public function saveAction()
+    {
+        if ($data = $this->getRequest()->getPost()) {
+            $data = $this->_filterPostData($data);
+            $job = $this->_initJob();
+            if (!$job) {
+                $this->_redirect('*/*/');
+                return;
+            }
+            $job->setData($data);
+            //validating
+            if (!$this->_validatePostData($data)) {
+                $this->_redirect('*/*/edit', array('job_id' => $job->getId(), '_current' => true));
+                return;
+            }
+
+            try {
+                // save the data
+                $job->save();
+
+                // display success message
+                $this->_getSession()->addSuccess(
+                    Mage::helper('aoe_scheduler')->__('The job has been saved.')
+                );
+                // clear previously saved data from session
+                $this->_getSession()->setFormData(false);
+                // check if 'Save and Continue'
+                if ($this->getRequest()->getParam('back', false)) {
+                    $this->_redirect('*/*/edit', array('job_id' => $job->getId(), '_current' => true));
+                    return;
+                }
+                // go to grid
+                $this->_redirect('*/*/');
+                return;
+            } catch (Mage_Core_Exception $e) {
+                $this->_getSession()->addError($e->getMessage());
+            } catch (Exception $e) {
+                Mage::logException($e);
+                $this->_getSession()->addError($this->__('An error occurred during saving a job: %s', $e->getMessage()));
+            }
+
+            $this->_getSession()->setFormData($data);
+            $this->_redirect('*/*/edit', array('job_id' => $this->getRequest()->getParam('job_id')));
+            return;
+        }
+        $this->_redirect('*/*/', array('_current' => true));
+    }
+
+    /**
+     * Delete Action
+     *
+     */
+    public function deleteAction()
+    {
+        $job = $this->_initJob();
+        if ($job) {
+            try {
+                $job->delete();
+                $this->_getSession()->addSuccess(
+                    Mage::helper('aoe_scheduler')->__('The job has been deleted.')
+                );
+            } catch (Exception $e) {
+                $this->_getSession()->addError($e->getMessage());
+            }
+        }
+        $this->_redirect('*/*/');
+        return;
+    }
+
+
+
+
+
+
+
     /**
      * Acl checking
      *

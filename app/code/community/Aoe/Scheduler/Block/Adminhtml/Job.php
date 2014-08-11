@@ -1,21 +1,21 @@
 <?php
 
 /**
- * Cron block
+ * Job block
  *
  * @author Fabrizio Branca
  */
-class Aoe_Scheduler_Block_Adminhtml_Cron extends Mage_Adminhtml_Block_Widget_Grid_Container
+class Aoe_Scheduler_Block_Adminhtml_Job extends Mage_Adminhtml_Block_Widget_Grid_Container
 {
 
 
     /**
-     * Constructor for Cron Adminhtml Block
+     * Constructor for Job Adminhtml Block
      */
     public function __construct()
     {
         $this->_blockGroup = 'aoe_scheduler';
-        $this->_controller = 'adminhtml_cron';
+        $this->_controller = 'adminhtml_job';
         $this->_headerText = Mage::helper('aoe_scheduler')->__('Available Jobs');
         parent::__construct();
     }
@@ -24,11 +24,16 @@ class Aoe_Scheduler_Block_Adminhtml_Cron extends Mage_Adminhtml_Block_Widget_Gri
     /**
      * Prepare layout
      *
-     * @return Aoe_Scheduler_Block_Adminhtml_Cron
+     * @return $this
      */
     protected function _prepareLayout()
     {
         $this->removeButton('add');
+        $this->_addButton('add_new_job', array(
+            'label' => Mage::helper('aoe_scheduler')->__('Create new job'),
+            'onclick' => "setLocation('{$this->getUrl('*/*/new')}')",
+            'class'   => 'add'
+        ));
         $this->_addButton('add_new', array(
             'label' => Mage::helper('aoe_scheduler')->__('Generate Schedule'),
             'onclick' => "setLocation('{$this->getUrl('*/*/generateSchedule')}')",

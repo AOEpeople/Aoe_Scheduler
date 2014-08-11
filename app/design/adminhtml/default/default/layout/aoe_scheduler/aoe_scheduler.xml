@@ -47,4 +47,16 @@
         </reference>
     </adminhtml_cron_index>
 
+    <adminhtml_cron_edit>
+        <reference name="left">
+            <block type="aoe_scheduler/adminhtml_cron_edit_tabs" name="aoe_scheduler_edit_tabs">
+                <block type="aoe_scheduler/adminhtml_cron_edit_tab_form" name="aoe_scheduler_edit_tab_form"/>
+                <action method="addTab"><name>information_section</name><block>aoe_scheduler_edit_tab_form</block></action>
+            </block>
+        </reference>
+        <reference name="content">
+            <block type="aoe_scheduler/adminhtml_cron_edit" name="aoe_scheduler_edit_information"/>
+        </reference>
+    </adminhtml_cron_edit>
+
 </layout>

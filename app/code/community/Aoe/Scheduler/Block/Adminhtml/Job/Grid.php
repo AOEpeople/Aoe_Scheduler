@@ -1,11 +1,11 @@
 <?php
 
 /**
- * Block: Cron grid
+ * Block: Job grid
  *
  * @author Fabrizio Branca
  */
-class Aoe_Scheduler_Block_Adminhtml_Cron_Grid extends Mage_Adminhtml_Block_Widget_Grid
+class Aoe_Scheduler_Block_Adminhtml_Job_Grid extends Mage_Adminhtml_Block_Widget_Grid
 {
 
 
@@ -24,11 +24,11 @@ class Aoe_Scheduler_Block_Adminhtml_Cron_Grid extends Mage_Adminhtml_Block_Widge
     /**
      * Preparation of the data that is displayed by the grid.
      *
-     * @return Aoe_Scheduler_Block_Adminhtml_Cron_Grid Self
+     * @return $this
      */
     protected function _prepareCollection()
     {
-        $collection = Mage::getModel('aoe_scheduler/collection_crons');
+        $collection = Mage::getModel('aoe_scheduler/collection_crons'); /* @var $collection Aoe_Scheduler_Model_Collection_Crons */
         $this->setCollection($collection);
         return parent::_prepareCollection();
     }
@@ -37,7 +37,7 @@ class Aoe_Scheduler_Block_Adminhtml_Cron_Grid extends Mage_Adminhtml_Block_Widge
     /**
      * Add mass-actions to grid
      *
-     * @return Aoe_Scheduler_Block_Adminhtml_Cron_Grid
+     * @return $this
      */
     protected function _prepareMassaction()
     {
@@ -68,7 +68,7 @@ class Aoe_Scheduler_Block_Adminhtml_Cron_Grid extends Mage_Adminhtml_Block_Widge
     /**
      * Preparation of the requested columns of the grid
      *
-     * @return Aoe_Scheduler_Block_Adminhtml_Cron_Grid Self
+     * @return $this
      */
     protected function _prepareColumns()
     {
@@ -100,6 +100,7 @@ class Aoe_Scheduler_Block_Adminhtml_Cron_Grid extends Mage_Adminhtml_Block_Widge
     /**
      * Decorate status column values
      *
+     * @param $value
      * @return string
      */
     public function decorateStatus($value)
