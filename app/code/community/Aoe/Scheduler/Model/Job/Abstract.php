@@ -19,6 +19,15 @@
 abstract class Aoe_Scheduler_Model_Job_Abstract extends Mage_Core_Model_Abstract
 {
 
+    /**
+     * Initialize resource
+     */
+    public function _construct()
+    {
+        $this->setIsActive(true);
+        parent::_construct();
+    }
+
     abstract public function loadByCode($jobCode);
 
     /**

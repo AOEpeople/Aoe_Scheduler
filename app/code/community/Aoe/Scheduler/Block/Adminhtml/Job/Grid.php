@@ -15,7 +15,7 @@ class Aoe_Scheduler_Block_Adminhtml_Job_Grid extends Mage_Adminhtml_Block_Widget
     public function __construct()
     {
         parent::__construct();
-        $this->setId('cron_grid');
+        $this->setId('job_grid');
         $this->_filterVisibility = false;
         $this->_pagerVisibility = false;
     }
@@ -28,8 +28,8 @@ class Aoe_Scheduler_Block_Adminhtml_Job_Grid extends Mage_Adminhtml_Block_Widget
      */
     protected function _prepareCollection()
     {
-        $collection = Mage::getModel('aoe_scheduler/collection_crons'); /* @var $collection Aoe_Scheduler_Model_Collection_Crons */
-        $this->setCollection($collection);
+        $jobFactory = Mage::getModel('aoe_scheduler/job_factory'); /* @var $jobFactory Aoe_Scheduler_Model_Job_Factory */
+        $this->setCollection($jobFactory->getAllJobs());
         return parent::_prepareCollection();
     }
 
@@ -72,24 +72,25 @@ class Aoe_Scheduler_Block_Adminhtml_Job_Grid extends Mage_Adminhtml_Block_Widget
      */
     protected function _prepareColumns()
     {
-        $this->addColumn('id', array(
-            'header' => Mage::helper('aoe_scheduler')->__('Code'),
-            'index' => 'id',
+
+        $this->addColumn('job_code', array(
+            'header' => Mage::helper('aoe_scheduler')->__('Job code'),
+            'index' => 'job_code',
             'sortable' => false,
         ));
-        $this->addColumn('cron_expr', array(
-            'header' => Mage::helper('aoe_scheduler')->__('Cron Expression'),
-            'index' => 'cron_expr',
+        $this->addColumn('schedule_cron_expr', array(
+            'header' => Mage::helper('aoe_scheduler')->__('Cron expression'),
+            'index' => 'schedule_cron_expr',
             'sortable' => false,
         ));
-        $this->addColumn('model', array(
-            'header' => Mage::helper('aoe_scheduler')->__('Model'),
-            'index' => 'model',
+        $this->addColumn('run_model', array(
+            'header' => Mage::helper('aoe_scheduler')->__('Run model'),
+            'index' => 'run_model',
             'sortable' => false,
         ));
-        $this->addColumn('status', array(
+        $this->addColumn('is_active', array(
             'header' => Mage::helper('aoe_scheduler')->__('Status'),
-            'index' => 'status',
+            'index' => 'is_active',
             'sortable' => false,
             'frame_callback' => array($this, 'decorateStatus'),
         ));
@@ -106,28 +107,22 @@ class Aoe_Scheduler_Block_Adminhtml_Job_Grid extends Mage_Adminhtml_Block_Widget
     public function decorateStatus($value)
     {
         $cell = sprintf('<span class="grid-severity-%s"><span>%s</span></span>',
-            ($value == Aoe_Scheduler_Model_Configuration::STATUS_DISABLED) ? 'critical' : 'notice',
-            Mage::helper('aoe_scheduler')->__($value)
+            $value ? 'notice' : 'critical',
+            Mage::helper('aoe_scheduler')->__($value ? 'Enabled' : 'Disabled')
         );
         return $cell;
     }
 
-
     /**
-     * Helper function to add store filter condition
+     * Row click url
      *
-     * @param Mage_Core_Model_Mysql4_Collection_Abstract $collection Data collection
-     * @param Mage_Adminhtml_Block_Widget_Grid_Column $column Column information to be filtered
-     * @return void
+     * @param object $row
+     * @return string
      */
-    protected function _filterStoreCondition($collection, $column)
+    public function getRowUrl($row)
     {
-        if (!$value = $column->getFilter()->getValue()) {
-            return;
-        }
-        $this->getCollection()->addStoreFilter($value);
+        return $this->getUrl('*/*/edit', array('job_code' => $row->getId()));
     }
-
 
     /**
      * Helper function to receive grid functionality urls for current grid
@@ -136,7 +131,7 @@ class Aoe_Scheduler_Block_Adminhtml_Job_Grid extends Mage_Adminhtml_Block_Widget
      */
     public function getGridUrl()
     {
-        return $this->getUrl('adminhtml/scheduler/cron', array('_current' => true));
+        return $this->getUrl('adminhtml/job/index', array('_current' => true));
     }
 
 }

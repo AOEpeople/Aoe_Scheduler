@@ -15,9 +15,9 @@ class Aoe_Scheduler_Block_Adminhtml_Job_Edit extends Mage_Adminhtml_Block_Widget
     protected function _construct()
     {
         parent::_construct();
-        $this->_objectId = 'job_id';
+        $this->_objectId = 'job_code';
         $this->_blockGroup = 'aoe_scheduler';
-        $this->_controller = 'adminhtml_cron';
+        $this->_controller = 'adminhtml_job';
 
         $this->_addButton('save_and_edit_button', array(
                 'label'   => Mage::helper('aoe_scheduler')->__('Save and Continue Edit'),

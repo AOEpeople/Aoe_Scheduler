@@ -7,7 +7,7 @@ require_once Mage::getModuleDir('controllers', 'Aoe_Scheduler') . '/Adminhtml/Ab
  *
  * @author Fabrizio Branca
  */
-class Aoe_Scheduler_Adminhtml_CronController extends Aoe_Scheduler_Adminhtml_AbstractController
+class Aoe_Scheduler_Adminhtml_JobController extends Aoe_Scheduler_Adminhtml_AbstractController
 {
 
     /**
@@ -114,17 +114,20 @@ class Aoe_Scheduler_Adminhtml_CronController extends Aoe_Scheduler_Adminhtml_Abs
     /**
      * Init job instance and set it to registry
      *
-     * @return Aoe_Scheduler_Model_Job
+     * @return Aoe_Scheduler_Model_Job_Db
      */
     protected function _initJob()
     {
-        $jobId = $this->getRequest()->getParam('job_id', null);
-        $job = Mage::getModel('aoe_scheduler/job'); /* @var $job Aoe_Scheduler_Model_Job */
-        if ($jobId) {
-            $job->load($jobId);
-            if (!$job->getId()) {
-                $this->_getSession()->addError(Mage::helper('aoe_scheduler')->__('Could not find job.'));
-                return false;
+        $jobCode = $this->getRequest()->getParam('job_code', null);
+        $job = Mage::getModel('aoe_scheduler/job_db'); /* @var $job Aoe_Scheduler_Model_Job_Db */
+        if ($jobCode) {
+            $job->load($jobCode);
+            if (!$job->getJobCode()) {
+                $jobFactory = Mage::getModel('aoe_scheduler/job_factory'); /* @var $jobFactory Aoe_Scheduler_Model_Job_Factory */
+                $xmlJob = $jobFactory->loadByCode($jobCode, true);
+                if ($xmlJob !== false) {
+                    $job->copyFrom($xmlJob);
+                }
             }
         }
         Mage::register('current_job_instance', $job);
@@ -156,6 +159,17 @@ class Aoe_Scheduler_Adminhtml_CronController extends Aoe_Scheduler_Adminhtml_Abs
         $this->renderLayout();
     }
 
+    protected function _filterPostData($data)
+    {
+        return $data;
+    }
+
+    protected function _validatePostData($data)
+    {
+        // TODO: implement!
+        return true;
+    }
+
     /**
      * Save action
      *
@@ -172,7 +186,7 @@ class Aoe_Scheduler_Adminhtml_CronController extends Aoe_Scheduler_Adminhtml_Abs
             $job->setData($data);
             //validating
             if (!$this->_validatePostData($data)) {
-                $this->_redirect('*/*/edit', array('job_id' => $job->getId(), '_current' => true));
+                $this->_redirect('*/*/edit', array('job_code' => $job->getId(), '_current' => true));
                 return;
             }
 
@@ -188,7 +202,7 @@ class Aoe_Scheduler_Adminhtml_CronController extends Aoe_Scheduler_Adminhtml_Abs
                 $this->_getSession()->setFormData(false);
                 // check if 'Save and Continue'
                 if ($this->getRequest()->getParam('back', false)) {
-                    $this->_redirect('*/*/edit', array('job_id' => $job->getId(), '_current' => true));
+                    $this->_redirect('*/*/edit', array('job_code' => $job->getId(), '_current' => true));
                     return;
                 }
                 // go to grid
@@ -202,7 +216,7 @@ class Aoe_Scheduler_Adminhtml_CronController extends Aoe_Scheduler_Adminhtml_Abs
             }
 
             $this->_getSession()->setFormData($data);
-            $this->_redirect('*/*/edit', array('job_id' => $this->getRequest()->getParam('job_id')));
+            $this->_redirect('*/*/edit', array('job_code' => $this->getRequest()->getParam('job_code')));
             return;
         }
         $this->_redirect('*/*/', array('_current' => true));

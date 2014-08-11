@@ -23,11 +23,16 @@ class Aoe_Scheduler_Model_Job_Factory
      * Load job
      *
      * @param $jobCode
+     * @param bool $xmlOnly
      * @return Aoe_Scheduler_Model_Job_Abstract|false
      */
-    public function loadByCode($jobCode)
+    public function loadByCode($jobCode, $xmlOnly=false)
     {
-        foreach ($this->models as $model) {
+        $models = $this->models;
+        if ($xmlOnly) {
+            array_shift($models);
+        }
+        foreach ($models as $model) {
             $job = Mage::getModel($model); /* @var $job Aoe_Scheduler_Model_Job_Abstract */
             $job->loadByCode($jobCode);
             if ($job->getJobCode()) {
@@ -38,16 +43,18 @@ class Aoe_Scheduler_Model_Job_Factory
     }
 
     /**
-     * @return Aoe_Scheduler_Model_Job_Abstract[]
+     * @return Varien_Data_Collection
      */
     public function getAllJobs()
     {
-        $jobs = array();
+        $jobs = new Varien_Data_Collection();
         foreach ($this->models as $model) {
-            foreach (Mage::getModel($model)->getCollection() as $job) { /* @var $job Aoe_Scheduler_Model_Job_Abstract */
+            mage::log($model);
+            $jobCollection = Mage::getModel($model)->getCollection();
+            foreach ($jobCollection as $job) { /* @var $job Aoe_Scheduler_Model_Job_Abstract */
                 $jobCode = $job->getJobCode();
-                if (!array_key_exists($jobCode, $jobs)) {
-                    $jobs[$jobCode] = $job;
+                if (!$jobs->getItemById($jobCode)) {
+                    $jobs->addItem($job);
                 }
             }
         }

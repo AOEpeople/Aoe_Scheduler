@@ -85,18 +85,14 @@ class Aoe_Scheduler_Block_Adminhtml_Job_Edit_Tab_Form extends Mage_Adminhtml_Blo
         $fieldset = $form->addFieldset('base_fieldset', array('legend' => Mage::helper('aoe_scheduler')->__('General')));
         $this->_addElementTypes($fieldset);
 
-        if ($job->getId()) {
-            $fieldset->addField('job_id', 'hidden', array(
-                'name' => 'job_id',
-            ));
-        }
-
         $fieldset->addField('job_code', 'text', array(
-            'name'  => 'Job Code',
+            'name'  => 'job_code',
             'label' => Mage::helper('aoe_scheduler')->__('Job code'),
             'title' => Mage::helper('aoe_scheduler')->__('Job code'),
             'class' => '',
             'required' => true,
+            'readonly' => $job->getJobCode() ? true : false,
+            'disabled' => $job->getJobCode() ? true : false,
         ));
 
         $fieldset->addField('run_model', 'text', array(
@@ -109,9 +105,9 @@ class Aoe_Scheduler_Block_Adminhtml_Job_Edit_Tab_Form extends Mage_Adminhtml_Blo
         ));
 
         $fieldset->addField('is_active', 'select', array(
+            'name'      => 'is_active',
             'label'     => Mage::helper('aoe_scheduler')->__('Status'),
             'title'     => Mage::helper('aoe_scheduler')->__('Status'),
-            'name'      => 'is_active',
             'required'  => true,
             'options'   => array(
                 0 => Mage::helper('aoe_scheduler')->__('Disabled'),
@@ -132,7 +128,7 @@ class Aoe_Scheduler_Block_Adminhtml_Job_Edit_Tab_Form extends Mage_Adminhtml_Blo
         ));
 
         $fieldset->addField('schedule_cron_expr', 'text', array(
-            'name'      => 'area',
+            'name'      => 'schedule_cron_expr',
             'label'     => Mage::helper('aoe_scheduler')->__('Cron expression'),
             'title'     => Mage::helper('aoe_scheduler')->__('Cron expression'),
             'required'  => false,

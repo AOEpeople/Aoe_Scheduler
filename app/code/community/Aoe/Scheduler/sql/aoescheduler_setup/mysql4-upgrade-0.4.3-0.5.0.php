@@ -6,14 +6,9 @@ $installer->startSetup();
 
 $table = $installer->getConnection()
     ->newTable($installer->getTable('aoe_scheduler/job'))
-    ->addColumn('id', Varien_Db_Ddl_Table::TYPE_INTEGER, null, array(
-        'identity'  => true,
-        'unsigned'  => true,
-        'nullable'  => false,
-        'primary'   => true,
-    ), 'Cron Job Id')
     ->addColumn('job_code', Varien_Db_Ddl_Table::TYPE_VARCHAR, 255, array(
         'nullable'  => false,
+        'primary'   => true,
     ), 'Job Code')
     ->addColumn('schedule_cron_expr', Varien_Db_Ddl_Table::TYPE_TEXT, 255, array(
     ), 'Schedule cron expression')
@@ -26,20 +21,11 @@ $table = $installer->getConnection()
         'nullable' => false,
         'default' => 1
     ), 'Is active')
+    ->addColumn('parameter', Varien_Db_Ddl_Table::TYPE_TEXT, '64K', array(
+    ), 'Is active')
     ->addIndex($installer->getIdxName('aoe_scheduler/job', array('job_code')),
         array('job_code'))
     ->setComment('Cron Job Definition');
 $installer->getConnection()->createTable($table);
-
-$installer->getConnection()->addIndex(
-    $installer->getTable('aoe_scheduler/job'),
-    $installer->getIdxName(
-        'aoe_scheduler/job',
-        array('job_code'),
-        Varien_Db_Adapter_Interface::INDEX_TYPE_UNIQUE
-    ),
-    array('job_code'),
-    Varien_Db_Adapter_Interface::INDEX_TYPE_UNIQUE
-);
 
 $installer->endSetup();

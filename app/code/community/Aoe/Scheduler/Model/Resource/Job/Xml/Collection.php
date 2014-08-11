@@ -5,7 +5,7 @@
  *
  * @author Fabrizio Branca
  */
-class Aoe_Scheduler_Model_Resource_Xml_Collection extends Varien_Data_Collection
+class Aoe_Scheduler_Model_Resource_Job_Xml_Collection extends Varien_Data_Collection
 {
 
     protected $_dataLoaded = false;
