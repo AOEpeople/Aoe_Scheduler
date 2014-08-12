@@ -8,6 +8,15 @@
 class Aoe_Scheduler_Block_Adminhtml_Job_Edit extends Mage_Adminhtml_Block_Widget_Form_Container
 {
 
+    public function __construct()
+    {
+        parent::__construct();
+        if ($this->getJob()->getXmlJob() && $this->_buttons[0]['delete']) {
+            $this->_buttons[0]['delete']['label'] = Mage::helper('aoe_scheduler')->__('Reset to XML configuration');
+        }
+        $this->removeButton('reset');
+    }
+
     /**
      * Internal constructor
      *
@@ -18,23 +27,12 @@ class Aoe_Scheduler_Block_Adminhtml_Job_Edit extends Mage_Adminhtml_Block_Widget
         $this->_objectId = 'job_code';
         $this->_blockGroup = 'aoe_scheduler';
         $this->_controller = 'adminhtml_job';
-
-        $this->_addButton('save_and_edit_button', array(
-                'label'   => Mage::helper('aoe_scheduler')->__('Save and Continue Edit'),
-                'onclick' => 'saveAndContinueEdit()',
-                'class'   => 'save'
-            ), 100
-        );
-
-        $this->_formScripts[] = '
-            function saveAndContinueEdit() {
-            editForm.submit($(\'edit_form\').action + \'back/edit/\');}';
     }
 
     /**
      * Get job
      *
-     * @return Aoe_Scheduler_Model_Job
+     * @return Aoe_Scheduler_Model_Job_Db
      */
     public function getJob()
     {
@@ -50,9 +48,8 @@ class Aoe_Scheduler_Block_Adminhtml_Job_Edit extends Mage_Adminhtml_Block_Widget
     public function getHeaderText()
     {
         if ($this->getJob()->getId()) {
-            return Mage::helper('aoe_scheduler')->__('Job [id: %s]', $this->escapeHtml($this->getJob()->getId()));
-        }
-        else {
+            return Mage::helper('aoe_scheduler')->__('Job "%s"', $this->escapeHtml($this->getJob()->getId()));
+        } else {
             return Mage::helper('aoe_scheduler')->__('New Job');
         }
     }

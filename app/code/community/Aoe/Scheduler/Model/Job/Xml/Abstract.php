@@ -24,7 +24,7 @@ abstract class Aoe_Scheduler_Model_Job_Xml_Abstract extends Aoe_Scheduler_Model_
         $xmlConfig = false;
         $config = Mage::getConfig()->getNode($this->getConfigPath());
         if ($config instanceof Mage_Core_Model_Config_Element) {
-            $xmlConfig = $config->{$jobCode};
+            $xmlConfig = $config->descend($jobCode);
         }
         return $xmlConfig;
     }
@@ -43,7 +43,8 @@ abstract class Aoe_Scheduler_Model_Job_Xml_Abstract extends Aoe_Scheduler_Model_
         $xmlConfiguration = $this->getJobXmlConfig($jobCode);
 
         if ($xmlConfiguration === false) {
-            Mage::throwException(sprintf('Could not find job with code "%s"', $jobCode));
+            return $this;
+            // Mage::throwException(sprintf('Could not find job with code "%s"', $jobCode));
         }
 
         $this->setJobCode($jobCode);

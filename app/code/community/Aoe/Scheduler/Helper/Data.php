@@ -173,7 +173,7 @@ class Aoe_Scheduler_Helper_Data extends Mage_Core_Helper_Abstract
     public function sendErrorMail(Aoe_Scheduler_Model_Schedule $schedule, $error)
     {
         if (!Mage::getStoreConfig(self::XML_PATH_EMAIL_RECIPIENT)) {
-            return $this;
+            return;
         }
 
         $translate = Mage::getSingleton('core/translate'); /* @var $translate Mage_Core_Model_Translate */
@@ -191,6 +191,25 @@ class Aoe_Scheduler_Helper_Data extends Mage_Core_Helper_Abstract
 
         $translate->setTranslateInline(true);
     }
+
+    /**
+     * Get callback from runModel
+     *
+     * @param $runModel
+     * @return array
+     */
+    public function getCallBack($runModel)
+    {
+        if (!preg_match(Mage_Cron_Model_Observer::REGEX_RUN_MODEL, (string)$runModel, $run)) {
+            Mage::throwException(Mage::helper('cron')->__('Invalid model/method definition, expecting "model/class::method".'));
+        }
+        if (!($model = Mage::getModel($run[1])) || !method_exists($model, $run[2])) {
+            Mage::throwException(Mage::helper('cron')->__('Invalid callback: %s::%s does not exist', $run[1], $run[2]));
+        }
+        $callback = array($model, $run[2]);
+        return $callback;
+    }
+
 
 }
 

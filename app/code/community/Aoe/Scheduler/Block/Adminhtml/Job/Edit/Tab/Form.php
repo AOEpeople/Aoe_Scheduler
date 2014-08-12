@@ -60,7 +60,7 @@ class Aoe_Scheduler_Block_Adminhtml_Job_Edit_Tab_Form extends Mage_Adminhtml_Blo
     /**
      * Get job
      *
-     * @return Aoe_Scheduler_Model_Job
+     * @return Aoe_Scheduler_Model_Job_Db
      */
     public function getJob()
     {
@@ -85,15 +85,37 @@ class Aoe_Scheduler_Block_Adminhtml_Job_Edit_Tab_Form extends Mage_Adminhtml_Blo
         $fieldset = $form->addFieldset('base_fieldset', array('legend' => Mage::helper('aoe_scheduler')->__('General')));
         $this->_addElementTypes($fieldset);
 
-        $fieldset->addField('job_code', 'text', array(
-            'name'  => 'job_code',
-            'label' => Mage::helper('aoe_scheduler')->__('Job code'),
-            'title' => Mage::helper('aoe_scheduler')->__('Job code'),
-            'class' => '',
-            'required' => true,
-            'readonly' => $job->getJobCode() ? true : false,
-            'disabled' => $job->getJobCode() ? true : false,
-        ));
+        $xmlJob = $job->getXmlJob();
+        if ($xmlJob && !$xmlJob->getJobCode()) {
+            $xmlJob = false;
+        }
+
+        if ($job->getJobCode()) {
+            $fieldset->addField('job_code_display', 'text', array(
+                'name'  => 'job_code',
+                'label' => Mage::helper('aoe_scheduler')->__('Job code'),
+                'title' => Mage::helper('aoe_scheduler')->__('Job code'),
+                'class' => '',
+                'value' => $job->getJobCode(),
+                'required' => true,
+                'disabled' => true,
+            ));
+            $fieldset->addField('job_code', 'hidden', array(
+                'name'  => 'job_code',
+            ));
+        } else {
+            $fieldset->addField('job_code', 'text', array(
+                'name'  => 'job_code',
+                'label' => Mage::helper('aoe_scheduler')->__('Job code'),
+                'title' => Mage::helper('aoe_scheduler')->__('Job code'),
+                'class' => '',
+                'required' => true,
+                // 'readonly' => $job->getJobCode() ? true : false,
+                'disabled' => $job->getJobCode() ? true : false,
+                'after_element_html' => $xmlJob ? $this->getOriginalValueSnippet($xmlJob->getJobCode()) : ''
+            ));
+        }
+
 
         $fieldset->addField('run_model', 'text', array(
             'name'  => 'run_model',
@@ -101,7 +123,8 @@ class Aoe_Scheduler_Block_Adminhtml_Job_Edit_Tab_Form extends Mage_Adminhtml_Blo
             'title' => Mage::helper('aoe_scheduler')->__('Run model'),
             'class' => '',
             'required' => true,
-            'note' => Mage::helper('aoe_scheduler')->__('e.g. "aoe_scheduler/heartbeatTask::run"')
+            'note' => Mage::helper('aoe_scheduler')->__('e.g. "aoe_scheduler/heartbeatTask::run"'),
+            'after_element_html' => $xmlJob ? $this->getOriginalValueSnippet($xmlJob->getRunModel()) : ''
         ));
 
         $fieldset->addField('is_active', 'select', array(
@@ -112,7 +135,8 @@ class Aoe_Scheduler_Block_Adminhtml_Job_Edit_Tab_Form extends Mage_Adminhtml_Blo
             'options'   => array(
                 0 => Mage::helper('aoe_scheduler')->__('Disabled'),
                 1 => Mage::helper('aoe_scheduler')->__('Enabled')
-            )
+            ),
+            'after_element_html' => $xmlJob ? $this->getOriginalValueSnippet($xmlJob->getIsActive() ? Mage::helper('aoe_scheduler')->__('Enabled') : Mage::helper('aoe_scheduler')->__('Disabled')) : ''
         ));
 
         $fieldset = $form->addFieldset('cron_fieldset', array('legend' => Mage::helper('aoe_scheduler')->__('Scheduling')));
@@ -124,7 +148,8 @@ class Aoe_Scheduler_Block_Adminhtml_Job_Edit_Tab_Form extends Mage_Adminhtml_Blo
             'title' => Mage::helper('aoe_scheduler')->__('Cron configuration path'),
             'class' => '',
             'required' => false,
-            'note' => Mage::helper('aoe_scheduler')->__('Path to system configuration containing the cron configuration for this job. (e.g. system/cron/scheduler_cron_expr_heartbeat) This configuration - if set - has a higher priority over the cron expression configured with the job directly.')
+            'note' => Mage::helper('aoe_scheduler')->__('Path to system configuration containing the cron configuration for this job. (e.g. system/cron/scheduler_cron_expr_heartbeat) This configuration - if set - has a higher priority over the cron expression configured with the job directly.'),
+            'after_element_html' => $xmlJob ? $this->getOriginalValueSnippet($xmlJob->getScheduleConfigPath()) : ''
         ));
 
         $fieldset->addField('schedule_cron_expr', 'text', array(
@@ -132,7 +157,8 @@ class Aoe_Scheduler_Block_Adminhtml_Job_Edit_Tab_Form extends Mage_Adminhtml_Blo
             'label'     => Mage::helper('aoe_scheduler')->__('Cron expression'),
             'title'     => Mage::helper('aoe_scheduler')->__('Cron expression'),
             'required'  => false,
-            'note' => Mage::helper('aoe_scheduler')->__('e.g "*/5 * * * *" or "always"')
+            'note' => Mage::helper('aoe_scheduler')->__('e.g "*/5 * * * *" or "always"'),
+            'after_element_html' => $xmlJob ? $this->getOriginalValueSnippet($xmlJob->getScheduleCronExpr()) : ''
         ));
 
         $fieldset = $form->addFieldset('parameter_fieldset', array('legend' => Mage::helper('aoe_scheduler')->__('Extras')));
@@ -144,12 +170,21 @@ class Aoe_Scheduler_Block_Adminhtml_Job_Edit_Tab_Form extends Mage_Adminhtml_Blo
             'title' => Mage::helper('aoe_scheduler')->__('Parameters'),
             'class' => 'textarea',
             'required' => false,
-            'note' => Mage::helper('aoe_scheduler')->__('This parameter will be passed to the model. It is up to the model to specify the format of this paramter (e.g. json/xml/...')
+            'note' => Mage::helper('aoe_scheduler')->__('This parameter will be passed to the model. It is up to the model to specify the format of this paramter (e.g. json/xml/...'),
+            'after_element_html' => $xmlJob ? $this->getOriginalValueSnippet($xmlJob->getParameter()) : ''
         ));
 
         $this->setForm($form);
 
         return parent::_prepareForm();
+    }
+
+    protected function getOriginalValueSnippet($value)
+    {
+        if (empty($value)) {
+            $value = '<em>empty</em>';
+        }
+        return '<p class="original" style="background-color: white"><strong>Original:</strong> '.$value.'</p>';
     }
 
     /**

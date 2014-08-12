@@ -15,6 +15,8 @@
  * @method getRunModel()
  * @method setIsActive($isActive)
  * @method getIsActive()
+ * @method setParameter($parameter)
+ * @method getParameter()
  */
 abstract class Aoe_Scheduler_Model_Job_Abstract extends Mage_Core_Model_Abstract
 {
@@ -44,24 +46,4 @@ abstract class Aoe_Scheduler_Model_Job_Abstract extends Mage_Core_Model_Abstract
         }
         return $cronExpr;
     }
-
-    /**
-     * Get callback from runModel
-     * TODO: should this go into the schedule? Or even a helper? Is this required here for validation?
-     *
-     * @param $runModel
-     * @return array
-     */
-    protected function getCallBack($runModel)
-    {
-        if (!preg_match(Mage_Cron_Model_Observer::REGEX_RUN_MODEL, (string)$runModel, $run)) {
-            Mage::throwException(Mage::helper('cron')->__('Invalid model/method definition, expecting "model/class::method".'));
-        }
-        if (!($model = Mage::getModel($run[1])) || !method_exists($model, $run[2])) {
-            Mage::throwException(Mage::helper('cron')->__('Invalid callback: %s::%s does not exist', $run[1], $run[2]));
-        }
-        $callback = array($model, $run[2]);
-        return $callback;
-    }
-
 }

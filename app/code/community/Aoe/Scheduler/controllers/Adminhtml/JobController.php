@@ -166,6 +166,13 @@ class Aoe_Scheduler_Adminhtml_JobController extends Aoe_Scheduler_Adminhtml_Abst
 
     protected function _validatePostData($data)
     {
+        try {
+            $helper = Mage::helper('aoe_scheduler'); /* @var $helper Aoe_Scheduler_Helper_Data */
+            $helper->getCallBack($data['run_model']);
+        } catch (Exception $e) {
+            $this->_getSession()->addError($e->getMessage());
+            return false;
+        }
         // TODO: implement!
         return true;
     }
@@ -183,6 +190,7 @@ class Aoe_Scheduler_Adminhtml_JobController extends Aoe_Scheduler_Adminhtml_Abst
                 $this->_redirect('*/*/');
                 return;
             }
+            Mage::log($data);
             $job->setData($data);
             //validating
             if (!$this->_validatePostData($data)) {
