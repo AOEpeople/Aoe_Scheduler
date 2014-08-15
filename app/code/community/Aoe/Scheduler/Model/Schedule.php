@@ -9,6 +9,7 @@
  * @method string getMessages()
  * @method string getCreatedAt()
  * @method string getScheduledAt()
+ * @method string setJobCode($jobCode)
  * @method string getJobCode()
  * @method string setMessages()
  * @method string setExecutedAt()
@@ -46,12 +47,28 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
     /**
      * @var Aoe_Scheduler_Model_Configuration
      */
-    protected $_jobConfiguration;
+    protected $job;
 
     /**
      * @var bool
      */
     protected $jobWasLocked = false;
+
+
+
+    /**
+     * Initialize from job
+     *
+     * @param Aoe_Scheduler_Model_Job_Abstract $job
+     * @return $this
+     */
+    public function initializeFromJob(Aoe_Scheduler_Model_Job_Abstract $job)
+    {
+        $this->setJobCode($job->getJobCode());
+        $this->setCronExpr($job->getCronExpression());
+        $this->setStatus(Mage_Cron_Model_Schedule::STATUS_PENDING);
+        return $this;
+    }
 
 
     /**
@@ -63,29 +80,9 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
     public function runNow($tryLockJob = true)
     {
 
-        $modelCallback = $this->getJobConfiguration()->getModel();
-
-        if (!$this->getCreatedAt()) {
-            $this->schedule();
-        }
-
-        if (!preg_match(Mage_Cron_Model_Observer::REGEX_RUN_MODEL, $modelCallback, $run)) {
-            Mage::throwException(Mage::helper('cron')->__('Invalid model/method definition, expecting "model/class::method".'));
-        }
-        if (!($model = Mage::getModel($run[1])) || !method_exists($model, $run[2])) {
-            Mage::throwException(Mage::helper('cron')->__('Invalid callback: %s::%s does not exist', $run[1], $run[2]));
-        }
-        $callback = array($model, $run[2]);
-
-        if (empty($callback)) {
-            Mage::throwException(Mage::helper('cron')->__('No callbacks found'));
-        }
-
         // lock job (see below) prevents the exact same schedule from being executed from more than one process (or server)
         // the following check will prevent multiple schedules of the same type to be run in parallel
-
-        $processManager = Mage::getModel('aoe_scheduler/processManager');
-        /* @var $processManager Aoe_Scheduler_Model_ProcessManager */
+        $processManager = Mage::getModel('aoe_scheduler/processManager'); /* @var $processManager Aoe_Scheduler_Model_ProcessManager */
         if ($processManager->isJobCodeRunning($this->getJobCode(), $this->getId())) {
             $this->log(sprintf('Job "%s" (id: %s) will not be executed because there is already another process with the same job code running. Skipping.', $this->getJobCode(), $this->getId()));
             return $this;
@@ -100,6 +97,13 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
             $this->log(sprintf('Job "%s" (id: %s) is locked. Skipping.', $this->getJobCode(), $this->getId()));
             return $this;
         }
+
+        // if this schedule doesn't exist yet, create it
+        if (!$this->getCreatedAt()) {
+            $this->schedule();
+        }
+
+        $callback = $this->getJob()->getCallback();
 
         $startTime = time();
         $this
@@ -123,7 +127,6 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
 
         $this->log('Stop: ' . $this->getJobCode());
 
-        // added by Fabrizio to also save messages when no exception was thrown
         if (!empty($messages)) {
             if (is_object($messages)) {
                 $messages = get_class($messages);
@@ -204,25 +207,16 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
     /**
      * Get job configuration
      *
-     * @deprecated
-     * @return Aoe_Scheduler_Model_Configuration
-     */
-    public function getJobConfiguration()
-    {
-        if (is_null($this->_jobConfiguration)) {
-            $this->_jobConfiguration = Mage::getModel('aoe_scheduler/configuration')->loadByCode($this->getJobCode());
-        }
-        return $this->_jobConfiguration;
-    }
-
-
-    /**
-     * @return Aoe_Scheduler_Model_Job
+     * @return Aoe_Scheduler_Model_Job_Abstract
      */
     public function getJob()
     {
-
+        if (is_null($this->job)) {
+            $this->job = Mage::getModel('aoe_scheduler/job_factory')->loadByCode($this->getJobCode());
+        }
+        return $this->job;
     }
+
 
 
     /**
@@ -259,7 +253,11 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
     /**
      * Is this process still alive?
      *
-     * @return bool
+     * true -> alive
+     * false -> dead
+     * null -> we don't know because the task is running on a different server
+     *
+     * @return bool|null
      */
     public function isAlive()
     {
@@ -388,7 +386,7 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
     {
         $isAlwaysTask = false;
         try {
-            $isAlwaysTask = $this->getJobConfiguration()->isAlwaysTask();
+            $isAlwaysTask = $this->getJob()->isAlwaysTask();
         } catch (Exception $e) {
             Mage::logException($e);
         }
@@ -422,7 +420,8 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
         return parent::_beforeSave();
     }
 
-    public function canRun($throwException=false) {
+    public function canRun($throwException=false)
+    {
         if ($this->isAlwaysTask()) {
             return true;
         }
@@ -442,6 +441,29 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
             return false;
         }
         return true;
+    }
+
+    /**
+     * Process schedule
+     *
+     * @return $this
+     */
+    public function process() {
+        try {
+            if (!$this->canRun(true)) {
+                return $this;
+            }
+            $this->runNow(!$this->getJob()->isAlwaysTask());
+        } catch (Exception $e) {
+            $this
+                ->setStatus(Mage_Cron_Model_Schedule::STATUS_ERROR)
+                ->setMessages($e->__toString());
+            Mage::dispatchEvent('cron_' . $this->getJobCode() . '_exception', array('schedule' => $this, 'exception' => $e));
+            Mage::dispatchEvent('cron_exception', array('schedule' => $this, 'exception' => $e));
+            Mage::helper('aoe_scheduler')->sendErrorMail($this, $e->__toString());
+        }
+        $this->save();
+        return $this;
     }
 
 

@@ -46,4 +46,27 @@ abstract class Aoe_Scheduler_Model_Job_Abstract extends Mage_Core_Model_Abstract
         }
         return $cronExpr;
     }
+
+    /**
+     * Is always task
+     *
+     * @return bool
+     */
+    public function isAlwaysTask()
+    {
+        return $this->getCronExpression() == 'always';
+    }
+
+    public function getCallback()
+    {
+        $helper = Mage::helper('aoe_scheduler'); /* @var $helper Aoe_Scheduler_Helper_Data */
+        return $helper->getCallBack($this->getRunModel());
+    }
+
+    public function canBeScheduled()
+    {
+        return $this->getIsActive() && $this->getCronExpression() && !$this->isAlwaysTask();
+    }
+
+
 }

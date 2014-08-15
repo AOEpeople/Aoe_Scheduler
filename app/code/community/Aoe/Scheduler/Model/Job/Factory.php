@@ -43,13 +43,14 @@ class Aoe_Scheduler_Model_Job_Factory
     }
 
     /**
+     * Get all jobs
+     *
      * @return Varien_Data_Collection
      */
     public function getAllJobs()
     {
         $jobs = new Varien_Data_Collection();
         foreach ($this->models as $model) {
-            mage::log($model);
             $jobCollection = Mage::getModel($model)->getCollection();
             foreach ($jobCollection as $job) { /* @var $job Aoe_Scheduler_Model_Job_Abstract */
                 $jobCode = $job->getJobCode();
