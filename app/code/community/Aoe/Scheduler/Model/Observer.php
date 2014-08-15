@@ -149,6 +149,31 @@ class Aoe_Scheduler_Model_Observer extends Mage_Cron_Model_Observer
         }
     }
 
+    public function deleteDuplicates()
+    {
+        $cron_schedule = Mage::getSingleton('core/resource')->getTableName('cron_schedule');
+        $conn = Mage::getSingleton('core/resource')->getConnection('core_read');
+
+        // TODO: Direct sql is not nice. We can do better... :)
+        $results = $conn->fetchAll("
+			SELECT
+				GROUP_CONCAT(schedule_id) AS ids,
+				CONCAT(job_code, scheduled_at) AS jobkey,
+				count(*) AS qty
+			FROM {$cron_schedule}
+			WHERE status = '" . Mage_Cron_Model_Schedule::STATUS_PENDING . "'
+			GROUP BY jobkey
+			HAVING qty > 1;
+		");
+        foreach ($results as $row) {
+            $ids = explode(',', $row['ids']);
+            $removeIds = array_slice($ids, 1);
+            foreach ($removeIds as $id) {
+                Mage::getModel('cron/schedule')->load($id)->delete();
+            }
+        }
+    }
+
     /**
      * Generate jobs for config information
      * Rewrites the original method to filter deactivated jobs
@@ -197,27 +222,7 @@ class Aoe_Scheduler_Model_Observer extends Mage_Cron_Model_Observer
 
         $result = parent::generate();
 
-        $cron_schedule = Mage::getSingleton('core/resource')->getTableName('cron_schedule');
-        $conn = Mage::getSingleton('core/resource')->getConnection('core_read');
-
-        // TODO: Direct sql is not nice. We can do better... :)
-        $results = $conn->fetchAll("
-			SELECT
-				GROUP_CONCAT(schedule_id) AS ids,
-				CONCAT(job_code, scheduled_at) AS jobkey,
-				count(*) AS qty
-			FROM {$cron_schedule}
-			WHERE status = '" . Mage_Cron_Model_Schedule::STATUS_PENDING . "'
-			GROUP BY jobkey
-			HAVING qty > 1;
-		");
-        foreach ($results as $row) {
-            $ids = explode(',', $row['ids']);
-            $removeIds = array_slice($ids, 1);
-            foreach ($removeIds as $id) {
-                Mage::getModel('cron/schedule')->load($id)->delete();
-            }
-        }
+        $this->deleteDuplicates();
 
         if ($logFile = Mage::getStoreConfig('system/cron/logFile')) {
 
