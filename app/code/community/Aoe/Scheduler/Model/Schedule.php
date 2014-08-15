@@ -204,6 +204,7 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
     /**
      * Get job configuration
      *
+     * @deprecated
      * @return Aoe_Scheduler_Model_Configuration
      */
     public function getJobConfiguration()
@@ -212,6 +213,15 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
             $this->_jobConfiguration = Mage::getModel('aoe_scheduler/configuration')->loadByCode($this->getJobCode());
         }
         return $this->_jobConfiguration;
+    }
+
+
+    /**
+     * @return Aoe_Scheduler_Model_Job
+     */
+    public function getJob()
+    {
+
     }
 
 
@@ -410,6 +420,28 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
             $this->_dataSaveAllowed = true; // allow the next object to save (because it's not reset automatically)
         }
         return parent::_beforeSave();
+    }
+
+    public function canRun($throwException=false) {
+        if ($this->isAlwaysTask()) {
+            return true;
+        }
+        $now = time();
+        $time = strtotime($this->getScheduledAt());
+        if ($time > $now) {
+            // not scheduled yet
+            return false;
+        }
+        $scheduleLifetime = Mage::getStoreConfig(Mage_Cron_Model_Observer::XML_PATH_SCHEDULE_LIFETIME) * 60;
+        if ($time < $now - $scheduleLifetime) {
+            $this->setStatus(Mage_Cron_Model_Schedule::STATUS_MISSED);
+            $this->save();
+            if ($throwException) {
+                Mage::throwException(Mage::helper('cron')->__('Too late for the schedule.'));
+            }
+            return false;
+        }
+        return true;
     }
 
 

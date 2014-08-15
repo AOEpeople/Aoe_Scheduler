@@ -16,9 +16,6 @@ class Aoe_Scheduler_Model_Observer extends Mage_Cron_Model_Observer
      * Generate tasks schedule
      * Cleanup tasks schedule
      *
-     * THIS METHOD IS (almost) IDENTICAL WITH EE 1.13 and CE 1.8
-     * (but it is here for compatibility reasons with earlier version, because the new version was refactored)
-     *
      * @param Varien_Event_Observer $observer
      */
     public function dispatch($observer)
@@ -29,18 +26,8 @@ class Aoe_Scheduler_Model_Observer extends Mage_Cron_Model_Observer
         }
 
         $schedules = $this->getPendingSchedules();
-        $jobsRoot = Mage::getConfig()->getNode('crontab/jobs');
-        $defaultJobsRoot = Mage::getConfig()->getNode('default/crontab/jobs');
-
         foreach ($schedules->getIterator() as $schedule) { /* @var $schedule Mage_Cron_Model_Schedule */
-            $jobConfig = $jobsRoot->{$schedule->getJobCode()};
-            if (!$jobConfig || !$jobConfig->run) {
-                $jobConfig = $defaultJobsRoot->{$schedule->getJobCode()};
-                if (!$jobConfig || !$jobConfig->run) {
-                    continue;
-                }
-            }
-            $this->_processJob($schedule, $jobConfig);
+            $this->_processJob($schedule);
         }
 
         $this->generate();
@@ -72,40 +59,21 @@ class Aoe_Scheduler_Model_Observer extends Mage_Cron_Model_Observer
      * Process cron task
      *
      * @param Aoe_Scheduler_Model_Schedule $schedule
-     * @param Mage_Core_Model_Config_Element $jobConfig
+     * @param $jobConfig
      * @param bool $isAlways
      * @return Mage_Cron_Model_Observer
      */
-    protected function _processJob(Aoe_Scheduler_Model_Schedule $schedule, Mage_Core_Model_Config_Element $jobConfig, $isAlways = false)
+    protected function _processJob(Aoe_Scheduler_Model_Schedule $schedule, $jobConfig=null, $isAlways = false)
     {
-        $runConfig = $jobConfig->run;
-        if (!$isAlways) {
-            $scheduleLifetime = Mage::getStoreConfig(self::XML_PATH_SCHEDULE_LIFETIME) * 60;
-            $now = time();
-            $time = strtotime($schedule->getScheduledAt());
-            if ($time > $now) {
-                return;
-            }
-        }
-
-        $errorStatus = Mage_Cron_Model_Schedule::STATUS_ERROR;
         try {
-            if (!$isAlways) {
-                if ($time < $now - $scheduleLifetime) {
-                    $errorStatus = Mage_Cron_Model_Schedule::STATUS_MISSED;
-                    Mage::throwException(Mage::helper('cron')->__('Too late for the schedule.'));
-                }
+            if (!$schedule->canRun(true)) {
+                return $this;
             }
-
-            // Aoe_Scheduler: stuff from the original method was removed and refactored into the schedule module
-
             $schedule->runNow(!$isAlways);
-
         } catch (Exception $e) {
-            $schedule->setStatus($errorStatus)
+            $schedule
+                ->setStatus(Mage_Cron_Model_Schedule::STATUS_ERROR)
                 ->setMessages($e->__toString());
-
-            // Aoe_Scheduler: additional handling:
             Mage::dispatchEvent('cron_' . $schedule->getJobCode() . '_exception', array('schedule' => $schedule, 'exception' => $e));
             Mage::dispatchEvent('cron_exception', array('schedule' => $schedule, 'exception' => $e));
             Mage::helper('aoe_scheduler')->sendErrorMail($schedule, $e->__toString());
