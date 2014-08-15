@@ -29,7 +29,7 @@ class Aoe_Scheduler_Model_Resource_Job_Xml_Collection extends Varien_Data_Collec
      *
      * @param bool $printQuery
      * @param bool $logQuery
-     * @return Aoe_Scheduler_Model_Collection_Crons
+     * @return $this
      */
     public function loadData($printQuery = false, $logQuery = false)
     {

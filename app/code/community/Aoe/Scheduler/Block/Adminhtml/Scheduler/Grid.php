@@ -75,7 +75,7 @@ class Aoe_Scheduler_Block_Adminhtml_Scheduler_Grid extends Mage_Adminhtml_Block_
             'header' => Mage::helper('aoe_scheduler')->__('Code'),
             'index' => 'job_code',
             'type' => 'options',
-            'options' => Mage::getModel('aoe_scheduler/collection_crons')->toOptionHash()
+            'options' => Mage::getModel('aoe_scheduler/job_factory')->getAllJobs()->toOptionHash()
         ));
         $this->addColumn('created_at', array(
             'header' => Mage::helper('aoe_scheduler')->__('Created'),
