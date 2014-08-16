@@ -1,12 +1,12 @@
 <?php
 
 /**
- * Class Aoe_Scheduler_Model_TestTask
+ * Test Task
  *
  * @author Fabrizio Branca
  * @since 2013-10-10
  */
-class Aoe_Scheduler_Model_TestTask
+class Aoe_Scheduler_Model_Task_Test
 {
 
     /**

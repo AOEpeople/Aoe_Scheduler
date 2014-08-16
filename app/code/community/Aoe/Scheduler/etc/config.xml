@@ -137,7 +137,7 @@
             <aoescheduler_testtask>
                 <!--<schedule><cron_expr>*/5 * * * *</cron_expr></schedule>-->
                 <run>
-                    <model>aoe_scheduler/testTask::run</model>
+                    <model>aoe_scheduler/task_test::run</model>
                 </run>
             </aoescheduler_testtask>
 
@@ -146,7 +146,7 @@
                     <config_path>system/cron/scheduler_cron_expr_heartbeat</config_path>
                 </schedule>
                 <run>
-                    <model>aoe_scheduler/heartbeatTask::run</model>
+                    <model>aoe_scheduler/task_heartbeat::run</model>
                 </run>
             </aoescheduler_heartbeat>
         </jobs>

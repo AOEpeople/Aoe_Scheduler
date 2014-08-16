@@ -123,7 +123,7 @@ class Aoe_Scheduler_Block_Adminhtml_Job_Edit_Tab_Form extends Mage_Adminhtml_Blo
             'title' => Mage::helper('aoe_scheduler')->__('Run model'),
             'class' => '',
             'required' => true,
-            'note' => Mage::helper('aoe_scheduler')->__('e.g. "aoe_scheduler/heartbeatTask::run"'),
+            'note' => Mage::helper('aoe_scheduler')->__('e.g. "aoe_scheduler/task_heartbeat::run"'),
             'after_element_html' => $xmlJob ? $this->getOriginalValueSnippet($xmlJob->getRunModel()) : ''
         ));
 

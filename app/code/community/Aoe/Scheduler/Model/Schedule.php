@@ -17,7 +17,6 @@
  * @method string setScheduledAt()
  * @method string setStatus()
  * @method string setFinishedAt()
- * @method string getParameters()
  * @method string setParameters()
  * @method string setEta()
  * @method string getEta()
@@ -484,6 +483,20 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
         }
         $this->save();
         return $this;
+    }
+
+    /**
+     * Get paramters (and fallback to job)
+     *
+     * @return mixed
+     */
+    public function getParameters()
+    {
+        if ($this->getData('parameters')) {
+            return $this->getData('parameters');
+        }
+        // fallback to job
+        return $this->getJob()->getParameters();
     }
 
 }

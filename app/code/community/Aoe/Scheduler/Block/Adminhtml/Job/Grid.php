@@ -89,6 +89,17 @@ class Aoe_Scheduler_Block_Adminhtml_Job_Grid extends Mage_Adminhtml_Block_Widget
             'index' => 'run_model',
             'sortable' => false,
         ));
+        $this->addColumn('parameter', array(
+            'header' => Mage::helper('aoe_scheduler')->__('Parameter'),
+            'index' => 'parameter',
+            'sortable' => false,
+            'frame_callback' => array($this, 'decorateParameter'),
+        ));
+        $this->addColumn('type', array(
+            'header' => Mage::helper('aoe_scheduler')->__('Type'),
+            'sortable' => false,
+            'frame_callback' => array($this, 'decorateType'),
+        ));
         $this->addColumn('is_active', array(
             'header' => Mage::helper('aoe_scheduler')->__('Status'),
             'index' => 'is_active',
@@ -119,11 +130,38 @@ class Aoe_Scheduler_Block_Adminhtml_Job_Grid extends Mage_Adminhtml_Block_Widget
      * Decorate cron expression
      *
      * @param $value
+     * @param Aoe_Scheduler_Model_Job_Abstract $job
      * @return string
      */
     public function decorateCronExpression($value, Aoe_Scheduler_Model_Job_Abstract $job)
     {
         return $job->getCronExpression();
+    }
+
+
+    /**
+     * Decorate cron expression
+     *
+     * @param $value
+     * @return string
+     */
+    public function decorateParameter($value)
+    {
+        return sprintf('<span title="%s">%s</span>', $value, mb_strimwidth($value, 0, 40, "..."));
+    }
+
+
+
+    /**
+     * Decorate cron expression
+     *
+     * @param $value
+     * @param Aoe_Scheduler_Model_Job_Abstract $job
+     * @return string
+     */
+    public function decorateType($value, Aoe_Scheduler_Model_Job_Abstract $job)
+    {
+        return $job->getType();
     }
 
     /**

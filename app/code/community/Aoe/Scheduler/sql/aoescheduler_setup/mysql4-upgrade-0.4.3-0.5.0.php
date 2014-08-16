@@ -21,8 +21,8 @@ $table = $installer->getConnection()
         'nullable' => false,
         'default' => 1
     ), 'Is active')
-    ->addColumn('parameter', Varien_Db_Ddl_Table::TYPE_TEXT, '64K', array(
-    ), 'Is active')
+    ->addColumn('parameters', Varien_Db_Ddl_Table::TYPE_TEXT, '64K', array(
+    ), 'Parameters')
     ->addIndex($installer->getIdxName('aoe_scheduler/job', array('job_code')),
         array('job_code'))
     ->setComment('Cron Job Definition');

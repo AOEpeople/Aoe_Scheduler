@@ -15,8 +15,8 @@
  * @method getRunModel()
  * @method setIsActive($isActive)
  * @method getIsActive()
- * @method setParameter($parameter)
- * @method getParameter()
+ * @method setParameters($parameters)
+ * @method getParameters()
  */
 abstract class Aoe_Scheduler_Model_Job_Abstract extends Mage_Core_Model_Abstract
 {
@@ -66,6 +66,24 @@ abstract class Aoe_Scheduler_Model_Job_Abstract extends Mage_Core_Model_Abstract
     public function canBeScheduled()
     {
         return $this->getIsActive() && $this->getCronExpression() && !$this->isAlwaysTask();
+    }
+
+    public function getType()
+    {
+        if ($this instanceof Aoe_Scheduler_Model_Job_Xml_Default) {
+            $type = 'xml_default';
+        } elseif ($this instanceof Aoe_Scheduler_Model_Job_Xml_Global) {
+            $type = 'xml_global';
+        } elseif ($this instanceof Aoe_Scheduler_Model_Job_Db) {
+            if ($xmlJob = $this->getXmlJob()) {
+                $type = 'db_overlay_' . $xmlJob->getType();
+            } else {
+                $type = 'db_original';
+            }
+        } else {
+            $type = 'unkown';
+        }
+        return $type;
     }
 
 
