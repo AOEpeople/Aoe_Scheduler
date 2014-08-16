@@ -45,6 +45,8 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
     CONST REASON_SCHEDULENOW_WEB = 'schedule_now_web';
     CONST REASON_RUNNOW_CLI = 'run_now_cli';
     CONST REASON_SCHEDULENOW_CLI = 'schedule_now_cli';
+    CONST REASON_RUNNOW_API = 'run_now_api';
+    CONST REASON_SCHEDULENOW_API = 'schedule_now_api';
     CONST REASON_GENERATESCHEDULES = 'generate_schedules';
     CONST REASON_DEPENDENCY_ALL = 'dependency_all';
     CONST REASON_DEPENDENCY_SUCCESS = 'dependency_success';

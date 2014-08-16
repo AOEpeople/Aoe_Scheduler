@@ -21,6 +21,7 @@ class Aoe_Scheduler_Model_Api extends Mage_Api_Model_Resource_Abstract
         }
         $schedule = Mage::getModel('cron/schedule')/* @var $schedule Aoe_Scheduler_Model_Schedule */
             ->setJobCode($code)
+            ->setScheduledReason(Aoe_Scheduler_Model_Schedule::REASON_RUNNOW_API)
             ->runNow(false) // without trying to lock the job
             ->save();
         return $schedule->getData();
@@ -37,6 +38,7 @@ class Aoe_Scheduler_Model_Api extends Mage_Api_Model_Resource_Abstract
     {
         $schedule = Mage::getModel('cron/schedule')/* @var $schedule Aoe_Scheduler_Model_Schedule */
             ->setJobCode($code)
+            ->setScheduledReason(Aoe_Scheduler_Model_Schedule::REASON_SCHEDULENOW_API)
             ->schedule($time)
             ->save();
         return $schedule->getData();
