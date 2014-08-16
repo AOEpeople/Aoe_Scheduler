@@ -58,10 +58,9 @@ class Aoe_Scheduler_Shell_Scheduler extends Mage_Shell_Abstract
      */
     public function listAllCodesAction()
     {
-        $collection = Mage::getModel('aoe_scheduler/collection_crons');
-        foreach ($collection as $configuration) {
-            /* @var $configuration Aoe_Scheduler_Model_Configuration */
-            echo sprintf("%-50s %-20s %s\n", $configuration->getId(), $configuration->getCronExpr(), $configuration->getStatus());
+        $jobFactory = Mage::getModel('aoe_scheduler/job_factory'); /* @var $jobFactory Aoe_Scheduler_Model_Job_Factory */
+        foreach ($jobFactory->getAllJobs() as $job) { /* @var $job Aoe_Scheduler_Model_Job_Abstract */
+            echo sprintf("%-50s %-20s %s\n", $job->getJobCode(), $job->getCronExpression(), $job->getIsActive() ? 'Enabled' : 'Disabled');
         }
     }
 
@@ -128,8 +127,7 @@ class Aoe_Scheduler_Shell_Scheduler extends Mage_Shell_Abstract
             echo $this->usageHelp();
             exit(1);
         }
-        $schedule = Mage::getModel('cron/schedule');
-        /* @var $schedule Aoe_Scheduler_Model_Schedule */
+        $schedule = Mage::getModel('cron/schedule'); /* @var $schedule Aoe_Scheduler_Model_Schedule */
         $schedule->setJobCode($code);
         $schedule->schedule();
         $schedule->save();
