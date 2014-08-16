@@ -82,6 +82,7 @@ class Aoe_Scheduler_Block_Adminhtml_Job_Grid extends Mage_Adminhtml_Block_Widget
             'header' => Mage::helper('aoe_scheduler')->__('Cron expression'),
             'index' => 'schedule_cron_expr',
             'sortable' => false,
+            'frame_callback' => array($this, 'decorateCronExpression'),
         ));
         $this->addColumn('run_model', array(
             'header' => Mage::helper('aoe_scheduler')->__('Run model'),
@@ -111,6 +112,18 @@ class Aoe_Scheduler_Block_Adminhtml_Job_Grid extends Mage_Adminhtml_Block_Widget
             Mage::helper('aoe_scheduler')->__($value ? 'Enabled' : 'Disabled')
         );
         return $cell;
+    }
+
+
+    /**
+     * Decorate cron expression
+     *
+     * @param $value
+     * @return string
+     */
+    public function decorateCronExpression($value, Aoe_Scheduler_Model_Job_Abstract $job)
+    {
+        return $job->getCronExpression();
     }
 
     /**

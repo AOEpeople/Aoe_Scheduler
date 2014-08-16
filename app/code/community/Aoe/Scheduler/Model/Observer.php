@@ -22,6 +22,7 @@ class Aoe_Scheduler_Model_Observer /* extends Mage_Cron_Model_Observer */
         }
 
         $scheduleManager = Mage::getModel('aoe_scheduler/scheduleManager'); /* @var $scheduleManager Aoe_Scheduler_Model_ScheduleManager */
+        $scheduleManager->logRun();
 
         $schedules = $scheduleManager->getPendingSchedules(); /* @var $schedules Mage_Cron_Model_Resource_Schedule_Collection */
         foreach ($schedules as $schedule) { /* @var $schedule Aoe_Scheduler_Model_Schedule */

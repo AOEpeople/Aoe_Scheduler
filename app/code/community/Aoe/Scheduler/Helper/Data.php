@@ -116,14 +116,24 @@ class Aoe_Scheduler_Helper_Data extends Mage_Core_Helper_Abstract
      */
     public function getLastHeartbeat()
     {
-        if ($this->isDisabled('aoescheduler_heartbeat')) {
+        return $this->getLastExecutionTime('aoescheduler_heartbeat');
+    }
+
+    /**
+     * Get last execution time
+     *
+     * @param $jobCode
+     * @return bool
+     */
+    public function getLastExecutionTime($jobCode)
+    {
+        if ($this->isDisabled($jobCode)) {
             return false;
         }
-        $schedules = Mage::getModel('cron/schedule')->getCollection();
-        /* @var $schedules Mage_Cron_Model_Mysql4_Schedule_Collection */
+        $schedules = Mage::getModel('cron/schedule')->getCollection(); /* @var $schedules Mage_Cron_Model_Mysql4_Schedule_Collection */
         $schedules->getSelect()->limit(1)->order('executed_at DESC');
         $schedules->addFieldToFilter('status', Mage_Cron_Model_Schedule::STATUS_SUCCESS);
-        $schedules->addFieldToFilter('job_code', 'aoescheduler_heartbeat');
+        $schedules->addFieldToFilter('job_code', $jobCode);
         $schedules->load();
         if (count($schedules) == 0) {
             return false;
@@ -158,9 +168,9 @@ class Aoe_Scheduler_Helper_Data extends Mage_Core_Helper_Abstract
      */
     public function isDisabled($jobCode)
     {
-        $disabledJobs = Mage::getStoreConfig('system/cron/disabled_crons');
-        $disabledJobs = $this->trimExplode(',', $disabledJobs);
-        return in_array($jobCode, $disabledJobs);
+        $jobFactory = Mage::getModel('aoe_scheduler/job_factory'); /* @var $jobFactory Aoe_Scheduler_Model_Job_Factory */
+        $job = $jobFactory->loadByCode($jobCode); /* @var $job Aoe_Scheduler_Model_Job_Abstract */
+        return !$job->getIsActive();
     }
 
     /**
@@ -210,6 +220,4 @@ class Aoe_Scheduler_Helper_Data extends Mage_Core_Helper_Abstract
         return $callback;
     }
 
-
 }
-

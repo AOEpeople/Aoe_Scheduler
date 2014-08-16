@@ -10,11 +10,47 @@ class Aoe_Scheduler_Model_ScheduleManager
 {
 
     CONST XML_PATH_HISTORY_MAXNO = 'system/cron/maxNoOfSuccessfulTasks';
+    const CACHE_KEY_SCHEDULER_LASTRUNS = 'cron_lastruns';
 
     /**
      * @var Mage_Cron_Model_Resource_Schedule_Collection
      */
     protected $_pendingSchedules;
+
+    /**
+     * Log run
+     */
+    public function logRun()
+    {
+        $lastRuns = Mage::app()->loadCache(self::CACHE_KEY_SCHEDULER_LASTRUNS);
+        $lastRuns = explode(',',$lastRuns);
+        $lastRuns[] = time();
+        $lastRuns = array_slice($lastRuns, -100);
+        Mage::app()->saveCache(implode(',', $lastRuns), self::CACHE_KEY_SCHEDULER_LASTRUNS, array('crontab'), null);
+    }
+
+    public function getMeasuredCronInterval()
+    {
+        $lastRuns = Mage::app()->loadCache(self::CACHE_KEY_SCHEDULER_LASTRUNS);
+        $lastRuns = array_values(array_filter(explode(',',$lastRuns)));
+        if (count($lastRuns) < 3) {
+            // not enough data points
+            return false;
+        }
+        $gaps = array();
+        foreach ($lastRuns as $index => $run) {
+            if ($index > 0) {
+                $gaps[$index] = intval($lastRuns[$index]) - intval($lastRuns[$index-1]);
+            }
+        }
+        return array(
+            'average' => round((array_sum($gaps) / count($gaps)) / 60, 2),
+            'max' => round(max($gaps) / 60, 2),
+            'min' => round(min($gaps) / 60, 2),
+            'count' => count($gaps),
+            'last' => end($lastRuns)
+        );
+    }
 
     /**
      * Get pending schedules

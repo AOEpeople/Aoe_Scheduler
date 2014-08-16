@@ -38,6 +38,12 @@ abstract class Aoe_Scheduler_Adminhtml_AbstractController extends Mage_Adminhtml
      */
     protected function checkHeartbeat()
     {
+        $scheduleManager = Mage::getModel('aoe_scheduler/scheduleManager'); /* @var $scheduleManager Aoe_Scheduler_Model_ScheduleManager */
+        $interval = $scheduleManager->getMeasuredCronInterval();
+        if ($interval) {
+            $this->_getSession()->addSuccess(var_export($interval, true));
+        }
+
         if (!Mage::helper('aoe_scheduler')->isDisabled('aoescheduler_heartbeat')) {
             $lastHeartbeat = Mage::helper('aoe_scheduler')->getLastHeartbeat();
             if ($lastHeartbeat === false) {
@@ -55,7 +61,6 @@ abstract class Aoe_Scheduler_Adminhtml_AbstractController extends Mage_Adminhtml
                     $this->_getSession()->addError($this->__('Last heartbeat is older than one hour. Please check your settings and your configuration!'));
                 }
             }
-
         }
     }
 
