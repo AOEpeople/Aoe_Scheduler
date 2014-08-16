@@ -52,7 +52,7 @@ class Aoe_Scheduler_Model_Observer /* extends Mage_Cron_Model_Observer */
 
         $scheduleManager = Mage::getModel('aoe_scheduler/scheduleManager'); /* @var $scheduleManager Aoe_Scheduler_Model_ScheduleManager */
 
-        $allJobs = Mage::getModel('aoe_scheduler/factory')->getAllJobs(); /* @var $allJobs Varien_Data_Collection */
+        $allJobs = Mage::getModel('aoe_scheduler/job_factory')->getAllJobs(); /* @var $allJobs Varien_Data_Collection */
         foreach ($allJobs as $job) { /* @var $job Aoe_Scheduler_Model_Job_Abstract */
             if ($job->isAlwaysTask() && $job->getRunModel()) {
                 $schedule = $scheduleManager->getScheduleForAlwaysJob($job->getJobCode());
