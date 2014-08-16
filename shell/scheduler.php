@@ -80,14 +80,13 @@ class Aoe_Scheduler_Shell_Scheduler extends Mage_Shell_Abstract
             exit(1);
         }
 
-        $collection = Mage::getModel('cron/schedule')->getCollection();
-        /* @var $collection Mage_Cron_Model_Resource_Schedule_Collection */
+        $collection = Mage::getModel('cron/schedule')->getCollection(); /* @var $collection Mage_Cron_Model_Resource_Schedule_Collection */
+
         $collection->addFieldToFilter('job_code', $code)
             ->addFieldToFilter('status', Mage_Cron_Model_Schedule::STATUS_SUCCESS)
             ->addOrder('finished_at', Varien_Data_Collection_Db::SORT_ORDER_DESC)
             ->getSelect()->limit(1);
-        $schedule = $collection->getFirstItem();
-        /* @var $schedule Aoe_Scheduler_Model_Schedule */
+        $schedule = $collection->getFirstItem(); /* @var $schedule Aoe_Scheduler_Model_Schedule */
         if (!$schedule || !$schedule->getId()) {
             echo "\nNo schedule found\n\n";
             exit(1);
@@ -128,6 +127,7 @@ class Aoe_Scheduler_Shell_Scheduler extends Mage_Shell_Abstract
             exit(1);
         }
         $schedule = Mage::getModel('cron/schedule'); /* @var $schedule Aoe_Scheduler_Model_Schedule */
+        $schedule->setScheduledReason(Aoe_Scheduler_Model_Schedule::REASON_SCHEDULENOW_CLI);
         $schedule->setJobCode($code);
         $schedule->schedule();
         $schedule->save();
@@ -158,9 +158,9 @@ class Aoe_Scheduler_Shell_Scheduler extends Mage_Shell_Abstract
             echo $this->usageHelp();
             exit(1);
         }
-        $schedule = Mage::getModel('cron/schedule');
-        /* @var $schedule Aoe_Scheduler_Model_Schedule */
+        $schedule = Mage::getModel('cron/schedule'); /* @var $schedule Aoe_Scheduler_Model_Schedule */
         $schedule->setJobCode($code);
+        $schedule->setScheduledReason(Aoe_Scheduler_Model_Schedule::REASON_RUNNOW_CLI);
         $schedule->runNow(false);
         if ($schedule->getJobWasLocked()) {
             echo "\nJob was not executed because it was locked!\n\n";

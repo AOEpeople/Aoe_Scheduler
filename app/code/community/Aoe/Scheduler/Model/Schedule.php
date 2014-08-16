@@ -29,6 +29,10 @@
  * @method string getProgressMessage()
  * @method string getLastSeen()
  * @method string setLastSeen()
+ * @method string getScheduledBy()
+ * @method string setScheduledBy($scheduledBy)
+ * @method string getScheduledReason()
+ * @method string setScheduledReason($scheduledReason)
  */
 class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
 {
@@ -36,6 +40,15 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
     CONST STATUS_KILLED = 'killed';
     CONST STATUS_DISAPPEARED = 'gone'; // the status field is limited to 7 characters
     CONST STATUS_DIDNTDOANYTHING = 'nothing';
+
+    CONST REASON_RUNNOW_WEB = 'run_now_web';
+    CONST REASON_SCHEDULENOW_WEB = 'schedule_now_web';
+    CONST REASON_RUNNOW_CLI = 'run_now_cli';
+    CONST REASON_SCHEDULENOW_CLI = 'schedule_now_cli';
+    CONST REASON_GENERATESCHEDULES = 'generate_schedules';
+    CONST REASON_DEPENDENCY_ALL = 'dependency_all';
+    CONST REASON_DEPENDENCY_SUCCESS = 'dependency_success';
+    CONST REASON_DEPENDENCY_FAILURE = 'dependency_failure';
 
     /**
      * Prefix of model events names
@@ -45,7 +58,7 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
     protected $_eventPrefix = 'aoe_scheduler_schedule';
 
     /**
-     * @var Aoe_Scheduler_Model_Configuration
+     * @var Aoe_Scheduler_Model_Job_Abstract
      */
     protected $job;
 
@@ -402,6 +415,11 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
      */
     protected function _beforeSave()
     {
+
+        if (!$this->getScheduledBy() && Mage::getSingleton('admin/session')->isLoggedIn()) {
+            $this->setScheduledBy(Mage::getSingleton('admin/session')->getUser()->getId());
+        }
+
         $collection = Mage::getModel('cron/schedule')/* @var $collection Mage_Cron_Model_Resource_Schedule_Collection */
             ->getCollection()
             ->addFieldToFilter('status', Mage_Cron_Model_Schedule::STATUS_PENDING)
@@ -465,6 +483,5 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
         $this->save();
         return $this;
     }
-
 
 }

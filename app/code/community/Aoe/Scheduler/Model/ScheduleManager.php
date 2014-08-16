@@ -224,6 +224,7 @@ class Aoe_Scheduler_Model_ScheduleManager
 
         $schedule = Mage::getModel('cron/schedule'); /* @var $schedule Aoe_Scheduler_Model_Schedule */
         $schedule->initializeFromJob($job);
+        $schedule->setScheduledReason(Aoe_Scheduler_Model_Schedule::REASON_GENERATESCHEDULES);
 
         for ($time = $now; $time < $timeAhead; $time += 60) {
             $ts = strftime('%Y-%m-%d %H:%M:00', $time);
