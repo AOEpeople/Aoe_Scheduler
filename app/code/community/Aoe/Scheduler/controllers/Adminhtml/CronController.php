@@ -83,10 +83,20 @@ class Aoe_Scheduler_Adminhtml_CronController extends Aoe_Scheduler_Adminhtml_Abs
         $codes = $this->getRequest()->getParam('codes');
         if (is_array($codes)) {
             foreach ($codes as $key) {
-                $schedule = Mage::getModel('cron/schedule')/* @var $schedule Aoe_Scheduler_Model_Schedule */
-                    ->setJobCode($key)
-                    ->runNow(false) // without trying to lock the job
-                    ->save();
+                /* @var Aoe_Scheduler_Model_Schedule $schedule */
+                $schedule = Mage::getModel('cron/schedule')->setJobCode($key);
+                try {
+                    $schedule->runNow(false); // without trying to lock the job
+                } catch (Exception $e) {
+                    $schedule->setStatus(Mage_Cron_Model_Schedule::STATUS_ERROR);
+                    $schedule->setMessages($e->__toString());
+
+                    // Aoe_Scheduler: additional handling:
+                    Mage::dispatchEvent('cron_' . $schedule->getJobCode() . '_exception', array('schedule' => $schedule, 'exception' => $e));
+                    Mage::dispatchEvent('cron_exception', array('schedule' => $schedule, 'exception' => $e));
+                    Mage::helper('aoe_scheduler')->sendErrorMail($schedule, $e->__toString());
+                }
+                $schedule->save();
 
                 $messages = $schedule->getMessages();
 
