@@ -134,7 +134,7 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
         }
 
         // schedules can report an error state by returning a string that starts with "ERROR:"
-        if (is_string($messages) && strtoupper(substr($messages, 0, 6)) == 'ERROR:') {
+        if ((is_string($messages) && strtoupper(substr($messages, 0, 6)) == 'ERROR:') || $this->getStatus() === Mage_Cron_Model_Schedule::STATUS_ERROR) {
             $this->setStatus(Mage_Cron_Model_Schedule::STATUS_ERROR);
             Mage::helper('aoe_scheduler')->sendErrorMail($this, $messages);
             Mage::dispatchEvent('cron_' . $this->getJobCode() . '_after_error', array('schedule' => $this));
