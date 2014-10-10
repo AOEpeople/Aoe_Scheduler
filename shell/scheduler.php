@@ -233,6 +233,37 @@ class Aoe_Scheduler_Shell_Scheduler extends Mage_Shell_Abstract
         }
     }
 
+    public function cronAction()
+    {
+        Mage::app('admin')->setUseSessionInUrl(false);
+        umask(0);
+
+        $mode = $this->getArg('mode');
+        switch ($mode) {
+            case 'always':
+            case 'default':
+                $includeGroups = array_filter(array_map('trim', explode(',', $this->getArg('include'))));
+                $excludeGroups = array_filter(array_map('trim', explode(',', $this->getArg('exclude'))));
+                Mage::getConfig()->init()->loadEventObservers('crontab');
+                Mage::app()->addEventArea('crontab');
+                Mage::dispatchEvent($mode, array('include' => $includeGroups, 'exclude' => $excludeGroups));
+                break;
+            default:
+                echo "\nInvalid mode!\n\n";
+                echo $this->usageHelp();
+                exit(1);
+        }
+    }
+
+    /**
+     * Display extra help
+     *
+     * @return string
+     */
+    public function cronActionHelp()
+    {
+        return "--mode (always|default) [--exclude <comma seperated list of groups>] [--include <comma seperated list of groups>]";
+    }
 }
 
 $shell = new Aoe_Scheduler_Shell_Scheduler();
