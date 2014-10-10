@@ -4,7 +4,6 @@ require_once 'abstract.php';
 
 class Aoe_Scheduler_Shell_Scheduler extends Mage_Shell_Abstract
 {
-
     /**
      * Run script
      *
@@ -26,7 +25,6 @@ class Aoe_Scheduler_Shell_Scheduler extends Mage_Shell_Abstract
             }
         }
     }
-
 
     /**
      * Retrieve Usage Help Message
@@ -50,7 +48,6 @@ class Aoe_Scheduler_Shell_Scheduler extends Mage_Shell_Abstract
         return $help;
     }
 
-
     /**
      * List all availables codes / jobs
      *
@@ -63,7 +60,6 @@ class Aoe_Scheduler_Shell_Scheduler extends Mage_Shell_Abstract
             echo sprintf("%-50s %-20s %s\n", $job->getJobCode(), $job->getCronExpression(), $job->getIsActive() ? 'Enabled' : 'Disabled');
         }
     }
-
 
     /**
      * Returns the timestamp of the last run of a given job
@@ -101,7 +97,6 @@ class Aoe_Scheduler_Shell_Scheduler extends Mage_Shell_Abstract
         echo $time . PHP_EOL;
     }
 
-
     /**
      * Display extra help
      *
@@ -111,7 +106,6 @@ class Aoe_Scheduler_Shell_Scheduler extends Mage_Shell_Abstract
     {
         return " -code <code> [-secondsFromNow]	Get the timestamp of the last successful run of a job for a given code";
     }
-
 
     /**
      * Schedule a job now
@@ -133,7 +127,6 @@ class Aoe_Scheduler_Shell_Scheduler extends Mage_Shell_Abstract
         $schedule->save();
     }
 
-
     /**
      * Display extra help
      *
@@ -143,7 +136,6 @@ class Aoe_Scheduler_Shell_Scheduler extends Mage_Shell_Abstract
     {
         return " -code <code>	Schedule a job to be executed as soon as possible";
     }
-
 
     /**
      * Run a job now
@@ -171,7 +163,6 @@ class Aoe_Scheduler_Shell_Scheduler extends Mage_Shell_Abstract
         echo "Status: " . $schedule->getStatus() . "\nMessages:\n" . trim($schedule->getMessages(), "\n") . "\n";
     }
 
-
     /**
      * Display extra help
      *
@@ -181,7 +172,6 @@ class Aoe_Scheduler_Shell_Scheduler extends Mage_Shell_Abstract
     {
         return " -code <code>	        Run a job directly";
     }
-
 
     /**
      * Print all running schedules
@@ -198,7 +188,8 @@ class Aoe_Scheduler_Shell_Scheduler extends Mage_Shell_Abstract
             } else {
                 $status = $status ? 'alive' : 'dead (updating status to "disappeared")';
             }
-            echo sprintf("%-30s %-10s %-10s %-10s %-10s\n",
+            echo sprintf(
+                "%-30s %-10s %-10s %-10s %-10s\n",
                 $schedule->getJobCode(),
                 $schedule->getHost() ? $schedule->getHost() : '(no host)',
                 $schedule->getPid() ? $schedule->getPid() : '(no pid)',
@@ -219,7 +210,8 @@ class Aoe_Scheduler_Shell_Scheduler extends Mage_Shell_Abstract
         foreach ($processManager->getAllRunningSchedules(gethostname()) as $schedule) { /* @var $schedule Aoe_Scheduler_Model_Schedule */
             if ($schedule->isAlive() === true) {
                 $schedule->kill();
-                echo sprintf("%-30s %-10s %-10s: Killed\n",
+                echo sprintf(
+                    "%-30s %-10s %-10s: Killed\n",
                     $schedule->getJobCode(),
                     $schedule->getHost(),
                     $schedule->getPid()
