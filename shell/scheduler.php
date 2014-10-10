@@ -44,10 +44,10 @@ class Aoe_Scheduler_Shell_Scheduler extends Mage_Shell_Abstract
         $methods = get_class_methods($this);
         foreach ($methods as $method) {
             if (substr($method, -6) == 'Action') {
-                $help .= '    -action ' . substr($method, 0, -6);
+                $help .= '    --action ' . substr($method, 0, -6);
                 $helpMethod = $method . 'Help';
                 if (method_exists($this, $helpMethod)) {
-                    $help .= $this->$helpMethod();
+                    $help .= ' ' . $this->$helpMethod();
                 }
                 $help .= "\n";
             }
@@ -113,7 +113,7 @@ class Aoe_Scheduler_Shell_Scheduler extends Mage_Shell_Abstract
      */
     public function lastRunActionHelp()
     {
-        return " -code <code> [-secondsFromNow]	Get the timestamp of the last successful run of a job for a given code";
+        return "--code <code> [--secondsFromNow]	Get the timestamp of the last successful run of a job for a given code";
     }
 
     /**
@@ -143,7 +143,7 @@ class Aoe_Scheduler_Shell_Scheduler extends Mage_Shell_Abstract
      */
     public function scheduleNowActionHelp()
     {
-        return " -code <code>	Schedule a job to be executed as soon as possible";
+        return "--code <code>	Schedule a job to be executed as soon as possible";
     }
 
     /**
@@ -179,7 +179,7 @@ class Aoe_Scheduler_Shell_Scheduler extends Mage_Shell_Abstract
      */
     public function runNowActionHelp()
     {
-        return " -code <code>	        Run a job directly";
+        return "--code <code>	        Run a job directly";
     }
 
     /**
