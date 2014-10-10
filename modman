@@ -1,10 +1,9 @@
-app/code/community/Aoe/Scheduler/								app/code/community/Aoe/Scheduler/
-app/etc/modules/Aoe_Scheduler.xml								app/etc/modules/Aoe_Scheduler.xml
-shell/*															shell/
-app/locale/sv_SE/Aoe_Scheduler.csv								app/locale/sv_SE/Aoe_Scheduler.csv
-app/locale/de_DE/Aoe_Scheduler.csv								app/locale/de_DE/Aoe_Scheduler.csv
-app/locale/en_US/template/email/aoe_scheduler/					app/locale/en_US/template/email/aoe_scheduler
-app/design/adminhtml/default/default/template/aoe_scheduler/	app/design/adminhtml/default/default/template/aoe_scheduler/
-app/design/adminhtml/default/default/layout/aoe_scheduler/		app/design/adminhtml/default/default/layout/aoe_scheduler/
-skin/adminhtml/default/default/aoe_scheduler/					skin/adminhtml/default/default/aoe_scheduler/
-# var/connect/*													var/connect/
+app/code/community/Aoe/Scheduler
+app/etc/modules/Aoe_Scheduler.xml
+shell/scheduler.php
+app/locale/sv_SE/Aoe_Scheduler.csv
+app/locale/de_DE/Aoe_Scheduler.csv
+app/locale/en_US/template/email/aoe_scheduler
+app/design/adminhtml/default/default/template/aoe_scheduler
+app/design/adminhtml/default/default/layout/aoe_scheduler
+skin/adminhtml/default/default/aoe_scheduler
