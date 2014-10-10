@@ -11,18 +11,25 @@ class Aoe_Scheduler_Shell_Scheduler extends Mage_Shell_Abstract
      */
     public function run()
     {
-        $action = $this->getArg('action');
-        if (empty($action)) {
-            echo $this->usageHelp();
-        } else {
-            $actionMethodName = $action . 'Action';
-            if (method_exists($this, $actionMethodName)) {
-                $this->$actionMethodName();
-            } else {
-                echo "Action $action not found!\n";
+        try {
+            $action = $this->getArg('action');
+            if (empty($action)) {
                 echo $this->usageHelp();
-                exit(1);
+            } else {
+                $actionMethodName = $action . 'Action';
+                if (method_exists($this, $actionMethodName)) {
+                    $this->$actionMethodName();
+                } else {
+                    echo "Action $action not found!\n";
+                    echo $this->usageHelp();
+                    exit(1);
+                }
             }
+        } catch (Exception $e) {
+            $fh = fopen('php://stderr', 'w');
+            fputs($fh, $e->__toString());
+            fclose($fh);
+            exit(255);
         }
     }
 
