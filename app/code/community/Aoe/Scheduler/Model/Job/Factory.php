@@ -49,7 +49,7 @@ class Aoe_Scheduler_Model_Job_Factory
      */
     public function getAllJobs()
     {
-        $jobs = new Varien_Data_Collection();
+        $jobs = Mage::getModel('aoe_scheduler/job_collection'); /* @var $jobs Aoe_Scheduler_Model_Job_Collection */
         foreach ($this->models as $model) {
             $jobCollection = Mage::getModel($model)->getCollection();
             foreach ($jobCollection as $job) { /* @var $job Aoe_Scheduler_Model_Job_Abstract */
