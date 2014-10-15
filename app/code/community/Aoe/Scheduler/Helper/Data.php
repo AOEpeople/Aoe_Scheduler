@@ -183,6 +183,11 @@ class Aoe_Scheduler_Helper_Data extends Mage_Core_Helper_Abstract
      */
     public function matchesIncludeExclude($jobCode, array $include, array $exclude)
     {
+        $include = array_filter(array_map('trim', $include));
+        $exclude = array_filter(array_map('trim', $exclude));
+
+        sort($include);
+        sort($exclude);
 
         $key = $jobCode . '|' . implode(',', $include) . '|' . implode(',', $exclude);
         static $cache = array();
