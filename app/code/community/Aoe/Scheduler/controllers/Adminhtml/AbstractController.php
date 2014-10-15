@@ -71,15 +71,14 @@ abstract class Aoe_Scheduler_Adminhtml_AbstractController extends Mage_Adminhtml
      */
     public function generateScheduleAction()
     {
-
         Mage::app()->removeCache(Mage_Cron_Model_Observer::CACHE_KEY_LAST_SCHEDULE_GENERATE_AT);
 
-        $observer = Mage::getModel('cron/observer');
-        /* @var $observer Mage_Cron_Model_Observer */
-        $observer->generate();
+        /* @var Aoe_Scheduler_Model_ScheduleManager $scheduleManager */
+        $scheduleManager = Mage::getModel('aoe_scheduler/scheduleManager');
+        $scheduleManager->generateSchedules();
+
         Mage::getSingleton('adminhtml/session')->addSuccess($this->__('Generated schedule'));
         $this->_redirect('*/*/index');
     }
-
 }
 
