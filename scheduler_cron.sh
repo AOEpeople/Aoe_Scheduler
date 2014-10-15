@@ -42,15 +42,15 @@ EXCLUDE_GROUPS=""
 # Parse command line args (very simplistic)
 while [ $# -gt 0 ]; do
     case "$1" in
-        -m|--mode)
+        --mode)
             MODE=$2
             shift 2
         ;;
-        -i|--include)
+        --includeGroups)
             INCLUDE_GROUPS=$2
             shift 2
         ;;
-        -e|--exclude)
+        --excludeGroups)
             EXCLUDE_GROUPS=$2
             shift 2
         ;;
