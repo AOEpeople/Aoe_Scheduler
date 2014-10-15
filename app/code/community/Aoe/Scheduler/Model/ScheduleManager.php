@@ -55,21 +55,26 @@ class Aoe_Scheduler_Model_ScheduleManager
     /**
      * Get pending schedules
      *
+     * @param array $whitelist
+     * @param array $blacklist
+     *
      * @return Mage_Cron_Model_Resource_Schedule_Collection
      */
-    public function getPendingSchedules()
+    public function getPendingSchedules(array $whitelist = array(), array $blacklist = array())
     {
         if (!$this->_pendingSchedules) {
             $this->_pendingSchedules = Mage::getModel('cron/schedule')->getCollection()
                 ->addFieldToFilter('status', Mage_Cron_Model_Schedule::STATUS_PENDING)
                 ->addFieldToFilter('scheduled_at', array('lt' => strftime('%Y-%m-%d %H:%M:%S', time())));
 
-            $whitelist = $this->getWhitelist();
+            // DEPRECATED
+            $whitelist = array_merge($whitelist, $this->getWhitelist());
+            $blacklist = array_merge($blacklist, $this->getBlacklist());
+
             if (!empty($whitelist)) {
                 $this->_pendingSchedules->addFieldToFilter('job_code', array('in' => $whitelist));
             }
 
-            $blacklist = $this->getBlacklist();
             if (!empty($blacklist)) {
                 $this->_pendingSchedules->addFieldToFilter('job_code', array('nin' => $blacklist));
             }
@@ -106,6 +111,8 @@ class Aoe_Scheduler_Model_ScheduleManager
      * Get job code white list from environment variable
      *
      * @return array
+     *
+     * @deprecated
      */
     public function getWhitelist()
     {
@@ -120,6 +127,8 @@ class Aoe_Scheduler_Model_ScheduleManager
      * Get job code black list from environment variable
      *
      * @return array
+     *
+     * @deprecated
      */
     public function getBlacklist()
     {

@@ -38,6 +38,8 @@ fi
 MODE="default"
 INCLUDE_GROUPS=""
 EXCLUDE_GROUPS=""
+INCLUDE_JOBS=""
+EXCLUDE_JOBS=""
 
 # Parse command line args (very simplistic)
 while [ $# -gt 0 ]; do
@@ -52,6 +54,14 @@ while [ $# -gt 0 ]; do
         ;;
         --excludeGroups)
             EXCLUDE_GROUPS=$2
+            shift 2
+        ;;
+        --includeJobs)
+            INCLUDE_JOBS=$2
+            shift 2
+        ;;
+        --excludeJobs)
+            EXCLUDE_JOBS=$2
             shift 2
         ;;
         --)
@@ -72,7 +82,7 @@ if [ -z "${MODE}" ]; then
 fi
 
 # Unique identifier for this cron job run
-IDENTIFIER=$(echo -n "${MODE}${INCLUDE_GROUPS}${EXCLUDE_GROUPS}" | "${MD5SUM_BIN}" - | cut -f1 -d' ')
+IDENTIFIER=$(echo -n "${MODE}${INCLUDE_GROUPS}${EXCLUDE_GROUPS}${INCLUDE_JOBS}${EXCLUDE_JOBS}" | "${MD5SUM_BIN}" - | cut -f1 -d' ')
 
 # Lock process to one run per set of options (This REQUIRES 'set -e' or 'set -o errexit')
 # This is to prevent multiple processes for the same cron parameters (And the only reason we don't call PHP directly)
@@ -85,4 +95,4 @@ trap 'rmdir "${LOCK}"; exit $?' INT TERM EXIT
 cd "${DIR}"
 
 # Run the job in the foreground
-"${PHP_BIN}" "${SCHEDULER}" --action cron --mode "${MODE}" --includeGroups "${INCLUDE_GROUPS}" --excludeGroups "${EXCLUDE_GROUPS}"
+"${PHP_BIN}" "${SCHEDULER}" --action cron --mode "${MODE}" --includeGroups "${INCLUDE_GROUPS}" --excludeGroups "${EXCLUDE_GROUPS}" --includeJobs "${INCLUDE_JOBS}" --excludeJobs "${EXCLUDE_JOBS}"

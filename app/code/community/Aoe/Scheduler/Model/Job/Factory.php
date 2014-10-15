@@ -45,15 +45,24 @@ class Aoe_Scheduler_Model_Job_Factory
     /**
      * Get all jobs
      *
+     * @param array $whitelist
+     * @param array $blacklist
+     *
      * @return Varien_Data_Collection
      */
-    public function getAllJobs()
+    public function getAllJobs(array $whitelist = array(), $blacklist = array())
     {
         $jobs = Mage::getModel('aoe_scheduler/job_collection'); /* @var $jobs Aoe_Scheduler_Model_Job_Collection */
         foreach ($this->models as $model) {
             $jobCollection = Mage::getModel($model)->getCollection();
             foreach ($jobCollection as $job) { /* @var $job Aoe_Scheduler_Model_Job_Abstract */
                 $jobCode = $job->getJobCode();
+                if(count($whitelist) && !in_array($jobCode, $whitelist)) {
+                    continue;
+                }
+                if(count($blacklist) && in_array($jobCode, $blacklist)) {
+                    continue;
+                }
                 if (!$jobs->getItemById($jobCode)) {
                     $jobs->addItem($job);
                 }

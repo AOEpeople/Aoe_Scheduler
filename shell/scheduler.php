@@ -238,9 +238,19 @@ class Aoe_Scheduler_Shell_Scheduler extends Mage_Shell_Abstract
             case 'default':
                 $includeGroups = array_filter(array_map('trim', explode(',', $this->getArg('includeGroups'))));
                 $excludeGroups = array_filter(array_map('trim', explode(',', $this->getArg('excludeGroups'))));
+                $includeJobs = array_filter(array_map('trim', explode(',', $this->getArg('includeJobs'))));
+                $excludeJobs = array_filter(array_map('trim', explode(',', $this->getArg('excludeJobs'))));
                 Mage::getConfig()->init()->loadEventObservers('crontab');
                 Mage::app()->addEventArea('crontab');
-                Mage::dispatchEvent($mode, array('includeGroups' => $includeGroups, 'excludeGroups' => $excludeGroups));
+                Mage::dispatchEvent(
+                    $mode,
+                    array(
+                        'include_groups' => $includeGroups,
+                        'exclude_groups' => $excludeGroups,
+                        'include_jobs'   => $includeJobs,
+                        'exclude_jobs'   => $excludeJobs,
+                    )
+                );
                 break;
             default:
                 echo "\nInvalid mode!\n\n";
@@ -256,7 +266,7 @@ class Aoe_Scheduler_Shell_Scheduler extends Mage_Shell_Abstract
      */
     public function cronActionHelp()
     {
-        return "--mode (always|default) [--includeGroups <comma seperated list of groups>] [--excludeGroups <comma seperated list of groups>]";
+        return "--mode (always|default) [--includeGroups <comma seperated list of groups>] [--excludeGroups <comma seperated list of groups>] [--includeJobs <comma seperated list of jobs>] [--excludeJobs <comma seperated list of jobs>]";
     }
 }
 

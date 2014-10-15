@@ -7,7 +7,6 @@
  */
 class Aoe_Scheduler_Model_Observer /* extends Mage_Cron_Model_Observer */
 {
-
     /**
      * Process cron queue
      * Generate tasks schedule
@@ -27,10 +26,12 @@ class Aoe_Scheduler_Model_Observer /* extends Mage_Cron_Model_Observer */
 
         $includeGroups = array_filter(array_map('trim', (array)$observer->getIncludeGroups()));
         $excludeGroups = array_filter(array_map('trim', (array)$observer->getExcludeGroups()));
+        $includeJobs = array_filter(array_map('trim', (array)$observer->getIncludeJobs()));
+        $excludeJobs = array_filter(array_map('trim', (array)$observer->getExcludeJobs()));
 
         $helper = Mage::helper('aoe_scheduler'); /* @var $helper Aoe_Scheduler_Helper_Data */
 
-        $schedules = $scheduleManager->getPendingSchedules(); /* @var $schedules Mage_Cron_Model_Resource_Schedule_Collection */
+        $schedules = $scheduleManager->getPendingSchedules($includeJobs, $excludeJobs); /* @var $schedules Mage_Cron_Model_Resource_Schedule_Collection */
         foreach ($schedules as $schedule) { /* @var $schedule Aoe_Scheduler_Model_Schedule */
             if ($helper->matchesIncludeExclude($schedule->getJobCode(), $includeGroups, $excludeGroups)) {
                 $schedule->process();
@@ -63,8 +64,10 @@ class Aoe_Scheduler_Model_Observer /* extends Mage_Cron_Model_Observer */
         $helper = Mage::helper('aoe_scheduler'); /* @var $helper Aoe_Scheduler_Helper_Data */
         $includeGroups = array_filter(array_map('trim', (array)$observer->getIncludeGroups()));
         $excludeGroups = array_filter(array_map('trim', (array)$observer->getExcludeGroups()));
+        $includeJobs = array_filter(array_map('trim', (array)$observer->getIncludeJobs()));
+        $excludeJobs = array_filter(array_map('trim', (array)$observer->getExcludeJobs()));
 
-        $allJobs = Mage::getModel('aoe_scheduler/job_factory')->getAllJobs(); /* @var $allJobs Varien_Data_Collection */
+        $allJobs = Mage::getModel('aoe_scheduler/job_factory')->getAllJobs($includeJobs, $excludeJobs); /* @var $allJobs Varien_Data_Collection */
         foreach ($allJobs as $job) { /* @var $job Aoe_Scheduler_Model_Job_Abstract */
             if ($job->isAlwaysTask() && $job->getRunModel()) {
                 if ($helper->matchesIncludeExclude($job->getJobCode(), $includeGroups, $excludeGroups)) {
@@ -76,5 +79,4 @@ class Aoe_Scheduler_Model_Observer /* extends Mage_Cron_Model_Observer */
             }
         }
     }
-
 }
