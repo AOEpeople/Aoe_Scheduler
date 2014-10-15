@@ -25,9 +25,9 @@ class Aoe_Scheduler_Model_Observer /* extends Mage_Cron_Model_Observer */
         $scheduleManager = Mage::getModel('aoe_scheduler/scheduleManager'); /* @var $scheduleManager Aoe_Scheduler_Model_ScheduleManager */
         $scheduleManager->logRun();
 
-        $includeGroups = $observer->getIncludeGroups();
-        $excludeGroups = $observer->getExcludeGroups();
-        
+        $includeGroups = array_filter(array_map('trim', (array)$observer->getIncludeGroups()));
+        $excludeGroups = array_filter(array_map('trim', (array)$observer->getExcludeGroups()));
+
         $helper = Mage::helper('aoe_scheduler'); /* @var $helper Aoe_Scheduler_Helper_Data */
 
         $schedules = $scheduleManager->getPendingSchedules(); /* @var $schedules Mage_Cron_Model_Resource_Schedule_Collection */
@@ -61,8 +61,8 @@ class Aoe_Scheduler_Model_Observer /* extends Mage_Cron_Model_Observer */
         $scheduleManager = Mage::getModel('aoe_scheduler/scheduleManager'); /* @var $scheduleManager Aoe_Scheduler_Model_ScheduleManager */
 
         $helper = Mage::helper('aoe_scheduler'); /* @var $helper Aoe_Scheduler_Helper_Data */
-        $includeGroups = $observer->getIncludeGroups();
-        $excludeGroups = $observer->getExcludeGroups();
+        $includeGroups = array_filter(array_map('trim', (array)$observer->getIncludeGroups()));
+        $excludeGroups = array_filter(array_map('trim', (array)$observer->getExcludeGroups()));
 
         $allJobs = Mage::getModel('aoe_scheduler/job_factory')->getAllJobs(); /* @var $allJobs Varien_Data_Collection */
         foreach ($allJobs as $job) { /* @var $job Aoe_Scheduler_Model_Job_Abstract */
