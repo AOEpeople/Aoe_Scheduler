@@ -174,6 +174,16 @@ class Aoe_Scheduler_Block_Adminhtml_Job_Edit_Tab_Form extends Mage_Adminhtml_Blo
             'after_element_html' => $xmlJob ? $this->getOriginalValueSnippet($xmlJob->getParameter()) : ''
         ));
 
+        $fieldset->addField('groups', 'textarea', array(
+            'name'  => 'groups',
+            'label' => Mage::helper('aoe_scheduler')->__('Groups'),
+            'title' => Mage::helper('aoe_scheduler')->__('Groups'),
+            'class' => 'textarea',
+            'required' => false,
+            'note' => Mage::helper('aoe_scheduler')->__('Comma-separated list of groups (tags) that can be used with the include/exlude command line options of scheduler.php'),
+            'after_element_html' => $xmlJob ? $this->getOriginalValueSnippet($xmlJob->getGroups()) : ''
+        ));
+
         $this->setForm($form);
 
         return parent::_prepareForm();

@@ -17,6 +17,8 @@
  * @method getIsActive()
  * @method setParameters($parameters)
  * @method getParameters()
+ * @method setGroups($groups)
+ * @method getGroups()
  */
 abstract class Aoe_Scheduler_Model_Job_Abstract extends Mage_Core_Model_Abstract
 {

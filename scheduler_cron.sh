@@ -85,4 +85,4 @@ trap 'rmdir "${LOCK}"; exit $?' INT TERM EXIT
 cd "${DIR}"
 
 # Run the job in the foreground
-"${PHP_BIN}" "${SCHEDULER}" --action cron --mode "${MODE}" --include "${INCLUDE_GROUPS}" --exclude "${EXCLUDE_GROUPS}"
+"${PHP_BIN}" "${SCHEDULER}" --action cron --mode "${MODE}" --includeGroups "${INCLUDE_GROUPS}" --excludeGroups "${EXCLUDE_GROUPS}"

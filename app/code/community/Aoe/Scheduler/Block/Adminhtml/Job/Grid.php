@@ -93,7 +93,13 @@ class Aoe_Scheduler_Block_Adminhtml_Job_Grid extends Mage_Adminhtml_Block_Widget
             'header' => Mage::helper('aoe_scheduler')->__('Parameter'),
             'index' => 'parameter',
             'sortable' => false,
-            'frame_callback' => array($this, 'decorateParameter'),
+            'frame_callback' => array($this, 'decorateTrim'),
+        ));
+        $this->addColumn('groups', array(
+            'header' => Mage::helper('aoe_scheduler')->__('Groups'),
+            'index' => 'groups',
+            'sortable' => false,
+            'frame_callback' => array($this, 'decorateTrim'),
         ));
         $this->addColumn('type', array(
             'header' => Mage::helper('aoe_scheduler')->__('Type'),
@@ -145,7 +151,7 @@ class Aoe_Scheduler_Block_Adminhtml_Job_Grid extends Mage_Adminhtml_Block_Widget
      * @param $value
      * @return string
      */
-    public function decorateParameter($value)
+    public function decorateTrim($value)
     {
         return sprintf('<span title="%s">%s</span>', $value, mb_strimwidth($value, 0, 40, "..."));
     }

@@ -174,6 +174,41 @@ class Aoe_Scheduler_Helper_Data extends Mage_Core_Helper_Abstract
     }
 
     /**
+     * Check if a job matches the group include/exclude lists
+     *
+     * @param $jobCode
+     * @param array $include
+     * @param array $exclude
+     * @return mixed
+     */
+    public function matchesIncludeExclude($jobCode, array $include, array $exclude)
+    {
+
+        $key = $jobCode . '|' . implode(',', $include) . '|' . implode(',', $exclude);
+        static $cache = array();
+        if (!isset($cache[$key])) {
+            if (count($include) == 0 && count($exclude) == 0) {
+                $cache[$key] = true;
+            } else {
+                $cache[$key] = true;
+                $jobFactory = Mage::getModel('aoe_scheduler/job_factory'); /* @var $jobFactory Aoe_Scheduler_Model_Job_Factory */
+                $job = $jobFactory->loadByCode($jobCode); /* @var $job Aoe_Scheduler_Model_Job_Abstract */
+                $groups = $this->trimExplode(',', $job->getGroups());
+                if (count($include) > 0) {
+                    $cache[$key] = (count(array_intersect($groups, $include)) > 0);
+                }
+                if (count($exclude) > 0) {
+                    if (count(array_intersect($groups, $exclude)) > 0) {
+                        $cache[$key] = false;
+                    }
+                }
+            }
+
+        }
+        return $cache[$key];
+    }
+
+    /**
      * Send error mail
      *
      * @param Aoe_Scheduler_Model_Schedule $schedule

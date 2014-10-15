@@ -2,7 +2,7 @@
 <config>
     <modules>
         <Aoe_Scheduler>
-            <version>0.5.1</version>
+            <version>0.5.2</version>
         </Aoe_Scheduler>
     </modules>
 
@@ -148,6 +148,7 @@
                 <run>
                     <model>aoe_scheduler/task_heartbeat::run</model>
                 </run>
+                <groups>all</groups>
             </aoescheduler_heartbeat>
         </jobs>
     </crontab>
@@ -175,8 +176,3 @@
     </phpunit>
 
 </config>
-
-
-
-
-
