@@ -198,7 +198,7 @@ class Aoe_Scheduler_Helper_Data extends Mage_Core_Helper_Abstract
                 $cache[$key] = true;
                 $jobFactory = Mage::getModel('aoe_scheduler/job_factory'); /* @var $jobFactory Aoe_Scheduler_Model_Job_Factory */
                 $job = $jobFactory->loadByCode($jobCode); /* @var $job Aoe_Scheduler_Model_Job_Abstract */
-                $groups = $this->trimExplode(',', $job->getGroups());
+                $groups = $this->trimExplode(',', $job->getGroups(), true);
                 if (count($include) > 0) {
                     $cache[$key] = (count(array_intersect($groups, $include)) > 0);
                 }
