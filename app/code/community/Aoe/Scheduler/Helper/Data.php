@@ -234,7 +234,7 @@ class Aoe_Scheduler_Helper_Data extends Mage_Core_Helper_Abstract
             $this->groupsToJobsMap = $map;
         }
 
-        return $map;
+        return $this->groupsToJobsMap;
     }
 
     public function addGroupJobs(array $jobs, array $groups)
