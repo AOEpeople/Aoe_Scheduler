@@ -62,10 +62,12 @@ class Aoe_Scheduler_Model_ScheduleManager
             ->addFieldToFilter('scheduled_at', array('lt' => strftime('%Y-%m-%d %H:%M:%S', time())))
             ->addOrder('scheduled_at', 'ASC');
 
+        $whitelist = array_filter(array_map('trim', $whitelist));
         if (!empty($whitelist)) {
             $pendingSchedules->addFieldToFilter('job_code', array('in' => $whitelist));
         }
 
+        $blacklist = array_filter(array_map('trim', $blacklist));
         if (!empty($blacklist)) {
             $pendingSchedules->addFieldToFilter('job_code', array('nin' => $blacklist));
         }

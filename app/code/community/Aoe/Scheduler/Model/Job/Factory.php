@@ -52,6 +52,9 @@ class Aoe_Scheduler_Model_Job_Factory
      */
     public function getAllJobs(array $whitelist = array(), $blacklist = array())
     {
+        $whitelist = array_filter(array_map('trim', $whitelist));
+        $blacklist = array_filter(array_map('trim', $blacklist));
+
         $jobs = Mage::getModel('aoe_scheduler/job_collection'); /* @var $jobs Aoe_Scheduler_Model_Job_Collection */
         foreach ($this->models as $model) {
             $jobCollection = Mage::getModel($model)->getCollection();

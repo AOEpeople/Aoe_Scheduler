@@ -25,15 +25,8 @@ class Aoe_Scheduler_Model_Observer /* extends Mage_Cron_Model_Observer */
 
         /* @var Aoe_Scheduler_Helper_Data $helper */
         $helper = Mage::helper('aoe_scheduler');
-
-        $includeJobs = array_filter(array_map('trim', (array)$observer->getIncludeJobs()));
-        $excludeJobs = array_filter(array_map('trim', (array)$observer->getExcludeJobs()));
-
-        $includeGroups = array_filter(array_map('trim', (array)$observer->getIncludeGroups()));
-        $includeJobs = $helper->addGroupJobs($includeJobs, $includeGroups);
-
-        $excludeGroups = array_filter(array_map('trim', (array)$observer->getExcludeGroups()));
-        $excludeJobs = $helper->addGroupJobs($excludeJobs, $excludeGroups);
+        $includeJobs = $helper->addGroupJobs((array)$observer->getIncludeJobs(), (array)$observer->getIncludeGroups());
+        $excludeJobs = $helper->addGroupJobs((array)$observer->getExcludeJobs(), (array)$observer->getExcludeGroups());
 
         // DEPRECATED - Include ENV whitelist and blacklist
         $includeJobs = array_merge($includeJobs, $scheduleManager->getWhitelist());
@@ -69,15 +62,8 @@ class Aoe_Scheduler_Model_Observer /* extends Mage_Cron_Model_Observer */
 
         /* @var Aoe_Scheduler_Helper_Data $helper */
         $helper = Mage::helper('aoe_scheduler');
-
-        $includeJobs = array_filter(array_map('trim', (array)$observer->getIncludeJobs()));
-        $excludeJobs = array_filter(array_map('trim', (array)$observer->getExcludeJobs()));
-
-        $includeGroups = array_filter(array_map('trim', (array)$observer->getIncludeGroups()));
-        $includeJobs = $helper->addGroupJobs($includeJobs, $includeGroups);
-
-        $excludeGroups = array_filter(array_map('trim', (array)$observer->getExcludeGroups()));
-        $excludeJobs = $helper->addGroupJobs($excludeJobs, $excludeGroups);
+        $includeJobs = $helper->addGroupJobs((array)$observer->getIncludeJobs(), (array)$observer->getIncludeGroups());
+        $excludeJobs = $helper->addGroupJobs((array)$observer->getExcludeJobs(), (array)$observer->getExcludeGroups());
 
         /* @var Varien_Data_Collection $allJobs */
         $allJobs = Mage::getModel('aoe_scheduler/job_factory')->getAllJobs($includeJobs, $excludeJobs);
