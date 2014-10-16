@@ -94,5 +94,20 @@ trap 'rmdir "${LOCK}"; exit $?' INT TERM EXIT
 # Needed becasue PHP is braindead and resolves symlinks before setting __FILE__
 cd "${DIR}"
 
+# Build the options
+OPTIONS=""
+if [ -n "${INCLUDE_GROUPS}" ]; then
+    OPTIONS=" --includeGroups ${INCLUDE_GROUPS}"
+fi
+if [ -n "${EXCLUDE_GROUPS}" ]; then
+    OPTIONS=" --excludeGroups ${EXCLUDE_GROUPS}"
+fi
+if [ -n "${INCLUDE_JOBS}" ]; then
+    OPTIONS=" --includeJobs ${INCLUDE_JOBS}"
+fi
+if [ -n "${EXCLUDE_JOBS}" ]; then
+    OPTIONS=" --excludeJobs ${EXCLUDE_JOBS}"
+fi
+
 # Run the job in the foreground
-"${PHP_BIN}" "${SCHEDULER}" --action cron --mode "${MODE}" --includeGroups "${INCLUDE_GROUPS}" --excludeGroups "${EXCLUDE_GROUPS}" --includeJobs "${INCLUDE_JOBS}" --excludeJobs "${EXCLUDE_JOBS}"
+"${PHP_BIN}" "${SCHEDULER}" --action cron --mode ${MODE} ${OPTIONS}
