@@ -236,10 +236,14 @@ class Aoe_Scheduler_Shell_Scheduler extends Mage_Shell_Abstract
         switch ($mode) {
             case 'always':
             case 'default':
-                $includeGroups = array_filter(array_map('trim', explode(',', $this->getArg('includeGroups'))));
-                $excludeGroups = array_filter(array_map('trim', explode(',', $this->getArg('excludeGroups'))));
-                $includeJobs = array_filter(array_map('trim', explode(',', $this->getArg('includeJobs'))));
-                $excludeJobs = array_filter(array_map('trim', explode(',', $this->getArg('excludeJobs'))));
+                $includeGroups = $this->getArg('includeGroups');
+                $excludeGroups = $this->getArg('excludeGroups');
+                $includeJobs = $this->getArg('includeJobs');
+                $excludeJobs = $this->getArg('excludeJobs');
+                $includeGroups = ($includeGroups === true ? array() : array_filter(array_map('trim', explode(',', $includeGroups))));
+                $excludeGroups = ($excludeGroups === true ? array() : array_filter(array_map('trim', explode(',', $excludeGroups))));
+                $includeJobs = ($includeJobs === true ? array() : array_filter(array_map('trim', explode(',', $includeJobs))));
+                $excludeJobs = ($excludeJobs === true ? array() : array_filter(array_map('trim', explode(',', $excludeJobs))));
                 Mage::getConfig()->init()->loadEventObservers('crontab');
                 Mage::app()->addEventArea('crontab');
                 Mage::dispatchEvent(
