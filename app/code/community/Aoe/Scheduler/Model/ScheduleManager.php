@@ -8,8 +8,7 @@
  */
 class Aoe_Scheduler_Model_ScheduleManager
 {
-
-    CONST XML_PATH_HISTORY_MAXNO = 'system/cron/maxNoOfSuccessfulTasks';
+    const XML_PATH_HISTORY_MAXNO = 'system/cron/maxNoOfSuccessfulTasks';
     const CACHE_KEY_SCHEDULER_LASTRUNS = 'cron_lastruns';
 
     /**
@@ -187,7 +186,6 @@ class Aoe_Scheduler_Model_ScheduleManager
      */
     public function generateSchedules()
     {
-
         /**
          * check if schedule generation is needed
          */
