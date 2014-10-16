@@ -13,11 +13,6 @@ class Aoe_Scheduler_Model_ScheduleManager
     const CACHE_KEY_SCHEDULER_LASTRUNS = 'cron_lastruns';
 
     /**
-     * @var Mage_Cron_Model_Resource_Schedule_Collection
-     */
-    protected $_pendingSchedules;
-
-    /**
      * Log run
      */
     public function logRun()
@@ -62,40 +57,38 @@ class Aoe_Scheduler_Model_ScheduleManager
      */
     public function getPendingSchedules(array $whitelist = array(), array $blacklist = array())
     {
-        if (!$this->_pendingSchedules) {
-            $this->_pendingSchedules = Mage::getModel('cron/schedule')->getCollection()
-                ->addFieldToFilter('status', Mage_Cron_Model_Schedule::STATUS_PENDING)
-                ->addFieldToFilter('scheduled_at', array('lt' => strftime('%Y-%m-%d %H:%M:%S', time())))
-                ->addOrder('scheduled_at', 'ASC');
+        $pendingSchedules = Mage::getModel('cron/schedule')->getCollection()
+            ->addFieldToFilter('status', Mage_Cron_Model_Schedule::STATUS_PENDING)
+            ->addFieldToFilter('scheduled_at', array('lt' => strftime('%Y-%m-%d %H:%M:%S', time())))
+            ->addOrder('scheduled_at', 'ASC');
 
-            if (!empty($whitelist)) {
-                $this->_pendingSchedules->addFieldToFilter('job_code', array('in' => $whitelist));
-            }
-
-            if (!empty($blacklist)) {
-                $this->_pendingSchedules->addFieldToFilter('job_code', array('nin' => $blacklist));
-            }
-
-            // let's do a cleanup and not execute multiple schedule from the same job in a run but mark them as missed
-            // this happens if the cron was blocked by another task and jobs keep piling up.
-            /** @var Aoe_Scheduler_Model_Schedule[] $seenJobs */
-            $seenJobs = array();
-            foreach($this->_pendingSchedules as $key => $schedule) {
-                /* @var Aoe_Scheduler_Model_Schedule $schedule */
-                if(isset($seenJobs[$schedule->getJobCode()])) {
-                    $previousSchedule = $seenJobs[$schedule->getJobCode()];
-                    $this->_pendingSchedules->removeItemByKey($previousSchedule->getId());
-                    $previousSchedule
-                        ->setMessages('Mulitple tasks with the same job code were piling up. Skipping execution of duplicates.')
-                        ->setStatus(Mage_Cron_Model_Schedule::STATUS_MISSED)
-                        ->save();
-                }
-                $seenJobs[$schedule->getJobCode()] = $schedule;
-            }
-            unset($seenJobs);
+        if (!empty($whitelist)) {
+            $pendingSchedules->addFieldToFilter('job_code', array('in' => $whitelist));
         }
 
-        return $this->_pendingSchedules;
+        if (!empty($blacklist)) {
+            $pendingSchedules->addFieldToFilter('job_code', array('nin' => $blacklist));
+        }
+
+        // let's do a cleanup and not execute multiple schedule from the same job in a run but mark them as missed
+        // this happens if the cron was blocked by another task and jobs keep piling up.
+        /** @var Aoe_Scheduler_Model_Schedule[] $seenJobs */
+        $seenJobs = array();
+        foreach($pendingSchedules as $key => $schedule) {
+            /* @var Aoe_Scheduler_Model_Schedule $schedule */
+            if(isset($seenJobs[$schedule->getJobCode()])) {
+                $previousSchedule = $seenJobs[$schedule->getJobCode()];
+                $pendingSchedules->removeItemByKey($previousSchedule->getId());
+                $previousSchedule
+                    ->setMessages('Mulitple tasks with the same job code were piling up. Skipping execution of duplicates.')
+                    ->setStatus(Mage_Cron_Model_Schedule::STATUS_MISSED)
+                    ->save();
+            }
+            $seenJobs[$schedule->getJobCode()] = $schedule;
+        }
+        unset($seenJobs);
+
+        return $pendingSchedules;
     }
 
 
