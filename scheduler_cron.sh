@@ -97,16 +97,16 @@ cd "${DIR}"
 # Build the options
 OPTIONS=""
 if [ -n "${INCLUDE_GROUPS}" ]; then
-    OPTIONS=" --includeGroups ${INCLUDE_GROUPS}"
+    OPTIONS="${OPTIONS} --includeGroups ${INCLUDE_GROUPS}"
 fi
 if [ -n "${EXCLUDE_GROUPS}" ]; then
-    OPTIONS=" --excludeGroups ${EXCLUDE_GROUPS}"
+    OPTIONS="${OPTIONS} --excludeGroups ${EXCLUDE_GROUPS}"
 fi
 if [ -n "${INCLUDE_JOBS}" ]; then
-    OPTIONS=" --includeJobs ${INCLUDE_JOBS}"
+    OPTIONS="${OPTIONS} --includeJobs ${INCLUDE_JOBS}"
 fi
 if [ -n "${EXCLUDE_JOBS}" ]; then
-    OPTIONS=" --excludeJobs ${EXCLUDE_JOBS}"
+    OPTIONS="${OPTIONS} --excludeJobs ${EXCLUDE_JOBS}"
 fi
 
 # Run the job in the foreground
