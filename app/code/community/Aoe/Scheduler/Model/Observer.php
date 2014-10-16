@@ -16,7 +16,6 @@ class Aoe_Scheduler_Model_Observer /* extends Mage_Cron_Model_Observer */
      */
     public function dispatch(Varien_Event_Observer $observer)
     {
-
         if (!Mage::getStoreConfigFlag('system/cron/enable')) {
             return;
         }
@@ -24,18 +23,25 @@ class Aoe_Scheduler_Model_Observer /* extends Mage_Cron_Model_Observer */
         $scheduleManager = Mage::getModel('aoe_scheduler/scheduleManager'); /* @var $scheduleManager Aoe_Scheduler_Model_ScheduleManager */
         $scheduleManager->logRun();
 
-        $includeGroups = array_filter(array_map('trim', (array)$observer->getIncludeGroups()));
-        $excludeGroups = array_filter(array_map('trim', (array)$observer->getExcludeGroups()));
+        /* @var Aoe_Scheduler_Helper_Data $helper */
+        $helper = Mage::helper('aoe_scheduler');
+
         $includeJobs = array_filter(array_map('trim', (array)$observer->getIncludeJobs()));
         $excludeJobs = array_filter(array_map('trim', (array)$observer->getExcludeJobs()));
 
-        $helper = Mage::helper('aoe_scheduler'); /* @var $helper Aoe_Scheduler_Helper_Data */
+        $includeGroups = array_filter(array_map('trim', (array)$observer->getIncludeGroups()));
+        $includeJobs = $helper->addGroupJobs($includeJobs, $includeGroups);
+
+        $excludeGroups = array_filter(array_map('trim', (array)$observer->getExcludeGroups()));
+        $excludeJobs = $helper->addGroupJobs($excludeJobs, $excludeGroups);
+
+        // DEPRECATED - Include ENV whitelist and blacklist
+        $includeJobs = array_merge($includeJobs, $scheduleManager->getWhitelist());
+        $excludeJobs = array_merge($excludeJobs, $scheduleManager->getBlacklist());
 
         $schedules = $scheduleManager->getPendingSchedules($includeJobs, $excludeJobs); /* @var $schedules Mage_Cron_Model_Resource_Schedule_Collection */
         foreach ($schedules as $schedule) { /* @var $schedule Aoe_Scheduler_Model_Schedule */
-            if ($helper->matchesIncludeExclude($schedule->getJobCode(), $includeGroups, $excludeGroups)) {
-                $schedule->process();
-            }
+            $schedule->process();
         }
 
         $scheduleManager->generateSchedules();
@@ -61,20 +67,26 @@ class Aoe_Scheduler_Model_Observer /* extends Mage_Cron_Model_Observer */
 
         $scheduleManager = Mage::getModel('aoe_scheduler/scheduleManager'); /* @var $scheduleManager Aoe_Scheduler_Model_ScheduleManager */
 
-        $helper = Mage::helper('aoe_scheduler'); /* @var $helper Aoe_Scheduler_Helper_Data */
-        $includeGroups = array_filter(array_map('trim', (array)$observer->getIncludeGroups()));
-        $excludeGroups = array_filter(array_map('trim', (array)$observer->getExcludeGroups()));
+        /* @var Aoe_Scheduler_Helper_Data $helper */
+        $helper = Mage::helper('aoe_scheduler');
+
         $includeJobs = array_filter(array_map('trim', (array)$observer->getIncludeJobs()));
         $excludeJobs = array_filter(array_map('trim', (array)$observer->getExcludeJobs()));
 
-        $allJobs = Mage::getModel('aoe_scheduler/job_factory')->getAllJobs($includeJobs, $excludeJobs); /* @var $allJobs Varien_Data_Collection */
-        foreach ($allJobs as $job) { /* @var $job Aoe_Scheduler_Model_Job_Abstract */
+        $includeGroups = array_filter(array_map('trim', (array)$observer->getIncludeGroups()));
+        $includeJobs = $helper->addGroupJobs($includeJobs, $includeGroups);
+
+        $excludeGroups = array_filter(array_map('trim', (array)$observer->getExcludeGroups()));
+        $excludeJobs = $helper->addGroupJobs($excludeJobs, $excludeGroups);
+
+        /* @var Varien_Data_Collection $allJobs */
+        $allJobs = Mage::getModel('aoe_scheduler/job_factory')->getAllJobs($includeJobs, $excludeJobs);
+        foreach ($allJobs as $job) {
+            /* @var $job Aoe_Scheduler_Model_Job_Abstract */
             if ($job->isAlwaysTask() && $job->getRunModel()) {
-                if ($helper->matchesIncludeExclude($job->getJobCode(), $includeGroups, $excludeGroups)) {
-                    $schedule = $scheduleManager->getScheduleForAlwaysJob($job->getJobCode());
-                    if ($schedule !== false) {
-                        $schedule->process();
-                    }
+                $schedule = $scheduleManager->getScheduleForAlwaysJob($job->getJobCode());
+                if ($schedule !== false) {
+                    $schedule->process();
                 }
             }
         }

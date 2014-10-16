@@ -13,6 +13,8 @@ class Aoe_Scheduler_Helper_Data extends Mage_Core_Helper_Abstract
     const XML_PATH_EMAIL_IDENTITY = 'system/cron/error_email_identity';
     const XML_PATH_EMAIL_RECIPIENT = 'system/cron/error_email';
 
+    protected $groupsToJobsMap = null;
+
     /**
      * Explodes a string and trims all values for whitespace in the ends.
      * If $onlyNonEmptyValues is set, then all blank ('') values are removed.
@@ -211,6 +213,43 @@ class Aoe_Scheduler_Helper_Data extends Mage_Core_Helper_Abstract
 
         }
         return $cache[$key];
+    }
+
+    public function getGroupsToJobsMap($forceRebuild = false)
+    {
+        if($this->groupsToJobsMap === null || $forceRebuild) {
+            $map = array();
+
+            /* @var Aoe_Scheduler_Model_Job_Factory  $jobFactory */
+            $jobFactory = Mage::getModel('aoe_scheduler/job_factory');
+
+            foreach($jobFactory->getAllJobs() as $job) {
+                /* @var Aoe_Scheduler_Model_Job_Abstract  $job*/
+                $groups = $this->trimExplode(',', $job->getGroups(), true);
+                foreach($groups as $group) {
+                    $map[$group][] = $job->getJobCode();
+                }
+            }
+
+            $this->groupsToJobsMap = $map;
+        }
+
+        return $map;
+    }
+
+    public function addGroupJobs(array $jobs, array $groups)
+    {
+        $map = $this->getGroupsToJobsMap();
+
+        foreach($groups as $group) {
+            if(isset($map[$group])) {
+                foreach($map[$group] as $jobCode) {
+                    $jobs[] = $jobCode;
+                }
+            }
+        }
+
+        return $jobs;
     }
 
     /**
