@@ -136,34 +136,44 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
         Mage::unregister('current_cron_task');
         Mage::register('current_cron_task', $this);
 
-        // this is where the actual task will be executed ...
-        $messages = call_user_func_array($callback, array($this));
+        try {
+            // this is where the actual task will be executed ...
+            $messages = call_user_func_array($callback, array($this));
 
-        $this->log('Stop: ' . $this->getJobCode());
+            $this->log('Stop: ' . $this->getJobCode());
 
-        if (!empty($messages)) {
-            if (is_object($messages)) {
-                $messages = get_class($messages);
-            } elseif (!is_scalar($messages)) {
-                $messages = var_export($messages, 1);
+            if (!empty($messages)) {
+                if (is_object($messages)) {
+                    $messages = get_class($messages);
+                } elseif (!is_scalar($messages)) {
+                    $messages = var_export($messages, 1);
+                }
+                $this->setMessages($messages);
             }
-            $this->setMessages($messages);
-        }
 
-        // schedules can report an error state by returning a string that starts with "ERROR:"
-        if ((is_string($messages) && strtoupper(substr($messages, 0, 6)) == 'ERROR:') || $this->getStatus() === Mage_Cron_Model_Schedule::STATUS_ERROR) {
-            $this->setStatus(Mage_Cron_Model_Schedule::STATUS_ERROR);
-            Mage::helper('aoe_scheduler')->sendErrorMail($this, $messages);
-            Mage::dispatchEvent('cron_' . $this->getJobCode() . '_after_error', array('schedule' => $this));
-            Mage::dispatchEvent('cron_after_error', array('schedule' => $this));
-        } elseif (is_string($messages) && strtoupper(substr($messages, 0, 7)) == 'NOTHING') {
-            $this->setStatus(Aoe_Scheduler_Model_Schedule::STATUS_DIDNTDOANYTHING);
-            Mage::dispatchEvent('cron_' . $this->getJobCode() . '_after_nothing', array('schedule' => $this));
-            Mage::dispatchEvent('cron_after_nothing', array('schedule' => $this));
-        } else {
-            $this->setStatus(Mage_Cron_Model_Schedule::STATUS_SUCCESS);
-            Mage::dispatchEvent('cron_' . $this->getJobCode() . '_after_success', array('schedule' => $this));
-            Mage::dispatchEvent('cron_after_success', array('schedule' => $this));
+            // schedules can report an error state by returning a string that starts with "ERROR:"
+            if ((is_string($messages) && strtoupper(substr($messages, 0, 6)) == 'ERROR:') || $this->getStatus() === Mage_Cron_Model_Schedule::STATUS_ERROR) {
+                $this->setStatus(Mage_Cron_Model_Schedule::STATUS_ERROR);
+                Mage::helper('aoe_scheduler')->sendErrorMail($this, $messages);
+                Mage::dispatchEvent('cron_' . $this->getJobCode() . '_after_error', array('schedule' => $this));
+                Mage::dispatchEvent('cron_after_error', array('schedule' => $this));
+            } elseif (is_string($messages) && strtoupper(substr($messages, 0, 7)) == 'NOTHING') {
+                $this->setStatus(Aoe_Scheduler_Model_Schedule::STATUS_DIDNTDOANYTHING);
+                Mage::dispatchEvent('cron_' . $this->getJobCode() . '_after_nothing', array('schedule' => $this));
+                Mage::dispatchEvent('cron_after_nothing', array('schedule' => $this));
+            } else {
+                $this->setStatus(Mage_Cron_Model_Schedule::STATUS_SUCCESS);
+                Mage::dispatchEvent('cron_' . $this->getJobCode() . '_after_success', array('schedule' => $this));
+                Mage::dispatchEvent('cron_after_success', array('schedule' => $this));
+            }
+
+        } catch (Exception $e) {
+            $this
+                ->setStatus(Mage_Cron_Model_Schedule::STATUS_ERROR)
+                ->setMessages($e->__toString());
+            Mage::dispatchEvent('cron_' . $this->getJobCode() . '_exception', array('schedule' => $this, 'exception' => $e));
+            Mage::dispatchEvent('cron_exception', array('schedule' => $this, 'exception' => $e));
+            Mage::helper('aoe_scheduler')->sendErrorMail($this, $e->__toString());
         }
 
         $this->setFinishedAt(strftime('%Y-%m-%d %H:%M:%S', time()));
@@ -468,20 +478,10 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
      * @return $this
      */
     public function process() {
-        try {
-            if (!$this->canRun(true)) {
-                return $this;
-            }
-            $this->runNow(!$this->getJob()->isAlwaysTask());
-        } catch (Exception $e) {
-            $this
-                ->setStatus(Mage_Cron_Model_Schedule::STATUS_ERROR)
-                ->setMessages($e->__toString());
-            Mage::dispatchEvent('cron_' . $this->getJobCode() . '_exception', array('schedule' => $this, 'exception' => $e));
-            Mage::dispatchEvent('cron_exception', array('schedule' => $this, 'exception' => $e));
-            Mage::helper('aoe_scheduler')->sendErrorMail($this, $e->__toString());
+        if (!$this->canRun(true)) {
+            return $this;
         }
-        $this->save();
+        $this->runNow(!$this->getJob()->isAlwaysTask());
         return $this;
     }
 
