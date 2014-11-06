@@ -1,6 +1,6 @@
 app/code/community/Aoe/Scheduler/								app/code/community/Aoe/Scheduler/
 app/etc/modules/Aoe_Scheduler.xml								app/etc/modules/Aoe_Scheduler.xml
-shell/*															shell/
+shell/scheduler.php												shell/scheduler.php
 app/locale/sv_SE/Aoe_Scheduler.csv								app/locale/sv_SE/Aoe_Scheduler.csv
 app/locale/de_DE/Aoe_Scheduler.csv								app/locale/de_DE/Aoe_Scheduler.csv
 app/locale/en_US/template/email/aoe_scheduler/					app/locale/en_US/template/email/aoe_scheduler
