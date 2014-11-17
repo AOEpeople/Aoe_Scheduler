@@ -299,4 +299,21 @@ class Aoe_Scheduler_Helper_Data extends Mage_Core_Helper_Abstract
         return $callback;
     }
 
+    /**
+     * Validate cron expression
+     *
+     * @param $cronExpression
+     * @return bool
+     */
+    public function validateCronExpression($cronExpression) {
+        try {
+            $schedule = Mage::getModel('cron/schedule');
+            /* @var $schedule Mage_Cron_Model_Schedule */
+            $schedule->setCronExpr($cronExpression);
+        } catch (Exception $e) {
+            return false;
+        }
+        return true;
+    }
+
 }

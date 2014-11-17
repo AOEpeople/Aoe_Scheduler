@@ -171,6 +171,11 @@ class Aoe_Scheduler_Adminhtml_JobController extends Aoe_Scheduler_Adminhtml_Abst
         try {
             $helper = Mage::helper('aoe_scheduler'); /* @var $helper Aoe_Scheduler_Helper_Data */
             $helper->getCallBack($data['run_model']);
+            if (!empty($data['schedule_cron_expr'])) {
+                if (!$helper->validateCronExpression($data['schedule_cron_expr'])) {
+                    Mage::throwException("Invalid cron expression");
+                }
+            }
         } catch (Exception $e) {
             $this->_getSession()->addError($e->getMessage());
             return false;
@@ -215,6 +220,13 @@ class Aoe_Scheduler_Adminhtml_JobController extends Aoe_Scheduler_Adminhtml_Abst
                     $this->_redirect('*/*/edit', array('job_code' => $job->getId(), '_current' => true));
                     return;
                 }
+
+                // flush and generate future schedules
+                $scheduleManager = Mage::getModel('aoe_scheduler/scheduleManager'); /* @var $scheduleManager Aoe_Scheduler_Model_ScheduleManager */
+                $scheduleManager->flushSchedules($job->getJobCode());
+                $scheduleManager->generateSchedules();
+                $this->_getSession()->addNotice($this->__('Future pending jobs have been flushed and regenerated'));
+
                 // go to grid
                 $this->_redirect('*/*/');
                 return;
@@ -229,6 +241,7 @@ class Aoe_Scheduler_Adminhtml_JobController extends Aoe_Scheduler_Adminhtml_Abst
             $this->_redirect('*/*/edit', array('job_code' => $this->getRequest()->getParam('job_code')));
             return;
         }
+
         $this->_redirect('*/*/', array('_current' => true));
     }
 

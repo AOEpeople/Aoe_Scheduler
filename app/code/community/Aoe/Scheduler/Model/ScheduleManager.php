@@ -176,7 +176,27 @@ class Aoe_Scheduler_Model_ScheduleManager
         }
     }
 
-
+    /**
+     * Flushed all future pending schedules.
+     *
+     * @param string $jobCode
+     * @return $this
+     */
+    public function flushSchedules($jobCode=NULL) {
+        /* @var $pendingSchedules Mage_Cron_Model_Resource_Schedule_Collection */
+        $pendingSchedules = Mage::getModel('cron/schedule')->getCollection()
+            ->addFieldToFilter('status', Mage_Cron_Model_Schedule::STATUS_PENDING)
+            ->addFieldToFilter('scheduled_at', array('gt' => strftime('%Y-%m-%d %H:%M:%S', time())))
+            ->addOrder('scheduled_at', 'ASC');
+        if (!empty($jobCode)) {
+            $pendingSchedules->addFieldToFilter('job_code', $jobCode);
+        }
+        foreach($pendingSchedules as $key => $schedule) { /* @var Aoe_Scheduler_Model_Schedule $schedule */
+            $schedule->delete();
+        }
+        Mage::app()->saveCache(0, Mage_Cron_Model_Observer::CACHE_KEY_LAST_SCHEDULE_GENERATE_AT, array('crontab'), null);
+        return $this;
+    }
 
     /**
      * Generate cron schedule.
