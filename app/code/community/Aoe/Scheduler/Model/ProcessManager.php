@@ -10,6 +10,7 @@ class Aoe_Scheduler_Model_ProcessManager
 {
 
     CONST XML_PATH_MARK_AS_ERROR = 'system/cron/mark_as_error_after';
+    CONST XML_PATH_MAX_JOB_RUNTIME = 'system/cron/max_job_runtime';
 
     /**
      * Get all schedules running on this server
@@ -74,8 +75,20 @@ class Aoe_Scheduler_Model_ProcessManager
     public function checkRunningJobs()
     {
 
+        $maxJobRuntime = Mage::getStoreConfig(self::XML_PATH_MAX_JOB_RUNTIME);
+
         foreach ($this->getAllRunningSchedules(gethostname()) as $schedule) { /* @var $schedule Aoe_Scheduler_Model_Schedule */
-            $schedule->isAlive(); // checks pid and updates record
+
+            // checks if process is still running and updates record
+            $isAlive = $schedule->isAlive();
+
+            // checking if the job isn't running too long
+            if ($isAlive && $maxJobRuntime) {
+                if ($schedule->getDuration() > $maxJobRuntime * 60) {
+                    $schedule->requestKill();
+                }
+            }
+            
         }
 
         // fallback (where process cannot be checked or if one of the servers disappeared)

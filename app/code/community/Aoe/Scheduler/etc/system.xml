@@ -37,6 +37,16 @@
                             <show_in_store>0</show_in_store>
                         </mark_as_error_after>
 
+                        <max_job_runtime translate="label">
+                            <label>Maximum job runtime</label>
+                            <comment><![CDATA[If set a single job can't run longer than this time (in minutes). If the job is actually still running this process will be actively killed.]]></comment>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>111</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </max_job_runtime>
+
                         <scheduler_cron_expr_heartbeat>
                             <label>Heartbeat task schedule (cron syntax)</label>
                             <frontend_type>text</frontend_type>

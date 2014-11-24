@@ -261,17 +261,23 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
 
 
     /**
-     * Get job duration
+     * Get job duration.
      *
      * @return bool|int time in seconds, or false
      */
     public function getDuration()
     {
         $duration = false;
-        if ($this->getExecutedAt() && ($this->getExecutedAt() != '0000-00-00 00:00:00')
-            && $this->getFinishedAt() && ($this->getFinishedAt() != '0000-00-00 00:00:00')
-        ) {
-            $duration = strtotime($this->getFinishedAt()) - strtotime($this->getExecutedAt());
+        if ($this->getExecutedAt() && ($this->getExecutedAt() != '0000-00-00 00:00:00')) {
+            if ($this->getFinishedAt() && ($this->getFinishedAt() != '0000-00-00 00:00:00')) {
+                $time = strtotime($this->getFinishedAt());
+            } elseif ($this->getStatus() == Mage_Cron_Model_Schedule::STATUS_RUNNING) {
+                $time = time();
+            } else {
+                // Mage::throwException('No finish time found, but the job is not running');
+                return false;
+            }
+            $duration = $time - strtotime($this->getExecutedAt());
         }
         return $duration;
     }
