@@ -11,27 +11,29 @@
  * @method string getScheduledAt()
  * @method string setJobCode($jobCode)
  * @method string getJobCode()
- * @method string setMessages()
- * @method string setExecutedAt()
- * @method string setCreatedAt()
- * @method string setScheduledAt()
- * @method string setStatus()
- * @method string setFinishedAt()
- * @method string setParameters()
- * @method string setEta()
+ * @method $this setMessages()
+ * @method $this setExecutedAt()
+ * @method $this setCreatedAt()
+ * @method $this setScheduledAt()
+ * @method $this setStatus()
+ * @method $this setFinishedAt()
+ * @method $this setParameters()
+ * @method $this setEta()
  * @method string getEta()
- * @method string setHost()
+ * @method $this setHost()
  * @method string getHost()
- * @method string setPid()
+ * @method $this setPid()
  * @method string getPid()
- * @method string setProgressMessage()
+ * @method $this setProgressMessage()
  * @method string getProgressMessage()
  * @method string getLastSeen()
- * @method string setLastSeen()
+ * @method $this setLastSeen()
  * @method string getScheduledBy()
- * @method string setScheduledBy($scheduledBy)
+ * @method $this setScheduledBy($scheduledBy)
  * @method string getScheduledReason()
- * @method string setScheduledReason($scheduledReason)
+ * @method $this setScheduledReason($scheduledReason)
+ * @method string getKillRequest()
+ * @method $this setKillRequest($killRequest)
  */
 class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
 {
@@ -334,6 +336,21 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
     {
         $pid = intval($this->getPid());
         return $pid && file_exists('/proc/' . $pid);
+    }
+
+    /**
+     * Request kill
+     *
+     * @param int time
+     * @return $this
+     */
+    public function requestKill($time=NULL) {
+        if (is_null($time)) {
+            $time = time();
+        }
+        $this->setKillRequest(strftime('%Y-%m-%d %H:%M:%S', $time))
+           ->save();
+        return $this;
     }
 
     /**

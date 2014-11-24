@@ -40,10 +40,8 @@ class Aoe_Scheduler_Adminhtml_SchedulerController extends Aoe_Scheduler_Adminhtm
     {
         $ids = $this->getRequest()->getParam('schedule_ids');
         foreach ($ids as $id) {
-            $schedule = Mage::getModel('cron/schedule')/* @var $schedule Aoe_Scheduler_Model_Schedule */
-                ->load($id)
-                ->setKillRequest(strftime('%Y-%m-%d %H:%M:%S', time()))
-                ->save();
+            $schedule = Mage::getModel('cron/schedule'); /* @var $schedule Aoe_Scheduler_Model_Schedule */
+            $schedule->load($id)->requestKill();
         }
         $message = $this->__('Kill requests saved for task(s) "%s" (will be killed via cron)', implode(', ', $ids));
         Mage::getSingleton('adminhtml/session')->addSuccess($message);
