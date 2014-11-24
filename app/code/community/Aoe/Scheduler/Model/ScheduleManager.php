@@ -151,6 +151,11 @@ class Aoe_Scheduler_Model_ScheduleManager
         return false;
     }
 
+    /**
+     * Delete duplicate crons
+     *
+     * @throws Exception
+     */
     public function deleteDuplicates()
     {
         $cron_schedule = Mage::getSingleton('core/resource')->getTableName('cron_schedule');
