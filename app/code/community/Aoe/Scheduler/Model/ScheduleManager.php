@@ -73,11 +73,9 @@ class Aoe_Scheduler_Model_ScheduleManager
 
         // let's do a cleanup and not execute multiple schedule from the same job in a run but mark them as missed
         // this happens if the cron was blocked by another task and jobs keep piling up.
-        /** @var Aoe_Scheduler_Model_Schedule[] $seenJobs */
-        $seenJobs = array();
-        foreach($pendingSchedules as $key => $schedule) {
-            /* @var Aoe_Scheduler_Model_Schedule $schedule */
-            if(isset($seenJobs[$schedule->getJobCode()])) {
+        $seenJobs = array(); /* @var Aoe_Scheduler_Model_Schedule[] $seenJobs */
+        foreach ($pendingSchedules as $key => $schedule) { /* @var Aoe_Scheduler_Model_Schedule $schedule */
+            if (isset($seenJobs[$schedule->getJobCode()])) {
                 $previousSchedule = $seenJobs[$schedule->getJobCode()];
                 $pendingSchedules->removeItemByKey($previousSchedule->getId());
                 $previousSchedule
