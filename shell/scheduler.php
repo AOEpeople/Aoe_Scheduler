@@ -227,6 +227,11 @@ class Aoe_Scheduler_Shell_Scheduler extends Mage_Shell_Abstract
         }
     }
 
+    /**
+     * Cron action
+     *
+     *
+     */
     public function cronAction()
     {
         Mage::app('admin')->setUseSessionInUrl(false);

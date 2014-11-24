@@ -33,4 +33,67 @@ Aoe_Scheduler introduces a new shell script acting as an endpoint to execute cro
 
 This new endpoint supports including and excluding groups of crons and manages the parallel execution of cron groups.
 
+scheduler_cron.sh then will call shell/scheduler.php --action cron with the correct mode and options parameters instead of running cron.php
+Managing multiple configuration this way is much cleaner and easier to understand.
+
+scheduler_cron.sh or shell/scheduler.php --action cron will not do any shell_exec to run the different modes in subtasks. It's up to you to configure
+multiple OS level crontasks to trigger these individually.
+
 TODO: Add more information and example code.
+
+Parameters: 
+* `--mode [always|default]`
+* `--excludeJobs [comma-separated list of job names]` (deprecated!)
+* `--includeJobs [comma-separated list of job names]` (deprecated!)
+* `--excludeGroups [comma-separated list of cron group names]` 
+* `--includeGroups [comma-separated list of cron group names]`
+
+How to define a cron group
+--------------------------
+
+### Via XML
+
+```
+<my_cron_job>
+    <schedule><config_path>...</config_path></schedule>
+    <run><model>...</model></run>
+    <groups>my_group</groups>
+</my_cron_job>
+```
+
+### Or in a the group field of a record 
+
+TODO: add screenshot here.
+
+Configuring crontask
+--------------------
+
+### Split always and default:
+
+```
+* * * * * bash /var/www/magento/current/htdocs/scheduler_cron.sh --mode always
+* * * * * bash /var/www/magento/current/htdocs/scheduler_cron.sh --mode default
+```
+
+### Prepend check for maintenance.flag:
+
+```
+* * * * * ! test -e /var/www/magento/current/htdocs/maintenance.flag && ...
+```
+
+### Configure multiple cron groups
+
+This way you can distribute the jobs on different servers. Also this allows you to control which jobs can run in parallel and which don't. Within a cron group only one job will run at a time, while jobs from multiple cron groups might and will run at the same time 
+
+```
+# Always tasks
+* * * * * bash /var/www/magento/current/htdocs/scheduler_cron.sh --mode always --includeGroups my_queue_jobs
+* * * * * bash /var/www/magento/current/htdocs/scheduler_cron.sh --mode always --excludeGroups my_queue_jobs
+
+# Default tasks
+* * * * * bash /var/www/magento/current/htdocs/scheduler_cron.sh --mode default --includeGroups groupA,groupB
+* * * * * bash /var/www/magento/current/htdocs/scheduler_cron.sh --mode default --includeGroups groupC
+* * * * * bash /var/www/magento/current/htdocs/scheduler_cron.sh --mode default --excludeGroups groupA,groupB,groupC
+```
+
+If splitting jobs across multiple groups please double check you have every job covered in one of the includeGroups or excludeGroups list.
