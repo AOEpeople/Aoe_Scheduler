@@ -20,6 +20,9 @@ class Aoe_Scheduler_Model_Observer /* extends Mage_Cron_Model_Observer */
             return;
         }
 
+        $processManager = Mage::getModel('aoe_scheduler/processManager'); /* @var $processManager Aoe_Scheduler_Model_ProcessManager */
+        $processManager->watchdog();
+
         $scheduleManager = Mage::getModel('aoe_scheduler/scheduleManager'); /* @var $scheduleManager Aoe_Scheduler_Model_ScheduleManager */
         $scheduleManager->logRun();
 
@@ -39,8 +42,7 @@ class Aoe_Scheduler_Model_Observer /* extends Mage_Cron_Model_Observer */
         $scheduleManager->generateSchedules();
         $scheduleManager->cleanup();
 
-        $processManager = Mage::getModel('aoe_scheduler/processManager'); /* @var $processManager Aoe_Scheduler_Model_ProcessManager */
-        $processManager->checkRunningJobs();
+
     }
 
     /**
@@ -55,7 +57,7 @@ class Aoe_Scheduler_Model_Observer /* extends Mage_Cron_Model_Observer */
         }
 
         $processManager = Mage::getModel('aoe_scheduler/processManager'); /* @var $processManager Aoe_Scheduler_Model_ProcessManager */
-        $processManager->processKillRequests();
+        $processManager->watchdog();
 
         $scheduleManager = Mage::getModel('aoe_scheduler/scheduleManager'); /* @var $scheduleManager Aoe_Scheduler_Model_ScheduleManager */
 

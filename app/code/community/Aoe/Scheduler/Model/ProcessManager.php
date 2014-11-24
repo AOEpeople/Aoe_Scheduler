@@ -80,7 +80,6 @@ class Aoe_Scheduler_Model_ProcessManager
 
         // fallback (where process cannot be checked or if one of the servers disappeared)
         // if a task wasn't seen for some time it will be marked as error
-        // I'm reusing the
         $maxAge = time() - Mage::getStoreConfig(self::XML_PATH_MARK_AS_ERROR) * 60;
 
         $schedules = Mage::getModel('cron/schedule')->getCollection() /* @var $schedules Mage_Cron_Model_Resource_Schedule_Collection */
@@ -91,6 +90,7 @@ class Aoe_Scheduler_Model_ProcessManager
         foreach ($schedules as $schedule) { /* @var $schedule Aoe_Scheduler_Model_Schedule */
             $schedule->markAsDisappeared(sprintf('Host "%s" has not been available for a while now to update the status of this task and the task is not reporting back by itself', $schedule->getHost()));
         }
+
     }
 
 
@@ -105,6 +105,15 @@ class Aoe_Scheduler_Model_ProcessManager
         foreach ($this->getAllKillRequests(gethostname()) as $schedule) { /* @var $schedule Aoe_Scheduler_Model_Schedule */
             $schedule->kill();
         }
+    }
+
+
+    /**
+     * Run maintenance
+     */
+    public function watchdog() {
+        $this->checkRunningJobs();
+        $this->processKillRequests();
     }
 
 }

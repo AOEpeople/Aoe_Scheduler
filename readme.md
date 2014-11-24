@@ -68,6 +68,8 @@ TODO: add screenshot here.
 Configuring crontask
 --------------------
 
+Please remember to add the following configuration to the webserver user's crontab in order to avoid file permission issues with files that are being generated or need to be accessed from different contexts!
+
 ### Split always and default:
 
 ```
@@ -97,3 +99,12 @@ This way you can distribute the jobs on different servers. Also this allows you 
 ```
 
 If splitting jobs across multiple groups please double check you have every job covered in one of the includeGroups or excludeGroups list.
+
+Watchdog
+--------
+
+Please configure an additional cron for the watchdog. This will ensure that locked up jobs are being cleaned up even if every single cron process is locked.
+
+```
+*/10 * * * * bash /var/www/magento/current/htdocs/shell/scheduler.php --action watchdog
+```
