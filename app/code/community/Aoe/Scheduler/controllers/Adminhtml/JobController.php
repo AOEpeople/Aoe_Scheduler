@@ -258,6 +258,13 @@ class Aoe_Scheduler_Adminhtml_JobController extends Aoe_Scheduler_Adminhtml_Abst
                 $this->_getSession()->addSuccess(
                     Mage::helper('aoe_scheduler')->__('The job has been deleted.')
                 );
+
+                // flush and generate future schedules
+                $scheduleManager = Mage::getModel('aoe_scheduler/scheduleManager'); /* @var $scheduleManager Aoe_Scheduler_Model_ScheduleManager */
+                $scheduleManager->flushSchedules($job->getJobCode());
+                $scheduleManager->generateSchedules();
+                $this->_getSession()->addNotice($this->__('Future pending jobs have been flushed and regenerated'));
+
             } catch (Exception $e) {
                 $this->_getSession()->addError($e->getMessage());
             }
