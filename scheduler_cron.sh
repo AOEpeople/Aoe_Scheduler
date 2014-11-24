@@ -91,7 +91,7 @@ mkdir "${LOCK}" >/dev/null 2>&1
 # TODO: add pid writing and check
 trap 'rmdir "${LOCK}"; exit $?' INT TERM EXIT
 
-# Needed becasue PHP is braindead and resolves symlinks before setting __FILE__
+# Needed because PHP is braindead and resolves symlinks before setting __FILE__
 cd "${DIR}"
 
 # Build the options
