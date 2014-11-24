@@ -23,8 +23,7 @@ class Aoe_Scheduler_Model_Observer /* extends Mage_Cron_Model_Observer */
         $scheduleManager = Mage::getModel('aoe_scheduler/scheduleManager'); /* @var $scheduleManager Aoe_Scheduler_Model_ScheduleManager */
         $scheduleManager->logRun();
 
-        /* @var Aoe_Scheduler_Helper_Data $helper */
-        $helper = Mage::helper('aoe_scheduler');
+        $helper = Mage::helper('aoe_scheduler'); /* @var Aoe_Scheduler_Helper_Data $helper */
         $includeJobs = $helper->addGroupJobs((array)$observer->getIncludeJobs(), (array)$observer->getIncludeGroups());
         $excludeJobs = $helper->addGroupJobs((array)$observer->getExcludeJobs(), (array)$observer->getExcludeGroups());
 
@@ -60,15 +59,13 @@ class Aoe_Scheduler_Model_Observer /* extends Mage_Cron_Model_Observer */
 
         $scheduleManager = Mage::getModel('aoe_scheduler/scheduleManager'); /* @var $scheduleManager Aoe_Scheduler_Model_ScheduleManager */
 
-        /* @var Aoe_Scheduler_Helper_Data $helper */
-        $helper = Mage::helper('aoe_scheduler');
+        $helper = Mage::helper('aoe_scheduler'); /* @var Aoe_Scheduler_Helper_Data $helper */
         $includeJobs = $helper->addGroupJobs((array)$observer->getIncludeJobs(), (array)$observer->getIncludeGroups());
         $excludeJobs = $helper->addGroupJobs((array)$observer->getExcludeJobs(), (array)$observer->getExcludeGroups());
 
-        /* @var Varien_Data_Collection $allJobs */
-        $allJobs = Mage::getModel('aoe_scheduler/job_factory')->getAllJobs($includeJobs, $excludeJobs);
-        foreach ($allJobs as $job) {
-            /* @var $job Aoe_Scheduler_Model_Job_Abstract */
+
+        $allJobs = Mage::getModel('aoe_scheduler/job_factory')->getAllJobs($includeJobs, $excludeJobs); /* @var Varien_Data_Collection $allJobs */
+        foreach ($allJobs as $job) { /* @var $job Aoe_Scheduler_Model_Job_Abstract */
             if ($job->isAlwaysTask() && $job->getRunModel()) {
                 $schedule = $scheduleManager->getScheduleForAlwaysJob($job->getJobCode());
                 if ($schedule !== false) {
