@@ -116,6 +116,32 @@ class Aoe_Scheduler_Block_Adminhtml_Job_Edit_Tab_Form extends Mage_Adminhtml_Blo
             ));
         }
 
+        $fieldset->addField('name', 'text', array(
+            'name'  => 'name',
+            'label' => Mage::helper('aoe_scheduler')->__('Name'),
+            'title' => Mage::helper('aoe_scheduler')->__('Name'),
+            'class' => '',
+            'required' => false,
+            'after_element_html' => $xmlJob ? $this->getOriginalValueSnippet($xmlJob->getName()) : ''
+        ));
+
+        $fieldset->addField('short_description', 'textarea', array(
+            'name'  => 'short_description',
+            'label' => Mage::helper('aoe_scheduler')->__('Short description'),
+            'title' => Mage::helper('aoe_scheduler')->__('Short description'),
+            'class' => '',
+            'required' => false,
+            'after_element_html' => $xmlJob ? $this->getOriginalValueSnippet($xmlJob->getShortDescription()) : ''
+        ));
+
+        $fieldset->addField('description', 'textarea', array(
+            'name'  => 'description',
+            'label' => Mage::helper('aoe_scheduler')->__('Description'),
+            'title' => Mage::helper('aoe_scheduler')->__('Description'),
+            'class' => '',
+            'required' => false,
+            'after_element_html' => $xmlJob ? $this->getOriginalValueSnippet($xmlJob->getDescription()) : ''
+        ));
 
         $fieldset->addField('run_model', 'text', array(
             'name'  => 'run_model',

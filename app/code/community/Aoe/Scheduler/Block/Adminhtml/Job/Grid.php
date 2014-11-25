@@ -72,12 +72,30 @@ class Aoe_Scheduler_Block_Adminhtml_Job_Grid extends Mage_Adminhtml_Block_Widget
      */
     protected function _prepareColumns()
     {
+        $helper = Mage::helper('aoe_scheduler/backend');
 
         $this->addColumn('job_code', array(
             'header' => Mage::helper('aoe_scheduler')->__('Job code'),
             'index' => 'job_code',
             'sortable' => false,
         ));
+
+        if ($helper->showNameColumn()) {
+            $this->addColumn('name', array(
+                'header' => Mage::helper('aoe_scheduler')->__('Name'),
+                'index' => 'name',
+                'sortable' => false,
+            ));
+        }
+
+        if ($helper->showShortDescColumn()) {
+            $this->addColumn('short_description', array(
+                'header' => Mage::helper('aoe_scheduler')->__('Short Description'),
+                'index' => 'short_description',
+                'sortable' => false,
+            ));
+        }
+
         $this->addColumn('schedule_cron_expr', array(
             'header' => Mage::helper('aoe_scheduler')->__('Cron expression'),
             'index' => 'schedule_cron_expr',
