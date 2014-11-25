@@ -16,3 +16,7 @@ Check out the documentation (currently here: http://www.fabrizio-branca.de/magen
 "Run now" should only be used in a cli context. That's why never versions Aoe_Scheduler disable the use of runNow from the web service API and the Magento admin by default. Instead of "run now" you should use "schedule now" which will result in a task to be scheduled and then being picked from the regular cron and processed in the correct cli context. 
 Running a job in the context of the webserver is generally a bad idea since you could run into memory limit out timeout issues. Cron tasks are designed to run from cli and will usually run longer than 30 sec. Increasing your webservers memory limit and maximum execution time is also not a good idea.
 
+### After removing module XYZ I'm seeing an error. What can I do?
+
+Most likely you didn't remove all files that belonged this module and/or didn't clean the cache. The error happens if the job is still configured in config xml (config/crontab/jobs) and scheduler tries to excute it by calling the configured model class that doesn't exist anymore. Please make sure that the module is removed cleanly.   
+Starting from Aoe_Scheduler version 0.5 (still under development and not merged to master) these situations are handled a lot better without scheduler. Let me know if you're still experiencing this problem with Aoe_Scheduler >= 0.5.
