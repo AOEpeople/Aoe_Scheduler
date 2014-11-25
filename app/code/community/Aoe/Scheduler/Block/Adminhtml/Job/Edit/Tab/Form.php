@@ -170,7 +170,7 @@ class Aoe_Scheduler_Block_Adminhtml_Job_Edit_Tab_Form extends Mage_Adminhtml_Blo
             'title' => Mage::helper('aoe_scheduler')->__('Parameters'),
             'class' => 'textarea',
             'required' => false,
-            'note' => Mage::helper('aoe_scheduler')->__('This parameter will be passed to the model. It is up to the model to specify the format of this paramter (e.g. json/xml/...'),
+            'note' => Mage::helper('aoe_scheduler')->__('This parameter will be passed to the model. It is up to the model to specify the format of this parameter (e.g. json/xml/...'),
             'after_element_html' => $xmlJob ? $this->getOriginalValueSnippet($xmlJob->getParameter()) : ''
         ));
 
@@ -180,7 +180,7 @@ class Aoe_Scheduler_Block_Adminhtml_Job_Edit_Tab_Form extends Mage_Adminhtml_Blo
             'title' => Mage::helper('aoe_scheduler')->__('Groups'),
             'class' => 'textarea',
             'required' => false,
-            'note' => Mage::helper('aoe_scheduler')->__('Comma-separated list of groups (tags) that can be used with the include/exlude command line options of scheduler.php'),
+            'note' => Mage::helper('aoe_scheduler')->__('Comma-separated list of groups (tags) that can be used with the include/exclude command line options of scheduler.php'),
             'after_element_html' => $xmlJob ? $this->getOriginalValueSnippet($xmlJob->getGroups()) : ''
         ));
 
