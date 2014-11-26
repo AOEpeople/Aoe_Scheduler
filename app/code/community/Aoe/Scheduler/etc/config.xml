@@ -163,8 +163,6 @@
                 <error_email_template>system_cron_error_email_template</error_email_template>
                 <logFile>cron.log</logFile>
                 <enableRunNow>0</enableRunNow>
-                <showNameColumn>0</showNameColumn>
-                <showShortDescColumn>0</showShortDescColumn>
             </cron>
         </system>
     </default>
