@@ -249,25 +249,11 @@ class Aoe_Scheduler_Shell_Scheduler extends Mage_Shell_Abstract
         switch ($mode) {
             case 'always':
             case 'default':
-                $includeGroups = $this->getArg('includeGroups');
-                $excludeGroups = $this->getArg('excludeGroups');
-                $includeJobs = $this->getArg('includeJobs');
-                $excludeJobs = $this->getArg('excludeJobs');
-                $includeGroups = ($includeGroups === true ? array() : array_filter(array_map('trim', explode(',', $includeGroups))));
-                $excludeGroups = ($excludeGroups === true ? array() : array_filter(array_map('trim', explode(',', $excludeGroups))));
-                $includeJobs = ($includeJobs === true ? array() : array_filter(array_map('trim', explode(',', $includeJobs))));
-                $excludeJobs = ($excludeJobs === true ? array() : array_filter(array_map('trim', explode(',', $excludeJobs))));
+                $includeGroups = array_filter(array_map('trim', explode(',', $this->getArg('include'))));
+                $excludeGroups = array_filter(array_map('trim', explode(',', $this->getArg('exclude'))));
                 Mage::getConfig()->init()->loadEventObservers('crontab');
                 Mage::app()->addEventArea('crontab');
-                Mage::dispatchEvent(
-                    $mode,
-                    array(
-                        'include_groups' => $includeGroups,
-                        'exclude_groups' => $excludeGroups,
-                        'include_jobs'   => $includeJobs,
-                        'exclude_jobs'   => $excludeJobs,
-                    )
-                );
+                Mage::dispatchEvent($mode, array('include' => $includeGroups, 'exclude' => $excludeGroups));
                 break;
             default:
                 echo "\nInvalid mode!\n\n";
@@ -283,7 +269,7 @@ class Aoe_Scheduler_Shell_Scheduler extends Mage_Shell_Abstract
      */
     public function cronActionHelp()
     {
-        return "--mode (always|default) [--includeGroups <comma seperated list of groups>] [--excludeGroups <comma seperated list of groups>] [--includeJobs <comma seperated list of jobs>] [--excludeJobs <comma seperated list of jobs>]";
+        return "--mode (always|default) [--exclude <comma seperated list of groups>] [--include <comma seperated list of groups>]";
     }
 }
 
