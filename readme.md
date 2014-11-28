@@ -1,5 +1,11 @@
-AOE Scheduler for Magento
-=========================
+# AOE Scheduler for Magento
+
+![Logo](doc/Aoe_Scheduler.jpg "AOE Scheduler")
+
+## Installation
+
+
+
 see http://www.fabrizio-branca.de/magento-cron-scheduler.html
 
 Running multiple scheduler jobs in parallel

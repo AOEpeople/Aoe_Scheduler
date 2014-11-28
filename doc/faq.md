@@ -20,3 +20,31 @@ Running a job in the context of the webserver is generally a bad idea since you 
 
 Most likely you didn't remove all files that belonged this module and/or didn't clean the cache. The error happens if the job is still configured in config xml (config/crontab/jobs) and scheduler tries to excute it by calling the configured model class that doesn't exist anymore. Please make sure that the module is removed cleanly.   
 Starting from Aoe_Scheduler version 0.5 (still under development and not merged to master) these situations are handled a lot better without scheduler. Let me know if you're still experiencing this problem with Aoe_Scheduler >= 0.5.
+
+### I'm getting 'Too late for the schedule' errors.
+
+This happens when the scheduler finds pending jobs that were supposed to be scheduled longer than the time configured in 'system/cron/schedule_lifetime'. By default this value is set to 15 minutes.
+
+There are two different problems the may result in you seeing this error:
+
+1. Cron isn't configured to run often enough:
+If you don't trigger cron often enough then the tasks start piling up and most likely tasks will be too late for schedule at the point when they're being executed by the scheduler. Instead of increasing the scheduler_lifetime settings you should increase the frequency cron is being called to `*/5 * * * *` (every 5 minutes) or even `* * * *  *` (every minute).
+
+2. You have long running cron jobs that will block the execution of other jobs:
+In case you're importing data, indexing products, generating reports or doing other long-running jobs via cron (which is generally a good idea) other jobs will not be run in parallel (unless you're running `cron.php` instead of `cron.sh`). This will result in these jobs not being executed. Find out which jobs are preventing others from running (by looking at the timeline view) and run them in a different *cron group*. ([look at this](http://www.slideshare.net/aoemedia/magento-imagine-2013fabriziobranca/38) for more information and check the features added to version >0.5.0 for an easier way to configure and manage cron groups.
+
+### My hoster doesn't allow me to run cron more than x times per hour or at all.
+
+Then your hoster might not be a good choice for Magento :) Although possible, please don't start triggering `cron.php` via HTTP through a third-party cron service.
+
+### Should I use `cron.sh` or `cron.php`?
+
+`cron.sh`!
+
+(TODO: Add more information here)
+
+Even better: `scheduler_cron.sh` from the Aoe_Scheduler module (not merged to master yet). TODO: Add documentaiton
+
+### What's the difference between an *always* job and a normal one?
+
+...
