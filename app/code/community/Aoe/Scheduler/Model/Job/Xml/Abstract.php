@@ -62,6 +62,15 @@ abstract class Aoe_Scheduler_Model_Job_Xml_Abstract extends Aoe_Scheduler_Model_
         if ($xmlConfiguration->groups) {
             $this->setGroups((string)$xmlConfiguration->groups);
         }
+        if ($xmlConfiguration->name) {
+            $this->setName((string)$xmlConfiguration->name);
+        }
+        if ($xmlConfiguration->short_description) {
+            $this->setShortDescription((string)$xmlConfiguration->short_description);
+        }
+        if ($xmlConfiguration->description) {
+            $this->setDescription((string)$xmlConfiguration->description);
+        }
 
         $disabledCrons = Mage::helper('aoe_scheduler')->trimExplode(',', Mage::getStoreConfig('system/cron/disabled_crons'), true);
         $this->setIsActive(!in_array($this->getId(), $disabledCrons));
