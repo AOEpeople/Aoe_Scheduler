@@ -119,26 +119,34 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
             $this->schedule();
         }
 
-        $callback = $this->getJob()->getCallback();
-
-        $startTime = time();
-        $this
-            ->setExecutedAt(strftime('%Y-%m-%d %H:%M:%S', $startTime))
-            ->setLastSeen(strftime('%Y-%m-%d %H:%M:%S', $startTime))
-            ->setStatus(Mage_Cron_Model_Schedule::STATUS_RUNNING)
-            ->setHost(gethostname())
-            ->setPid(getmypid())
-            ->save();
-
-        Mage::dispatchEvent('cron_' . $this->getJobCode() . '_before', array('schedule' => $this));
-        Mage::dispatchEvent('cron_before', array('schedule' => $this));
-
-        $this->log('Start: ' . $this->getJobCode());
-
-        Mage::unregister('current_cron_task');
-        Mage::register('current_cron_task', $this);
-
         try {
+
+            $job = $this->getJob();
+
+            if (!$job) {
+                Mage::throwException(sprintf("Could not create job with jobCode '%s'", $this->getJobCode()));
+            }
+
+            $callback = $job->getCallback();
+
+            $startTime = time();
+            $this
+                ->setExecutedAt(strftime('%Y-%m-%d %H:%M:%S', $startTime))
+                ->setLastSeen(strftime('%Y-%m-%d %H:%M:%S', $startTime))
+                ->setStatus(Mage_Cron_Model_Schedule::STATUS_RUNNING)
+                ->setHost(gethostname())
+                ->setPid(getmypid())
+                ->save();
+
+            Mage::dispatchEvent('cron_' . $this->getJobCode() . '_before', array('schedule' => $this));
+            Mage::dispatchEvent('cron_before', array('schedule' => $this));
+
+            $this->log('Start: ' . $this->getJobCode());
+
+            Mage::unregister('current_cron_task');
+            Mage::register('current_cron_task', $this);
+
+
             // this is where the actual task will be executed ...
             $messages = call_user_func_array($callback, array($this));
 
@@ -433,7 +441,8 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
     {
         $isAlwaysTask = false;
         try {
-            $isAlwaysTask = $this->getJob()->isAlwaysTask();
+            $job = $this->getJob();
+            $isAlwaysTask = $job && $job->isAlwaysTask();
         } catch (Exception $e) {
             Mage::logException($e);
         }
@@ -504,7 +513,7 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
         if (!$this->canRun(true)) {
             return $this;
         }
-        $this->runNow(!$this->getJob()->isAlwaysTask());
+        $this->runNow(!$this->isAlwaysTask());
         return $this;
     }
 
@@ -519,7 +528,12 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
             return $this->getData('parameters');
         }
         // fallback to job
-        return $this->getJob()->getParameters();
+        $job = $this->getJob();
+        if ($job) {
+            return $job->getParameters();
+        } else {
+            return false;
+        }
     }
 
 }
