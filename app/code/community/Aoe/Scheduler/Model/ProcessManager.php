@@ -104,6 +104,22 @@ class Aoe_Scheduler_Model_ProcessManager
             $schedule->markAsDisappeared(sprintf('Host "%s" has not been available for a while now to update the status of this task and the task is not reporting back by itself', $schedule->getHost()));
         }
 
+        // clean up "running"(!?) tasks that have never been executed (for whatever reason) and have been scheduled before maxAge
+        // by robinfritze. @see https://github.com/AOEpeople/Aoe_Scheduler/issues/40#issuecomment-67749476
+        $schedules = Mage::getModel('cron/schedule')->getCollection() /* @var $schedules Mage_Cron_Model_Resource_Schedule_Collection */
+            ->addFieldToFilter('status', Mage_Cron_Model_Schedule::STATUS_RUNNING)
+            ->addFieldToFilter('executed_at', array('null' => true))
+            ->addFieldToFilter('last_seen', array('null' => true))
+            ->addFieldToFilter('host', array('null' => true))
+            ->addFieldToFilter('pid', array('null' => true))
+            ->addFieldToFilter('scheduled_at', array('lt' => strftime('%Y-%m-%d %H:%M:00', $maxAge)))
+            ->load();
+
+        foreach ($schedules->getIterator() as $schedule) { /* @var $schedule Aoe_Scheduler_Model_Schedule */
+            $schedule->setLastSeen(strftime('%Y-%m-%d %H:%M:%S', time()));
+            $schedule->markAsDisappeared(sprintf('Process "%s" (id: %s) cannot be found anymore', $schedule->getJobCode(), $schedule->getId()));
+        }
+
     }
 
 
