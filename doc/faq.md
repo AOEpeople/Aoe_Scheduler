@@ -43,8 +43,12 @@ Then your hoster might not be a good choice for Magento :) Although possible, pl
 
 (TODO: Add more information here)
 
-Even better: `scheduler_cron.sh` from the Aoe_Scheduler module (not merged to master yet). TODO: Add documentaiton
+Even better: `scheduler_cron.sh` from the Aoe_Scheduler module (not merged to master yet). TODO: Add documentation
 
 ### What's the difference between an *always* job and a normal one?
 
 ...
+
+### How does this work if I'm running multiple webservers?
+
+This is not so much a question about Aoe_Scheduler, but an issue with Magento's cron in general. `cron.sh` does check if there's already another process running, but can only check the current server. Usually you want to avoid running multiple cron.sh in parallel since you could run into race conditions between tasks being executed on different servers. If you have full control over all your servers just pick one and configure cron there and skip this on all the other servers. If you're running Magento on an auto-scaling environment where there's no "master" instance you could dynamically make an instance the "master" instance by having the instance compare it's hostname to a sorted list of all hostnames in that auto-scaling group and only run if it's the first one. Here's an example of how I'm doing this on Aws OpsWorks: https://github.com/fbrnc/opsworks-cookbooks/blob/200a70b07b59e1b5cbed1c612bc064c04a7c0025/magentostack/recipes/configure_magento.rb#L68-L82
