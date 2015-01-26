@@ -508,7 +508,9 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
 
     /**
      * Save the messages directly to the schedule record.
-     * If for some `strange` reason the record is new, we trigger a normal save().
+     *
+     * If the `messages` field was not updated in the database,
+     * check if this is because of `data truncation` and fix the message length.
      *
      * @return $this
      */
@@ -518,12 +520,47 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
             return $this->save();
         }
 
-        Mage::getSingleton('core/resource')->getConnection('core_write')
+        $connection = Mage::getSingleton('core/resource')
+            ->getConnection('core_write');
+
+        $count = $connection
             ->update($this->getResource()->getMainTable(),
                 array('messages' => $this->getMessages()),
                 array('schedule_id = ?' => $this->getId())
             );
 
+        if (!$count) {
+            /**
+             * Check if the row was not updated because of data truncation.
+             */
+            $warning = $this->_getPdoWarning($connection->getConnection());
+            if ($warning && $warning->Code = 1265) {
+                $maxLength = strlen($this->getMessages()) - 5000;
+                $this->setMessages($warning->Level . ': ' .
+                    str_replace(' at row 1', '.', $warning->Message) . PHP_EOL . PHP_EOL .
+                    '...' . substr($this->getMessages(), -$maxLength));
+            }
+        }
+
         return $this;
+    }
+
+    /**
+     * Retrieve the last PDO warning.
+     *
+     * @param PDO $pdo
+     * @return mixed
+     */
+    protected function _getPdoWarning(PDO $pdo)
+    {
+        $originalErrorMode = $pdo->getAttribute(PDO::ATTR_ERRMODE);
+
+        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING);
+
+        $stm = $pdo->query('SHOW WARNINGS');
+
+        $pdo->setAttribute(PDO::ATTR_ERRMODE, $originalErrorMode);
+
+        return $stm->fetchObject();
     }
 }
