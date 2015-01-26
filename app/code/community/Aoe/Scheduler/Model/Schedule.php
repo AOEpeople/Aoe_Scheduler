@@ -53,6 +53,20 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
      */
     protected $jobWasLocked = false;
 
+    /**
+     * Placeholder to keep track of active redirect buffer.
+     *
+     * @var bool
+     */
+    protected $_redirect = false;
+
+    /**
+     * The buffer will be flushed after any output call which causes
+     * the buffer's length to equal or exceed this value.
+     *
+     * Prior to PHP 5.4.0, the value 1 set the chunk size to 4096 bytes.
+     */
+    protected $_redirectOutputHandlerChunkSize = 100; // bytes
 
     /**
      * Run this task now
@@ -118,8 +132,16 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
         Mage::unregister('current_cron_task');
         Mage::register('current_cron_task', $this);
 
+        /**
+         * Save all cron output like echo, print_r, var_dump etc.
+         * directly into the schedule's messages field during the cron execution.
+         */
+        $this->_startBufferToMessages();
+
         // this is where the actual task will be executed ...
         $messages = call_user_func_array($callback, array($this));
+
+        $this->_stopBufferToMessages();
 
         $this->log('Stop: ' . $this->getJobCode());
 
@@ -130,7 +152,8 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
             } elseif (!is_scalar($messages)) {
                 $messages = var_export($messages, 1);
             }
-            $this->setMessages($messages);
+
+            $this->addMessages(PHP_EOL . '---RETURN_VALUE---' . PHP_EOL . $messages);
         }
 
         // schedules can report an error state by returning a string that starts with "ERROR:"
@@ -413,4 +436,94 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
     }
 
 
+    /**
+     * Redirect all output to the messages field of this Schedule.
+     *
+     * We use ob_start with `_addBufferToMessages` to redirect the output.
+     *
+     * @return $this
+     */
+    protected function _startBufferToMessages()
+    {
+        if ($this->_redirect) {
+            return $this;
+        }
+
+        $this->addMessages('---START---' . PHP_EOL);
+
+        ob_start(array($this, '_addBufferToMessages'),
+            $this->_redirectOutputHandlerChunkSize);
+
+        $this->_redirect = true;
+    }
+
+    /**
+     * Stop redirecting all output to the messages field of this Schedule.
+     *
+     * We use ob_end_flush to stop redirecting the output.
+     *
+     * @return $this
+     */
+    protected function _stopBufferToMessages()
+    {
+        if (!$this->_redirect) {
+            return $this;
+        }
+
+        ob_end_flush();
+        $this->addMessages('---END---' . PHP_EOL);
+
+        $this->_redirect = false;
+    }
+
+    /**
+     * Used as callback function to redirect the output buffer
+     * directly into the messages field of this schedule.
+     *
+     * @param $buffer
+     *
+     * @return string
+     */
+    public function _addBufferToMessages($buffer)
+    {
+        $this->addMessages($buffer)
+            ->saveMessages(); // Save the directly to the schedule record.
+
+        return $buffer;
+    }
+
+    /**
+     * Append data to the current messages field.
+     *
+     * @param $messages
+     *
+     * @return $this
+     */
+    public function addMessages($messages)
+    {
+        $this->setMessages($this->getMessages() . $messages);
+
+        return $this;
+    }
+
+    /**
+     * Save the messages directly to the schedule record.
+     * If for some `strange` reason the record is new, we trigger a normal save().
+     *
+     * @return $this
+     */
+    public function saveMessages()
+    {
+        if (!$this->getId()) {
+            return $this->save();
+        }
+
+        Mage::getSingleton('core/resource')->getConnection('core_write')
+            ->update($this->getResource()->getMainTable(),
+                array('messages' => $this->getMessages()),
+                array('schedule_id = ?' => $this->getId())
+            );
+
+        return $this;
+    }
 }
