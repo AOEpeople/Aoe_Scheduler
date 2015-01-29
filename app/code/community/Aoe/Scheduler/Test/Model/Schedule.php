@@ -3,6 +3,10 @@
 class Aoe_Scheduler_Test_Model_Schedule extends EcomDev_PHPUnit_Test_Case
 {
 
+    public static function setUpBeforeClass() {
+        @session_start();
+    }
+
     /**
      * @test
      * @return Aoe_Scheduler_Model_Schedule
