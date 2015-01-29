@@ -52,3 +52,15 @@ Even better: `scheduler_cron.sh` from the Aoe_Scheduler module (not merged to ma
 ### How does this work if I'm running multiple webservers?
 
 This is not so much a question about Aoe_Scheduler, but an issue with Magento's cron in general. `cron.sh` does check if there's already another process running, but can only check the current server. Usually you want to avoid running multiple cron.sh in parallel since you could run into race conditions between tasks being executed on different servers. If you have full control over all your servers just pick one and configure cron there and skip this on all the other servers. If you're running Magento on an auto-scaling environment where there's no "master" instance you could dynamically make an instance the "master" instance by having the instance compare it's hostname to a sorted list of all hostnames in that auto-scaling group and only run if it's the first one. Here's an example of how I'm doing this on Aws OpsWorks: https://github.com/fbrnc/opsworks-cookbooks/blob/200a70b07b59e1b5cbed1c612bc064c04a7c0025/magentostack/recipes/configure_magento.rb#L68-L82
+
+### What's the difference between `runNow` and `scheduleNow`?
+
+`scheduleNow` will create a new jobs and uses the current timestamp for the scheduled_at field. The next cron run will pick this task up and execute it exactly like if it was scheduled by the Magento Scheduler in the first place.
+`runNow` instead will go ahead and execute the cron task right away in the same request or script it has been called. While this is very convenient while developing it comes with a number of problems:
+
+- `runNow` might not be called in the correct context. Normally a cron task is being executed in the 'global' scope, while runNow will execute that job in the context of adminhtml when triggered wie the Magento backend or even in the scope of a frontend store when being executed through the webservice api. The only safe way to use 'runNow' is when it's triggered via the cli script it comes with.
+- In many cases cron tasks are meant to be background processes that can potentially run for a long time or consume a lot of memory. Running a task via your webserver in the context of a web request will could result in failing because a timeout or a memory limit is reached.
+- In many cases cron tasks are not designed to run in parallel (race conditions,...). Cron will take care of running jobs sequentially (unless you use the cron group feature and you know what you're doing). Running the job directly doesn't offer this protection.
+- Ideally your webserver user is the same user that also executes cron. If that's not the case you might run into problem with files being generated in cron tasks not having sufficient permissions for the next run from a different environment.
+
+Because of the reasons mentioned above newer versions of Aoe_Scheduler ship with the "runNow" feature being disabled by default. In case you know what you're doing you're welcome to enable this feature in the configuration.
