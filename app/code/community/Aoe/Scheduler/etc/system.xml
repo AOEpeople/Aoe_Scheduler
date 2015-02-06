@@ -94,7 +94,7 @@
                             <frontend_type>select</frontend_type>
                             <source_model>adminhtml/system_config_source_yesno</source_model>
                             <sort_order>180</sort_order>
-                            <comment><![CDATA[Cron tasks are usually not designed to run in CLI context and not in the context of the webserver. Also they could run longer than the configured maximum execution time. This is why you should rather use "scheduleNow" instead of "runNow" and let the scehduler pick up the task on the next run. However, if you know what you're doing and/or if you don't want to wait while testing and developing a cron task you can enable this feature here.]]></comment>
+                            <comment><![CDATA[Cron tasks are usually not designed to run in CLI context and not in the context of the webserver. Also they could run longer than the configured maximum execution time. This is why you should rather use "scheduleNow" instead of "runNow" and let the scheduler pick up the task on the next run. However, if you know what you're doing and/or if you don't want to wait while testing and developing a cron task you can enable this feature here.]]></comment>
                             <show_in_default>1</show_in_default>
                         </enableRunNow>
 
