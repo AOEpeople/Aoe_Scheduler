@@ -7,7 +7,6 @@
  */
 class Aoe_Scheduler_Model_Job_Factory
 {
-
     /**
      * Jobs models sorted by priority
      *
@@ -15,31 +14,59 @@ class Aoe_Scheduler_Model_Job_Factory
      */
     protected $models = array(
         'aoe_scheduler/job_db',
-        'aoe_scheduler/job_xml_global',
-        'aoe_scheduler/job_xml_default',
+        'aoe_scheduler/job_xml',
     );
 
     /**
      * Load job
      *
      * @param $jobCode
-     * @param bool $xmlOnly
      * @return Aoe_Scheduler_Model_Job_Abstract|false
      */
-    public function loadByCode($jobCode, $xmlOnly=false)
+    public function loadByCode($jobCode)
     {
-        $models = $this->models;
-        if ($xmlOnly) {
-            array_shift($models);
-        }
-        foreach ($models as $model) {
-            $job = Mage::getModel($model); /* @var $job Aoe_Scheduler_Model_Job_Abstract */
+        foreach ($this->models as $model) {
+            /* @var Aoe_Scheduler_Model_Job_Abstract $job */
+            $job = Mage::getModel($model);
             $job->loadByCode($jobCode);
             if ($job->getJobCode()) {
                 return $job;
             }
         }
         return false;
+    }
+
+    /**
+     * Load all jobs by code
+     *
+     * @param $jobCode
+     * @return Aoe_Scheduler_Model_Job_Abstract[]
+     */
+    public function loadAllByCode($jobCode, $afterModel = null)
+    {
+        $jobs = array();
+
+        if(!empty($jobCode)) {
+            $models = array_values(array_unique($this->models));
+            if($afterModel && in_array($afterModel, $models)) {
+                $offset = array_search($afterModel, $models) + 1;
+                if(count($models) > $offset) {
+                    $models = array_slice($models, $offset);
+                } else {
+                    $models = array();
+                }
+            }
+            foreach ($models as $model) {
+                /* @var Aoe_Scheduler_Model_Job_Abstract $job */
+                $job = Mage::getModel($model);
+                $job->loadByCode($jobCode);
+                if ($job->getJobCode()) {
+                    $jobs[] = $job;
+                }
+            }
+        }
+
+        return $jobs;
     }
 
     /**

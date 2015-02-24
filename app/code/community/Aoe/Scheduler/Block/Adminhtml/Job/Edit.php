@@ -11,8 +11,8 @@ class Aoe_Scheduler_Block_Adminhtml_Job_Edit extends Mage_Adminhtml_Block_Widget
     public function __construct()
     {
         parent::__construct();
-        if ($this->getJob()->getXmlJob() && $this->_buttons[0]['delete']) {
-            $this->_buttons[0]['delete']['label'] = Mage::helper('aoe_scheduler')->__('Reset to XML configuration');
+        if ($this->getJob()->getParentJob()) {
+            $this->updateButton('delete', 'label', Mage::helper('aoe_scheduler')->__('Reset overlay'));
         }
         $this->removeButton('reset');
     }
@@ -32,7 +32,7 @@ class Aoe_Scheduler_Block_Adminhtml_Job_Edit extends Mage_Adminhtml_Block_Widget
     /**
      * Get job
      *
-     * @return Aoe_Scheduler_Model_Job_Db
+     * @return Aoe_Scheduler_Model_Job_Abstract
      */
     public function getJob()
     {

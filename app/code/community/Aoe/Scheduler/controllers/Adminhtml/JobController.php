@@ -125,10 +125,10 @@ class Aoe_Scheduler_Adminhtml_JobController extends Aoe_Scheduler_Adminhtml_Abst
         if ($jobCode) {
             $job->load($jobCode);
             if (!$job->getJobCode()) {
-                $jobFactory = Mage::getModel('aoe_scheduler/job_factory'); /* @var $jobFactory Aoe_Scheduler_Model_Job_Factory */
-                $xmlJob = $jobFactory->loadByCode($jobCode, true);
-                if ($xmlJob !== false) {
-                    $job->copyFrom($xmlJob);
+                $job->setJobCode($jobCode);
+                $parentJob = $job->getParentJob();
+                if ($parentJob) {
+                    $job->copyFrom($parentJob);
                 }
             }
         }

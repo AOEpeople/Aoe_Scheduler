@@ -60,7 +60,7 @@ class Aoe_Scheduler_Block_Adminhtml_Job_Edit_Tab_Form extends Mage_Adminhtml_Blo
     /**
      * Get job
      *
-     * @return Aoe_Scheduler_Model_Job_Db
+     * @return Aoe_Scheduler_Model_Job_Abstract
      */
     public function getJob()
     {
@@ -85,9 +85,9 @@ class Aoe_Scheduler_Block_Adminhtml_Job_Edit_Tab_Form extends Mage_Adminhtml_Blo
         $fieldset = $form->addFieldset('base_fieldset', array('legend' => Mage::helper('aoe_scheduler')->__('General')));
         $this->_addElementTypes($fieldset);
 
-        $xmlJob = $job->getXmlJob();
-        if ($xmlJob && !$xmlJob->getJobCode()) {
-            $xmlJob = false;
+        $parentJob = $job->getParentJob();
+        if ($parentJob && !$parentJob->getJobCode()) {
+            $parentJob = false;
         }
 
         if ($job->getJobCode()) {
@@ -112,7 +112,7 @@ class Aoe_Scheduler_Block_Adminhtml_Job_Edit_Tab_Form extends Mage_Adminhtml_Blo
                 'required' => true,
                 // 'readonly' => $job->getJobCode() ? true : false,
                 'disabled' => $job->getJobCode() ? true : false,
-                'after_element_html' => $xmlJob ? $this->getOriginalValueSnippet($xmlJob->getJobCode()) : ''
+                'after_element_html' => $parentJob ? $this->getOriginalValueSnippet($parentJob->getJobCode()) : ''
             ));
         }
 
@@ -122,7 +122,7 @@ class Aoe_Scheduler_Block_Adminhtml_Job_Edit_Tab_Form extends Mage_Adminhtml_Blo
             'title' => Mage::helper('aoe_scheduler')->__('Name'),
             'class' => '',
             'required' => false,
-            'after_element_html' => $xmlJob ? $this->getOriginalValueSnippet($xmlJob->getName()) : ''
+            'after_element_html' => $parentJob ? $this->getOriginalValueSnippet($parentJob->getName()) : ''
         ));
 
         $fieldset->addField('short_description', 'textarea', array(
@@ -131,7 +131,7 @@ class Aoe_Scheduler_Block_Adminhtml_Job_Edit_Tab_Form extends Mage_Adminhtml_Blo
             'title' => Mage::helper('aoe_scheduler')->__('Short description'),
             'class' => '',
             'required' => false,
-            'after_element_html' => $xmlJob ? $this->getOriginalValueSnippet($xmlJob->getShortDescription()) : ''
+            'after_element_html' => $parentJob ? $this->getOriginalValueSnippet($parentJob->getShortDescription()) : ''
         ));
 
         $fieldset->addField('description', 'textarea', array(
@@ -140,7 +140,7 @@ class Aoe_Scheduler_Block_Adminhtml_Job_Edit_Tab_Form extends Mage_Adminhtml_Blo
             'title' => Mage::helper('aoe_scheduler')->__('Description'),
             'class' => '',
             'required' => false,
-            'after_element_html' => $xmlJob ? $this->getOriginalValueSnippet($xmlJob->getDescription()) : ''
+            'after_element_html' => $parentJob ? $this->getOriginalValueSnippet($parentJob->getDescription()) : ''
         ));
 
         $fieldset->addField('run_model', 'text', array(
@@ -150,7 +150,7 @@ class Aoe_Scheduler_Block_Adminhtml_Job_Edit_Tab_Form extends Mage_Adminhtml_Blo
             'class' => '',
             'required' => true,
             'note' => Mage::helper('aoe_scheduler')->__('e.g. "aoe_scheduler/task_heartbeat::run"'),
-            'after_element_html' => $xmlJob ? $this->getOriginalValueSnippet($xmlJob->getRunModel()) : ''
+            'after_element_html' => $parentJob ? $this->getOriginalValueSnippet($parentJob->getRunModel()) : ''
         ));
 
         $fieldset->addField('is_active', 'select', array(
@@ -162,7 +162,7 @@ class Aoe_Scheduler_Block_Adminhtml_Job_Edit_Tab_Form extends Mage_Adminhtml_Blo
                 0 => Mage::helper('aoe_scheduler')->__('Disabled'),
                 1 => Mage::helper('aoe_scheduler')->__('Enabled')
             ),
-            'after_element_html' => $xmlJob ? $this->getOriginalValueSnippet($xmlJob->getIsActive() ? Mage::helper('aoe_scheduler')->__('Enabled') : Mage::helper('aoe_scheduler')->__('Disabled')) : ''
+            'after_element_html' => $parentJob ? $this->getOriginalValueSnippet($parentJob->getIsActive() ? Mage::helper('aoe_scheduler')->__('Enabled') : Mage::helper('aoe_scheduler')->__('Disabled')) : ''
         ));
 
         $fieldset = $form->addFieldset('cron_fieldset', array('legend' => Mage::helper('aoe_scheduler')->__('Scheduling')));
@@ -175,7 +175,7 @@ class Aoe_Scheduler_Block_Adminhtml_Job_Edit_Tab_Form extends Mage_Adminhtml_Blo
             'class' => '',
             'required' => false,
             'note' => Mage::helper('aoe_scheduler')->__('Path to system configuration containing the cron configuration for this job. (e.g. system/cron/scheduler_cron_expr_heartbeat) This configuration - if set - has a higher priority over the cron expression configured with the job directly.'),
-            'after_element_html' => $xmlJob ? $this->getOriginalValueSnippet($xmlJob->getScheduleConfigPath()) : ''
+            'after_element_html' => $parentJob ? $this->getOriginalValueSnippet($parentJob->getScheduleConfigPath()) : ''
         ));
 
         $fieldset->addField('schedule_cron_expr', 'text', array(
@@ -184,7 +184,7 @@ class Aoe_Scheduler_Block_Adminhtml_Job_Edit_Tab_Form extends Mage_Adminhtml_Blo
             'title'     => Mage::helper('aoe_scheduler')->__('Cron expression'),
             'required'  => false,
             'note' => Mage::helper('aoe_scheduler')->__('e.g "*/5 * * * *" or "always"'),
-            'after_element_html' => $xmlJob ? $this->getOriginalValueSnippet($xmlJob->getScheduleCronExpr()) : ''
+            'after_element_html' => $parentJob ? $this->getOriginalValueSnippet($parentJob->getScheduleCronExpr()) : ''
         ));
 
         $fieldset = $form->addFieldset('parameter_fieldset', array('legend' => Mage::helper('aoe_scheduler')->__('Extras')));
@@ -197,7 +197,7 @@ class Aoe_Scheduler_Block_Adminhtml_Job_Edit_Tab_Form extends Mage_Adminhtml_Blo
             'class' => 'textarea',
             'required' => false,
             'note' => Mage::helper('aoe_scheduler')->__('This parameter will be passed to the model. It is up to the model to specify the format of this parameter (e.g. json/xml/...'),
-            'after_element_html' => $xmlJob ? $this->getOriginalValueSnippet($xmlJob->getParameter()) : ''
+            'after_element_html' => $parentJob ? $this->getOriginalValueSnippet($parentJob->getParameter()) : ''
         ));
 
         $fieldset->addField('groups', 'textarea', array(
@@ -207,7 +207,7 @@ class Aoe_Scheduler_Block_Adminhtml_Job_Edit_Tab_Form extends Mage_Adminhtml_Blo
             'class' => 'textarea',
             'required' => false,
             'note' => Mage::helper('aoe_scheduler')->__('Comma-separated list of groups (tags) that can be used with the include/exclude command line options of scheduler.php'),
-            'after_element_html' => $xmlJob ? $this->getOriginalValueSnippet($xmlJob->getGroups()) : ''
+            'after_element_html' => $parentJob ? $this->getOriginalValueSnippet($parentJob->getGroups()) : ''
         ));
 
         $this->setForm($form);

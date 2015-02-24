@@ -28,13 +28,22 @@ class Aoe_Scheduler_Model_Job_Db extends Aoe_Scheduler_Model_Job_Abstract
         $this->setData($job->getData());
     }
 
-    public function getXmlJob()
+    public function getParentJob()
     {
-        if (!$this->getJobCode()) {
-            return false;
-        }
-        $jobFactory = Mage::getModel('aoe_scheduler/job_factory'); /* @var $jobFactory Aoe_Scheduler_Model_Job_Factory */
-        return $jobFactory->loadByCode($this->getJobCode(), true);
+        /* @var Aoe_Scheduler_Model_Job_Factory $jobFactory */
+        $jobFactory = Mage::getModel('aoe_scheduler/job_factory');
+        $jobs = $jobFactory->loadAllByCode($this->getJobCode(), 'aoe_scheduler/job_db');
+
+        return reset($jobs);
     }
 
+    public function getType()
+    {
+        if ($job = $this->getParentJob()) {
+            $type = 'db_overlay_' . $job->getType();
+        } else {
+            $type = 'db_original';
+        }
+        return $type;
+    }
 }
