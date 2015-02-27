@@ -119,6 +119,7 @@ class Aoe_Scheduler_Block_Adminhtml_Scheduler_Grid extends Mage_Adminhtml_Block_
         $this->addColumn('pid', array(
             'header' => Mage::helper('aoe_scheduler')->__('Pid'),
             'index' => 'pid',
+            'width' => '50'
         ));
         $this->addColumn('status', array(
             'header' => Mage::helper('aoe_scheduler')->__('Status'),
