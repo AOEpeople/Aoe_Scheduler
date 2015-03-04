@@ -79,8 +79,8 @@ Please remember to add the following configuration to the webserver user's cront
 ### Split always and default:
 
 ```
-* * * * * bash /var/www/magento/current/htdocs/scheduler_cron.sh --mode always
-* * * * * bash /var/www/magento/current/htdocs/scheduler_cron.sh --mode default
+* * * * * /bin/bash /var/www/magento/current/htdocs/scheduler_cron.sh --mode always
+* * * * * /bin/bash /var/www/magento/current/htdocs/scheduler_cron.sh --mode default
 ```
 
 ### Prepend check for maintenance.flag:
@@ -95,13 +95,13 @@ This way you can distribute the jobs on different servers. Also this allows you 
 
 ```
 # Always tasks
-* * * * * bash /var/www/magento/current/htdocs/scheduler_cron.sh --mode always --includeGroups my_queue_jobs
-* * * * * bash /var/www/magento/current/htdocs/scheduler_cron.sh --mode always --excludeGroups my_queue_jobs
+* * * * * /bin/bash /var/www/magento/current/htdocs/scheduler_cron.sh --mode always --includeGroups my_queue_jobs
+* * * * * /bin/bash /var/www/magento/current/htdocs/scheduler_cron.sh --mode always --excludeGroups my_queue_jobs
 
 # Default tasks
-* * * * * bash /var/www/magento/current/htdocs/scheduler_cron.sh --mode default --includeGroups groupA,groupB
-* * * * * bash /var/www/magento/current/htdocs/scheduler_cron.sh --mode default --includeGroups groupC
-* * * * * bash /var/www/magento/current/htdocs/scheduler_cron.sh --mode default --excludeGroups groupA,groupB,groupC
+* * * * * /bin/bash /var/www/magento/current/htdocs/scheduler_cron.sh --mode default --includeGroups groupA,groupB
+* * * * * /bin/bash /var/www/magento/current/htdocs/scheduler_cron.sh --mode default --includeGroups groupC
+* * * * * /bin/bash /var/www/magento/current/htdocs/scheduler_cron.sh --mode default --excludeGroups groupA,groupB,groupC
 ```
 
 If splitting jobs across multiple groups please double check you have every job covered in one of the includeGroups or excludeGroups list.
@@ -112,5 +112,5 @@ Watchdog
 Please configure an additional cron for the watchdog. This will ensure that locked up jobs are being cleaned up even if every single cron process is locked.
 
 ```
-*/10 * * * * bash /var/www/magento/current/htdocs/shell/scheduler.php --action watchdog
+*/10 * * * * /usr/bin/php /var/www/magento/current/htdocs/shell/scheduler.php --action watchdog
 ```
