@@ -12,8 +12,8 @@
             <action method="addItem"><type>skin_js</type><script>aoe_scheduler/JavaScript/common.js</script></action>
         </reference>
         <reference name="content">
-            <block type="aoe_scheduler/adminhtml_timeline" name="aoe_scheduler.timeline"
-                   template="aoe_scheduler/timeline.phtml"/>
+            <block type="aoe_scheduler/adminhtml_instructions" name="aoe_scheduler.instructions" template="aoe_scheduler/instructions.phtml"/>
+            <block type="aoe_scheduler/adminhtml_timeline" name="aoe_scheduler.timeline" template="aoe_scheduler/timeline.phtml"/>
             <!--<block type="core/text" name="fix.console" as="fix.console">
                 <action method="setText">
                     <text><![CDATA[<script type="text/javascript">

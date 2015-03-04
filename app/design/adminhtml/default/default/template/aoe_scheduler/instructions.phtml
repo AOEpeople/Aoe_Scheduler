@@ -1,0 +1,37 @@
+<?php /* @var $this Aoe_Scheduler_Block_Adminhtml_Instructions */ ?>
+
+<h3><?php echo $this->__('Setup instructions') ?></h3>
+
+<h5><?php echo $this->__('Add cron configuration to "crontab":') ?></h5>
+<pre>
+sudo crontab -u <?php echo $this->getCurrentUser() ?> -e
+</pre>
+
+<h5><?php echo $this->__('Basic Setup:') ?></h5>
+<pre>
+* * * * * ! test -e <?php echo $this->getMagentoRootpath() ?>/maintenance.flag && /bin/sh <?php echo $this->getMagentoRootpath() ?>/cron.sh
+</pre>
+
+<h5><?php echo $this->__('Advanced Setup:') ?></h5>
+<pre>
+# Always tasks    
+* * * * * ! test -e <?php echo $this->getMagentoRootpath() ?>/maintenance.flag && /bin/bash <?php echo $this->getMagentoRootpath() ?>/scheduler_cron.sh --mode always
+# Default tasks    
+* * * * * ! test -e <?php echo $this->getMagentoRootpath() ?>/maintenance.flag && /bin/bash <?php echo $this->getMagentoRootpath() ?>/scheduler_cron.sh --mode default
+# Watchdog
+*/10 * * * * /usr/bin/php <?php echo $this->getMagentoRootpath() ?>/shell/scheduler.php --action watchdog
+</pre>
+
+<h5><?php echo $this->__('Advanced Setup with multiple cron groups:') ?></h5>
+<pre>
+# Always tasks
+* * * * * ! test -e <?php echo $this->getMagentoRootpath() ?>/maintenance.flag && /bin/bash <?php echo $this->getMagentoRootpath() ?>/scheduler_cron.sh --mode always --includeGroups my_queue_jobs
+* * * * * ! test -e <?php echo $this->getMagentoRootpath() ?>/maintenance.flag && /bin/bash <?php echo $this->getMagentoRootpath() ?>/scheduler_cron.sh --mode always --excludeGroups my_queue_jobs
+# Default tasks
+* * * * * ! test -e <?php echo $this->getMagentoRootpath() ?>/maintenance.flag && /bin/bash <?php echo $this->getMagentoRootpath() ?>/scheduler_cron.sh --mode default --includeGroups groupA,groupB
+* * * * * ! test -e <?php echo $this->getMagentoRootpath() ?>/maintenance.flag && /bin/bash <?php echo $this->getMagentoRootpath() ?>/scheduler_cron.sh --mode default --includeGroups groupC
+* * * * * ! test -e <?php echo $this->getMagentoRootpath() ?>/maintenance.flag && /bin/bash <?php echo $this->getMagentoRootpath() ?>/scheduler_cron.sh --mode default --excludeGroups groupA,groupB,groupC
+# Watchdog
+*/10 * * * * /usr/bin/php <?php echo $this->getMagentoRootpath() ?>/shell/scheduler.php --action watchdog
+</pre>
+
