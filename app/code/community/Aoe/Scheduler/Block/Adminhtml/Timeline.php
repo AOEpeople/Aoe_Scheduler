@@ -234,9 +234,9 @@ class Aoe_Scheduler_Block_Adminhtml_Timeline extends Mage_Adminhtml_Block_Widget
      */
     public function _toHtml() {
         $html = parent::_toHtml();
-        if (!$html) {
+        if (!$html && !Mage::getStoreConfigFlag('dev/template/allow_symlink')) {
             $url = $this->getUrl('adminhtml/system_config/edit', array('section' => 'dev')) . '#dev_template';
-            $html = $this->__('Warning: Looks like you installed Aoe_Scheduler via modman, but forgot to allow symlinks for template files! Please go to <a href="%s">System > Configuration > Advanced > Developer > Template Settings</a> and set "Allow Symlinks" to "yes"', $url);
+            $html = $this->__('Warning: You installed Aoe_Scheduler using symlinks (e.g. via modman), but forgot to allow symlinks for template files! Please go to <a href="%s">System > Configuration > Advanced > Developer > Template Settings</a> and set "Allow Symlinks" to "yes"', $url);
         }
         return $html;
     }
