@@ -7,8 +7,6 @@
  */
 class Aoe_Scheduler_Block_Adminhtml_Scheduler extends Mage_Adminhtml_Block_Widget_Grid_Container
 {
-
-
     /**
      * Constructor for Scheduler Adminhtml Block
      */
@@ -16,7 +14,7 @@ class Aoe_Scheduler_Block_Adminhtml_Scheduler extends Mage_Adminhtml_Block_Widge
     {
         $this->_blockGroup = 'aoe_scheduler';
         $this->_controller = 'adminhtml_scheduler';
-        $this->_headerText = Mage::helper('aoe_scheduler')->__('Scheduled tasks');
+        $this->_headerText = $this->__('Scheduled tasks');
         parent::__construct();
     }
 
@@ -24,19 +22,25 @@ class Aoe_Scheduler_Block_Adminhtml_Scheduler extends Mage_Adminhtml_Block_Widge
     /**
      * Prepare layout
      *
-     * @return Aoe_Scheduler_Block_Adminhtml_Cron
+     * @return $this
      */
     protected function _prepareLayout()
     {
         $this->removeButton('add');
-        $this->_addButton('add_new', array(
-            'label' => Mage::helper('aoe_scheduler')->__('Generate Schedule'),
-            'onclick' => "setLocation('{$this->getUrl('*/*/generateSchedule')}')",
-        ));
-        $this->_addButton('configure', array(
-            'label' => Mage::helper('aoe_scheduler')->__('Cron Configuration'),
-            'onclick' => "setLocation('{$this->getUrl('adminhtml/system_config/edit', array('section' => 'system'))}#system_cron')",
-        ));
+        $this->_addButton(
+            'add_new',
+            array(
+                'label'   => $this->__('Generate Schedule'),
+                'onclick' => "setLocation('{$this->getUrl('*/*/generateSchedule')}')",
+            )
+        );
+        $this->_addButton(
+            'configure',
+            array(
+                'label'   => $this->__('Cron Configuration'),
+                'onclick' => "setLocation('{$this->getUrl('adminhtml/system_config/edit', array('section' => 'system'))}#system_cron')",
+            )
+        );
         return parent::_prepareLayout();
     }
 
@@ -54,5 +58,4 @@ class Aoe_Scheduler_Block_Adminhtml_Scheduler extends Mage_Adminhtml_Block_Widge
     {
         return '';
     }
-
 }

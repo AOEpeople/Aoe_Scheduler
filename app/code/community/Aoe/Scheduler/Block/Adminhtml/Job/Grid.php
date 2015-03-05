@@ -7,8 +7,6 @@
  */
 class Aoe_Scheduler_Block_Adminhtml_Job_Grid extends Mage_Adminhtml_Block_Widget_Grid
 {
-
-
     /**
      * Constructor
      */
@@ -28,8 +26,9 @@ class Aoe_Scheduler_Block_Adminhtml_Job_Grid extends Mage_Adminhtml_Block_Widget
      */
     protected function _prepareCollection()
     {
-        $jobFactory = Mage::getModel('aoe_scheduler/job_factory'); /* @var $jobFactory Aoe_Scheduler_Model_Job_Factory */
-        $this->setCollection($jobFactory->getAllJobs());
+        /** @var Aoe_Scheduler_Model_Resource_Job_Collection $collection */
+        $collection = Mage::getSingleton('aoe_scheduler/job')->getCollection();
+        $this->setCollection($collection);
         return parent::_prepareCollection();
     }
 
@@ -43,24 +42,36 @@ class Aoe_Scheduler_Block_Adminhtml_Job_Grid extends Mage_Adminhtml_Block_Widget
     {
         $this->setMassactionIdField('id');
         $this->getMassactionBlock()->setFormFieldName('codes');
-        $this->getMassactionBlock()->addItem('schedule', array(
-            'label' => Mage::helper('aoe_scheduler')->__('Schedule now'),
-            'url' => $this->getUrl('*/*/scheduleNow'),
-        ));
+        $this->getMassactionBlock()->addItem(
+            'schedule',
+            array(
+                'label' => $this->__('Schedule now'),
+                'url'   => $this->getUrl('*/*/scheduleNow'),
+            )
+        );
         if (Mage::getStoreConfig('system/cron/enableRunNow')) {
-            $this->getMassactionBlock()->addItem('run', array(
-                'label' => Mage::helper('aoe_scheduler')->__('Run now'),
-                'url' => $this->getUrl('*/*/runNow'),
-            ));
+            $this->getMassactionBlock()->addItem(
+                'run',
+                array(
+                    'label' => $this->__('Run now'),
+                    'url'   => $this->getUrl('*/*/runNow'),
+                )
+            );
         }
-        $this->getMassactionBlock()->addItem('disable', array(
-            'label' => Mage::helper('aoe_scheduler')->__('Disable'),
-            'url' => $this->getUrl('*/*/disable'),
-        ));
-        $this->getMassactionBlock()->addItem('enable', array(
-            'label' => Mage::helper('aoe_scheduler')->__('Enable'),
-            'url' => $this->getUrl('*/*/enable'),
-        ));
+        $this->getMassactionBlock()->addItem(
+            'disable',
+            array(
+                'label' => $this->__('Disable'),
+                'url'   => $this->getUrl('*/*/disable'),
+            )
+        );
+        $this->getMassactionBlock()->addItem(
+            'enable',
+            array(
+                'label' => $this->__('Enable'),
+                'url'   => $this->getUrl('*/*/enable'),
+            )
+        );
         return $this;
     }
 
@@ -72,58 +83,85 @@ class Aoe_Scheduler_Block_Adminhtml_Job_Grid extends Mage_Adminhtml_Block_Widget
      */
     protected function _prepareColumns()
     {
-        $this->addColumn('job_code', array(
-            'header' => Mage::helper('aoe_scheduler')->__('Job code'),
-            'index' => 'job_code',
-            'sortable' => false,
-        ));
+        $this->addColumn(
+            'job_code',
+            array(
+                'header'   => $this->__('Job code'),
+                'index'    => 'job_code',
+                'sortable' => false,
+            )
+        );
 
-        $this->addColumn('name', array(
-            'header' => Mage::helper('aoe_scheduler')->__('Name'),
-            'index' => 'name',
-            'sortable' => false,
-        ));
+        $this->addColumn(
+            'name',
+            array(
+                'header'   => $this->__('Name'),
+                'index'    => 'name',
+                'sortable' => false,
+            )
+        );
 
-        $this->addColumn('short_description', array(
-            'header' => Mage::helper('aoe_scheduler')->__('Short Description'),
-            'index' => 'short_description',
-            'sortable' => false,
-        ));
+        $this->addColumn(
+            'short_description',
+            array(
+                'header'   => $this->__('Short Description'),
+                'index'    => 'short_description',
+                'sortable' => false,
+            )
+        );
 
-        $this->addColumn('schedule_cron_expr', array(
-            'header' => Mage::helper('aoe_scheduler')->__('Cron expression'),
-            'index' => 'schedule_cron_expr',
-            'sortable' => false,
-            'frame_callback' => array($this, 'decorateCronExpression'),
-        ));
-        $this->addColumn('run_model', array(
-            'header' => Mage::helper('aoe_scheduler')->__('Run model'),
-            'index' => 'run_model',
-            'sortable' => false,
-        ));
-        $this->addColumn('parameter', array(
-            'header' => Mage::helper('aoe_scheduler')->__('Parameter'),
-            'index' => 'parameter',
-            'sortable' => false,
-            'frame_callback' => array($this, 'decorateTrim'),
-        ));
-        $this->addColumn('groups', array(
-            'header' => Mage::helper('aoe_scheduler')->__('Groups'),
-            'index' => 'groups',
-            'sortable' => false,
-            'frame_callback' => array($this, 'decorateTrim'),
-        ));
-        $this->addColumn('type', array(
-            'header' => Mage::helper('aoe_scheduler')->__('Type'),
-            'sortable' => false,
-            'frame_callback' => array($this, 'decorateType'),
-        ));
-        $this->addColumn('is_active', array(
-            'header' => Mage::helper('aoe_scheduler')->__('Status'),
-            'index' => 'is_active',
-            'sortable' => false,
-            'frame_callback' => array($this, 'decorateStatus'),
-        ));
+        $this->addColumn(
+            'schedule_cron_expr',
+            array(
+                'header'         => $this->__('Cron expression'),
+                'index'          => 'schedule_cron_expr',
+                'sortable'       => false,
+                'frame_callback' => array($this, 'decorateCronExpression'),
+            )
+        );
+        $this->addColumn(
+            'run_model',
+            array(
+                'header'   => $this->__('Run model'),
+                'index'    => 'run_model',
+                'sortable' => false,
+            )
+        );
+        $this->addColumn(
+            'parameters',
+            array(
+                'header'         => $this->__('Parameters'),
+                'index'          => 'parameters',
+                'sortable'       => false,
+                'frame_callback' => array($this, 'decorateTrim'),
+            )
+        );
+        $this->addColumn(
+            'groups',
+            array(
+                'header'         => $this->__('Groups'),
+                'index'          => 'groups',
+                'sortable'       => false,
+                'frame_callback' => array($this, 'decorateTrim'),
+            )
+        );
+        $this->addColumn(
+            'type',
+            array(
+                'header'         => $this->__('Type'),
+                'sortable'       => false,
+                'frame_callback' => array($this, 'decorateType'),
+            )
+        );
+        $this->addColumn(
+            'is_active',
+            array(
+                'header'         => $this->__('Status'),
+                'index'          => 'is_active',
+                'sortable'       => false,
+                'frame_callback' => array($this, 'decorateStatus'),
+            )
+        );
         return parent::_prepareColumns();
     }
 
@@ -132,13 +170,15 @@ class Aoe_Scheduler_Block_Adminhtml_Job_Grid extends Mage_Adminhtml_Block_Widget
      * Decorate status column values
      *
      * @param $value
+     *
      * @return string
      */
     public function decorateStatus($value)
     {
-        $cell = sprintf('<span class="grid-severity-%s"><span>%s</span></span>',
+        $cell = sprintf(
+            '<span class="grid-severity-%s"><span>%s</span></span>',
             $value ? 'notice' : 'critical',
-            Mage::helper('aoe_scheduler')->__($value ? 'Enabled' : 'Disabled')
+            $this->__($value ? 'Enabled' : 'Disabled')
         );
         return $cell;
     }
@@ -147,11 +187,12 @@ class Aoe_Scheduler_Block_Adminhtml_Job_Grid extends Mage_Adminhtml_Block_Widget
     /**
      * Decorate cron expression
      *
-     * @param $value
-     * @param Aoe_Scheduler_Model_Job_Abstract $job
+     * @param                         $value
+     * @param Aoe_Scheduler_Model_Job $job
+     *
      * @return string
      */
-    public function decorateCronExpression($value, Aoe_Scheduler_Model_Job_Abstract $job)
+    public function decorateCronExpression($value, Aoe_Scheduler_Model_Job $job)
     {
         return $job->getCronExpression();
     }
@@ -161,6 +202,7 @@ class Aoe_Scheduler_Block_Adminhtml_Job_Grid extends Mage_Adminhtml_Block_Widget
      * Decorate cron expression
      *
      * @param $value
+     *
      * @return string
      */
     public function decorateTrim($value)
@@ -169,15 +211,15 @@ class Aoe_Scheduler_Block_Adminhtml_Job_Grid extends Mage_Adminhtml_Block_Widget
     }
 
 
-
     /**
      * Decorate cron expression
      *
-     * @param $value
-     * @param Aoe_Scheduler_Model_Job_Abstract $job
+     * @param                         $value
+     * @param Aoe_Scheduler_Model_Job $job
+     *
      * @return string
      */
-    public function decorateType($value, Aoe_Scheduler_Model_Job_Abstract $job)
+    public function decorateType($value, Aoe_Scheduler_Model_Job $job)
     {
         return $job->getType();
     }
@@ -186,11 +228,12 @@ class Aoe_Scheduler_Block_Adminhtml_Job_Grid extends Mage_Adminhtml_Block_Widget
      * Row click url
      *
      * @param object $row
+     *
      * @return string
      */
     public function getRowUrl($row)
     {
-        return $this->getUrl('*/*/edit', array('job_code' => $row->getId()));
+        return $this->getUrl('*/*/edit', array('job_code' => $row->getJobCode()));
     }
 
     /**
@@ -202,5 +245,4 @@ class Aoe_Scheduler_Block_Adminhtml_Job_Grid extends Mage_Adminhtml_Block_Widget
     {
         return $this->getUrl('adminhtml/job/index', array('_current' => true));
     }
-
 }

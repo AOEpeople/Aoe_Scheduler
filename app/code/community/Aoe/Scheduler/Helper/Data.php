@@ -170,9 +170,9 @@ class Aoe_Scheduler_Helper_Data extends Mage_Core_Helper_Abstract
      */
     public function isDisabled($jobCode)
     {
-        $jobFactory = Mage::getModel('aoe_scheduler/job_factory'); /* @var $jobFactory Aoe_Scheduler_Model_Job_Factory */
-        $job = $jobFactory->loadByCode($jobCode); /* @var $job Aoe_Scheduler_Model_Job_Abstract */
-        return !$job->getIsActive();
+        /* @var $job Aoe_Scheduler_Model_Job */
+        $job = Mage::getModel('aoe_scheduler/job')->load($jobCode);
+        return ($job->getJobCode() && !$job->getIsActive());
     }
 
     /**
@@ -198,8 +198,8 @@ class Aoe_Scheduler_Helper_Data extends Mage_Core_Helper_Abstract
                 $cache[$key] = true;
             } else {
                 $cache[$key] = true;
-                $jobFactory = Mage::getModel('aoe_scheduler/job_factory'); /* @var $jobFactory Aoe_Scheduler_Model_Job_Factory */
-                $job = $jobFactory->loadByCode($jobCode); /* @var $job Aoe_Scheduler_Model_Job_Abstract */
+                /* @var $job Aoe_Scheduler_Model_Job */
+                $job = Mage::getModel('aoe_scheduler/job')->load($jobCode);
                 $groups = $this->trimExplode(',', $job->getGroups(), true);
                 if (count($include) > 0) {
                     $cache[$key] = (count(array_intersect($groups, $include)) > 0);
@@ -220,11 +220,10 @@ class Aoe_Scheduler_Helper_Data extends Mage_Core_Helper_Abstract
         if($this->groupsToJobsMap === null || $forceRebuild) {
             $map = array();
 
-            /* @var Aoe_Scheduler_Model_Job_Factory  $jobFactory */
-            $jobFactory = Mage::getModel('aoe_scheduler/job_factory');
-
-            foreach($jobFactory->getAllJobs() as $job) {
-                /* @var Aoe_Scheduler_Model_Job_Abstract  $job*/
+            /* @var $jobs Aoe_Scheduler_Model_Resource_Job_Collection */
+            $jobs = Mage::getSingleton('aoe_scheduler/job')->getCollection();
+            foreach($jobs as $job) {
+                /* @var Aoe_Scheduler_Model_Job $job */
                 $groups = $this->trimExplode(',', $job->getGroups(), true);
                 foreach($groups as $group) {
                     $map[$group][] = $job->getJobCode();

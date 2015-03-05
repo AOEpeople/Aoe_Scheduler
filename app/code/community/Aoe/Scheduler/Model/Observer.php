@@ -30,10 +30,6 @@ class Aoe_Scheduler_Model_Observer /* extends Mage_Cron_Model_Observer */
         $includeJobs = $helper->addGroupJobs((array)$observer->getIncludeJobs(), (array)$observer->getIncludeGroups());
         $excludeJobs = $helper->addGroupJobs((array)$observer->getExcludeJobs(), (array)$observer->getExcludeGroups());
 
-        // DEPRECATED - Include ENV whitelist and blacklist
-        $includeJobs = array_merge($includeJobs, $scheduleManager->getWhitelist());
-        $excludeJobs = array_merge($excludeJobs, $scheduleManager->getBlacklist());
-
         $schedules = $scheduleManager->getPendingSchedules($includeJobs, $excludeJobs); /* @var $schedules Mage_Cron_Model_Resource_Schedule_Collection */
         foreach ($schedules as $schedule) { /* @var $schedule Aoe_Scheduler_Model_Schedule */
             $schedule->process();
@@ -65,9 +61,13 @@ class Aoe_Scheduler_Model_Observer /* extends Mage_Cron_Model_Observer */
         $includeJobs = $helper->addGroupJobs((array)$observer->getIncludeJobs(), (array)$observer->getIncludeGroups());
         $excludeJobs = $helper->addGroupJobs((array)$observer->getExcludeJobs(), (array)$observer->getExcludeGroups());
 
-
-        $allJobs = Mage::getModel('aoe_scheduler/job_factory')->getAllJobs($includeJobs, $excludeJobs); /* @var Varien_Data_Collection $allJobs */
-        foreach ($allJobs as $job) { /* @var $job Aoe_Scheduler_Model_Job_Abstract */
+        /* @var $jobs Aoe_Scheduler_Model_Resource_Job_Collection */
+        $jobs = Mage::getSingleton('aoe_scheduler/job')->getCollection();
+        $jobs->setWhiteList($includeJobs);
+        $jobs->setBlackList($excludeJobs);
+        $jobs->setActiveOnly(true);
+        foreach ($jobs as $job) {
+            /* @var Aoe_Scheduler_Model_Job $job */
             if ($job->isAlwaysTask() && $job->getRunModel()) {
                 $schedule = $scheduleManager->getScheduleForAlwaysJob($job->getJobCode());
                 if ($schedule !== false) {

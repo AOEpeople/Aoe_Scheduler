@@ -15,7 +15,7 @@ class Aoe_Scheduler_Model_ProcessManager
     /**
      * Get all schedules running on this server
      *
-     * @param string host
+     * @param string $host
      * @return object
      */
     public function getAllRunningSchedules($host = null)
@@ -42,7 +42,7 @@ class Aoe_Scheduler_Model_ProcessManager
     }
 
     /**
-     * Check if there's alread a job running with the given code
+     * Check if there's already a job running with the given code
      *
      * @param string $jobCode
      * @param int $ignoreId
@@ -88,7 +88,7 @@ class Aoe_Scheduler_Model_ProcessManager
                     $schedule->requestKill();
                 }
             }
-            
+
         }
 
         // fallback (where process cannot be checked or if one of the servers disappeared)

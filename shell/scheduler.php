@@ -62,8 +62,10 @@ class Aoe_Scheduler_Shell_Scheduler extends Mage_Shell_Abstract
      */
     public function listAllCodesAction()
     {
-        $jobFactory = Mage::getModel('aoe_scheduler/job_factory'); /* @var $jobFactory Aoe_Scheduler_Model_Job_Factory */
-        foreach ($jobFactory->getAllJobs() as $job) { /* @var $job Aoe_Scheduler_Model_Job_Abstract */
+        /** @var Aoe_Scheduler_Model_Resource_Job_Collection $jobs */
+        $jobs = Mage::getSingleton('aoe_scheduler/job')->getCollection();
+        foreach ($jobs as $job) {
+            /* @var $job Aoe_Scheduler_Model_Job */
             echo sprintf("%-50s %-20s %s\n", $job->getJobCode(), $job->getCronExpression(), $job->getIsActive() ? 'Enabled' : 'Disabled');
         }
     }
@@ -75,7 +77,6 @@ class Aoe_Scheduler_Shell_Scheduler extends Mage_Shell_Abstract
      */
     public function lastRunAction()
     {
-
         $code = $this->getArg('code');
         if (empty($code)) {
             echo "\nNo code found!\n\n";
@@ -127,6 +128,14 @@ class Aoe_Scheduler_Shell_Scheduler extends Mage_Shell_Abstract
             echo $this->usageHelp();
             exit(1);
         }
+
+        $allowedCodes = Mage::getSingleton('aoe_scheduler/job')->getResource()->getJobCodes();
+        if(!in_array($code, $allowedCodes)) {
+            echo "\nNo valid job found!\n\n";
+            echo $this->usageHelp();
+            exit(1);
+        }
+
         $schedule = Mage::getModel('cron/schedule'); /* @var $schedule Aoe_Scheduler_Model_Schedule */
         $schedule->setScheduledReason(Aoe_Scheduler_Model_Schedule::REASON_SCHEDULENOW_CLI);
         $schedule->setJobCode($code);
@@ -157,6 +166,14 @@ class Aoe_Scheduler_Shell_Scheduler extends Mage_Shell_Abstract
             echo $this->usageHelp();
             exit(1);
         }
+
+        $allowedCodes = Mage::getSingleton('aoe_scheduler/job')->getResource()->getJobCodes();
+        if(!in_array($code, $allowedCodes)) {
+            echo "\nNo valid job found!\n\n";
+            echo $this->usageHelp();
+            exit(1);
+        }
+
         $schedule = Mage::getModel('cron/schedule'); /* @var $schedule Aoe_Scheduler_Model_Schedule */
         $schedule->setJobCode($code);
         $schedule->setScheduledReason(Aoe_Scheduler_Model_Schedule::REASON_RUNNOW_CLI);

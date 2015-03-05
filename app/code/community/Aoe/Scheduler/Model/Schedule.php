@@ -61,7 +61,7 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
     protected $_eventPrefix = 'aoe_scheduler_schedule';
 
     /**
-     * @var Aoe_Scheduler_Model_Job_Abstract
+     * @var Aoe_Scheduler_Model_Job
      */
     protected $job;
 
@@ -75,10 +75,10 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
     /**
      * Initialize from job
      *
-     * @param Aoe_Scheduler_Model_Job_Abstract $job
+     * @param Aoe_Scheduler_Model_Job $job
      * @return $this
      */
-    public function initializeFromJob(Aoe_Scheduler_Model_Job_Abstract $job)
+    public function initializeFromJob(Aoe_Scheduler_Model_Job $job)
     {
         $this->setJobCode($job->getJobCode());
         $this->setCronExpr($job->getCronExpression());
@@ -95,7 +95,6 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
      */
     public function runNow($tryLockJob = true)
     {
-
         // lock job (see below) prevents the exact same schedule from being executed from more than one process (or server)
         // the following check will prevent multiple schedules of the same type to be run in parallel
         $processManager = Mage::getModel('aoe_scheduler/processManager'); /* @var $processManager Aoe_Scheduler_Model_ProcessManager */
@@ -241,12 +240,12 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
     /**
      * Get job configuration
      *
-     * @return Aoe_Scheduler_Model_Job_Abstract
+     * @return Aoe_Scheduler_Model_Job
      */
     public function getJob()
     {
         if (is_null($this->job)) {
-            $this->job = Mage::getModel('aoe_scheduler/job_factory')->loadByCode($this->getJobCode());
+            $this->job = Mage::getModel('aoe_scheduler/job')->load($this->getJobCode());
         }
         return $this->job;
     }
@@ -355,7 +354,7 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
     /**
      * Request kill
      *
-     * @param int time
+     * @param int $time
      * @return $this
      */
     public function requestKill($time=NULL) {
@@ -378,7 +377,7 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
         if (!$this->checkPid()) {
             // already dead
             $this->markAsDisappeared(sprintf('Did not kill job "%s" (id: %s), because it was already dead.', $this->getJobCode(), $this->getId()));
-            return true;
+            return;
         }
 
         // let's be nice first (a.k.a. "Could you please stop running now?")
@@ -458,8 +457,7 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
      */
     protected function _beforeSave()
     {
-
-        if (!$this->getScheduledBy() && Mage::getSingleton('admin/session')->isLoggedIn()) {
+        if (!$this->getScheduledBy() && php_sapi_name() !== 'cli' && Mage::getSingleton('admin/session')->isLoggedIn()) {
             $this->setScheduledBy(Mage::getSingleton('admin/session')->getUser()->getId());
         }
 
@@ -518,7 +516,7 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
     }
 
     /**
-     * Get paramters (and fallback to job)
+     * Get parameters (and fallback to job)
      *
      * @return mixed
      */

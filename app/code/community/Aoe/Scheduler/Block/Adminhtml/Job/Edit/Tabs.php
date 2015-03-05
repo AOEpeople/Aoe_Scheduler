@@ -16,6 +16,6 @@ class Aoe_Scheduler_Block_Adminhtml_Job_Edit_Tabs extends Mage_Adminhtml_Block_W
         parent::_construct();
         $this->setId('job_tabs');
         $this->setDestElementId('edit_form');
-        $this->setTitle(Mage::helper('aoe_scheduler')->__('Job'));
+        $this->setTitle($this->__('Job'));
     }
 }

@@ -19,8 +19,7 @@ class Aoe_Scheduler_Adminhtml_SchedulerController extends Aoe_Scheduler_Adminhtm
     {
         $ids = $this->getRequest()->getParam('schedule_ids');
         foreach ($ids as $id) {
-            $schedule = Mage::getModel('cron/schedule')/* @var $schedule Aoe_Scheduler_Model_Schedule */
-                ->load($id)
+            Mage::getModel('cron/schedule')->load($id)
                 ->delete();
         }
         $message = $this->__('Deleted task(s) "%s"', implode(', ', $ids));

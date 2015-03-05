@@ -36,7 +36,7 @@ class Aoe_Scheduler_Block_Adminhtml_Timeline extends Mage_Adminhtml_Block_Widget
      */
     protected function _construct()
     {
-        $this->_headerText = Mage::helper('aoe_scheduler')->__('Scheduler Timeline');
+        $this->_headerText = $this->__('Scheduler Timeline');
         $this->loadSchedules();
         parent::_construct();
     }
@@ -45,17 +45,17 @@ class Aoe_Scheduler_Block_Adminhtml_Timeline extends Mage_Adminhtml_Block_Widget
     /**
      * Prepare layout
      *
-     * @return Aoe_Scheduler_Block_Adminhtml_Cron
+     * @return $this
      */
     protected function _prepareLayout()
     {
         $this->removeButton('add');
         $this->_addButton('add_new', array(
-            'label' => Mage::helper('aoe_scheduler')->__('Generate Schedule'),
+            'label' => $this->__('Generate Schedule'),
             'onclick' => "setLocation('{$this->getUrl('*/*/generateSchedule')}')",
         ));
         $this->_addButton('configure', array(
-            'label' => Mage::helper('aoe_scheduler')->__('Cron Configuration'),
+            'label' => $this->__('Cron Configuration'),
             'onclick' => "setLocation('{$this->getUrl('adminhtml/system_config/edit', array('section' => 'system'))}#system_cron')",
         ));
         return parent::_prepareLayout();
@@ -93,14 +93,14 @@ class Aoe_Scheduler_Block_Adminhtml_Timeline extends Mage_Adminhtml_Block_Widget
      */
     protected function loadSchedules()
     {
+        /* @var Mage_Cron_Model_Resource_Schedule_Collection $collection */
         $collection = Mage::getModel('cron/schedule')->getCollection();
-        /* @var $collection Mage_Cron_Model_Mysql4_Schedule_Collection */
 
         $minDate = null;
         $maxDate = null;
 
         foreach ($collection as $schedule) {
-            /* @var $schedule Aoe_Scheduler_Model_Schedule */
+            /* @var Aoe_Scheduler_Model_Schedule $schedule */
             $startTime = $schedule->getStarttime();
             $minDate = is_null($minDate) ? $startTime : min($minDate, $startTime);
             $maxDate = is_null($maxDate) ? $startTime : max($maxDate, $startTime);

@@ -79,7 +79,7 @@ class Aoe_Scheduler_Model_ScheduleManager
                 $previousSchedule = $seenJobs[$schedule->getJobCode()];
                 $pendingSchedules->removeItemByKey($previousSchedule->getId());
                 $previousSchedule
-                    ->setMessages('Mulitple tasks with the same job code were piling up. Skipping execution of duplicates.')
+                    ->setMessages('Multiple tasks with the same job code were piling up. Skipping execution of duplicates.')
                     ->setStatus(Mage_Cron_Model_Schedule::STATUS_MISSED)
                     ->save();
             }
@@ -89,41 +89,6 @@ class Aoe_Scheduler_Model_ScheduleManager
 
         return $pendingSchedules;
     }
-
-
-
-    /**
-     * Get job code white list from environment variable
-     *
-     * @return array
-     *
-     * @deprecated
-     */
-    public function getWhitelist()
-    {
-        $whitelist = array();
-        if (getenv("SCHEDULER_WHITELIST") !== FALSE) {
-            $whitelist = explode(',', getenv("SCHEDULER_WHITELIST"));
-        }
-        return $whitelist;
-    }
-
-    /**
-     * Get job code black list from environment variable
-     *
-     * @return array
-     *
-     * @deprecated
-     */
-    public function getBlacklist()
-    {
-        $blacklist = array();
-        if (getenv("SCHEDULER_BLACKLIST") !== FALSE) {
-            $blacklist = explode(',', getenv("SCHEDULER_BLACKLIST"));
-        }
-        return $blacklist;
-    }
-
 
     /**
      * Get job for task marked as always
@@ -226,11 +191,12 @@ class Aoe_Scheduler_Model_ScheduleManager
             $exists[$schedule->getJobCode().'/'.$schedule->getScheduledAt()] = 1;
         }
 
-        $jobFactory = Mage::getModel('aoe_scheduler/job_factory'); /* @var $jobFactory Aoe_Scheduler_Model_Job_Factory */
-        foreach ($jobFactory->getAllJobs() as $job) { /* @var $job Aoe_Scheduler_Model_Job_Abstract */
-            if ($job->canBeScheduled()) {
-                $this->generateSchedulesForJob($job, $exists);
-            }
+        /* @var $jobs Aoe_Scheduler_Model_Resource_Job_Collection */
+        $jobs = Mage::getSingleton('aoe_scheduler/job')->getCollection();
+        $jobs->setActiveOnly(true);
+        foreach ($jobs as $job) {
+            /* @var Aoe_Scheduler_Model_Job $job */
+            $this->generateSchedulesForJob($job, $exists);
         }
 
         /**
@@ -260,15 +226,14 @@ class Aoe_Scheduler_Model_ScheduleManager
     /**
      * Generate jobs for config information
      *
-     * @param Aoe_Scheduler_Model_Job_Abstract $job
+     * @param Aoe_Scheduler_Model_Job $job
      * @param   array $exists
      * @internal param $jobs
      * @return  Mage_Cron_Model_Observer
      */
-    protected function generateSchedulesForJob(Aoe_Scheduler_Model_Job_Abstract $job, array $exists)
+    protected function generateSchedulesForJob(Aoe_Scheduler_Model_Job $job, array $exists)
     {
-        if ($job->isAlwaysTask()) {
-            // always task will be scheduled on the fly
+        if (!$job->canBeScheduled()) {
             return $this;
         }
 
@@ -295,10 +260,6 @@ class Aoe_Scheduler_Model_ScheduleManager
 
         return $this;
     }
-
-
-
-
 
     /**
      * Clean up the history of tasks
@@ -370,6 +331,4 @@ class Aoe_Scheduler_Model_ScheduleManager
 
         return $this;
     }
-
-
 }

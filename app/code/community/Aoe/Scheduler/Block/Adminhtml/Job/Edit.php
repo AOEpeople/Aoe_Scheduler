@@ -11,8 +11,10 @@ class Aoe_Scheduler_Block_Adminhtml_Job_Edit extends Mage_Adminhtml_Block_Widget
     public function __construct()
     {
         parent::__construct();
-        if ($this->getJob()->getParentJob()) {
-            $this->updateButton('delete', 'label', Mage::helper('aoe_scheduler')->__('Reset overlay'));
+        if ($this->getJob()->isOverlay()) {
+            $this->updateButton('delete', 'label', $this->__('Reset overlay'));
+        } elseif ($this->getJob()->isXmlOnly()) {
+            $this->removeButton('delete');
         }
         $this->removeButton('reset');
     }
@@ -32,7 +34,7 @@ class Aoe_Scheduler_Block_Adminhtml_Job_Edit extends Mage_Adminhtml_Block_Widget
     /**
      * Get job
      *
-     * @return Aoe_Scheduler_Model_Job_Abstract
+     * @return Aoe_Scheduler_Model_Job
      */
     public function getJob()
     {
@@ -48,9 +50,9 @@ class Aoe_Scheduler_Block_Adminhtml_Job_Edit extends Mage_Adminhtml_Block_Widget
     public function getHeaderText()
     {
         if ($this->getJob()->getId()) {
-            return Mage::helper('aoe_scheduler')->__('Job "%s"', $this->escapeHtml($this->getJob()->getId()));
+            return $this->__('Job "%s"', $this->escapeHtml($this->getJob()->getJobCode()));
         } else {
-            return Mage::helper('aoe_scheduler')->__('New Job');
+            return $this->__('New Job');
         }
     }
 
