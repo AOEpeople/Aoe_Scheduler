@@ -50,7 +50,7 @@ abstract class Aoe_Scheduler_Adminhtml_AbstractController extends Mage_Adminhtml
             $lastHeartbeat = Mage::helper('aoe_scheduler')->getLastHeartbeat();
             if ($lastHeartbeat === false) {
                 // no heartbeat task found
-                $this->_getSession()->addError($this->__('No heartbeat task found. Check if cron is configured correctly.'));
+                $this->_getSession()->addError($this->__('No heartbeat task found. Check if cron is configured correctly. (<a href="">See Instructions</a>)', $this->getUrl('adminhtml/instructions/index')));
             } else {
                 $timespan = Mage::helper('aoe_scheduler')->dateDiff($lastHeartbeat);
                 if ($timespan <= 5 * 60) {

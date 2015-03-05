@@ -12,8 +12,7 @@
             <action method="addItem"><type>skin_js</type><script>aoe_scheduler/JavaScript/common.js</script></action>
         </reference>
         <reference name="content">
-            <block type="aoe_scheduler/adminhtml_timeline" name="aoe_scheduler.timeline"
-                   template="aoe_scheduler/timeline.phtml"/>
+            <block type="aoe_scheduler/adminhtml_timeline" name="aoe_scheduler.timeline" template="aoe_scheduler/timeline.phtml"/>
             <!--<block type="core/text" name="fix.console" as="fix.console">
                 <action method="setText">
                     <text><![CDATA[<script type="text/javascript">
@@ -58,5 +57,16 @@
             <block type="aoe_scheduler/adminhtml_job_edit" name="aoe_scheduler_edit_information"/>
         </reference>
     </adminhtml_job_edit>
+
+    <adminhtml_instructions_index>
+        <reference name="head">
+            <action method="addCss"><stylesheet>aoe_scheduler/StyleSheet/instructions.css</stylesheet></action>
+            <action method="addItem"><type>skin_js</type><script>aoe_scheduler/JavaScript/jquery-1.6.2.min.js</script></action>
+            <action method="addItem"><type>skin_js</type><script>aoe_scheduler/JavaScript/instructions.js</script></action>
+        </reference>
+        <reference name="content">
+            <block type="aoe_scheduler/adminhtml_instructions" name="aoe_scheduler.instructions" template="aoe_scheduler/instructions.phtml"/>
+        </reference>
+    </adminhtml_instructions_index>
 
 </layout>
