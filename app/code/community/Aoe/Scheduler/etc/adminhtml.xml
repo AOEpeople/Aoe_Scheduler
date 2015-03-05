@@ -22,6 +22,11 @@
                             <sort_order>30</sort_order>
                             <action>adminhtml/timeline/index</action>
                         </aoe_scheduler_timeline>
+                        <aoe_scheduler_instructions translate="title">
+                            <title>Instructions</title>
+                            <sort_order>40</sort_order>
+                            <action>adminhtml/instructions/index</action>
+                        </aoe_scheduler_instructions>
                     </children>
                 </aoe_scheduler>
             </children>
@@ -49,6 +54,10 @@
                                         <title>Timeline View</title>
                                         <sort_order>30</sort_order>
                                     </aoe_scheduler_timeline>
+                                    <aoe_scheduler_instructions translate="title">
+                                        <title>Instructions</title>
+                                        <sort_order>40</sort_order>
+                                    </aoe_scheduler_instructions>
                                 </children>
                             </aoe_scheduler>
                         </children>
