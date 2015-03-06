@@ -64,3 +64,7 @@ This is not so much a question about Aoe_Scheduler, but an issue with Magento's 
 - Ideally your webserver user is the same user that also executes cron. If that's not the case you might run into problem with files being generated in cron tasks not having sufficient permissions for the next run from a different environment.
 
 Because of the reasons mentioned above newer versions of Aoe_Scheduler ship with the "runNow" feature being disabled by default. In case you know what you're doing you're welcome to enable this feature in the configuration.
+
+### I've uninstalled a module that introduced cron jobs and now I'm gettings error messages. What's going on?
+
+TODO...
