@@ -16,7 +16,7 @@
     1. [Timeline View](doc/timeline.md)
     1. [Instructions](doc/instructions.md)
 1. [Events](doc/events.md)
-1. [Job States](doc/states.md)
+1. [Schedule States](doc/states.md)
 1. [CLI](doc/cli.md)
 1. [Web Services](doc/web-services.md)
 1. [Domain Model](doc/domain-model.md)
@@ -38,6 +38,7 @@
     1. [Distributed cron](doc/distributed.md)
     1. [Job workflows](doc/job-workflows.md)
     1. [Schedule a job programmatically](doc/programmatically.md)
+    1. [Monitoring](doc/monitoring.md)
     
 ## Changelog
 

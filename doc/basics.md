@@ -33,6 +33,9 @@ Has a status
 
 ![Job vs Schedule](images/job_schedule.png)
 
+scheduled_by
+scheduled_reason
+
 ### How does scheduling work?
 
 - Generate schedules
