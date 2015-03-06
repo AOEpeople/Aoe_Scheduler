@@ -18,6 +18,3 @@ AOE Scheduler sits on top of Magento's default cron functionality allowing you t
 
 
 
-Giving you some insight on what's happening behind the scenes and shed's some light on what might be going wrong.
-
-Givs you some feedback on if cron is working properly
