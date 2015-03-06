@@ -5,9 +5,8 @@
  *
  * @author Fabrizio Branca
  */
-abstract class Aoe_Scheduler_Adminhtml_AbstractController extends Mage_Adminhtml_Controller_Action
+abstract class Aoe_Scheduler_Controller_AbstractController extends Mage_Adminhtml_Controller_Action
 {
-
     /**
      * Index action
      *
@@ -75,4 +74,3 @@ abstract class Aoe_Scheduler_Adminhtml_AbstractController extends Mage_Adminhtml
         $this->_redirect('*/*/index');
     }
 }
-

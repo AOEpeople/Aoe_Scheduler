@@ -1,13 +1,10 @@
 <?php
-
-require_once Mage::getModuleDir('controllers', 'Aoe_Scheduler') . '/Adminhtml/AbstractController.php';
-
 /**
  * Cron controller
  *
  * @author Fabrizio Branca
  */
-class Aoe_Scheduler_Adminhtml_JobController extends Aoe_Scheduler_Adminhtml_AbstractController
+class Aoe_Scheduler_Adminhtml_JobController extends Aoe_Scheduler_Controller_AbstractController
 {
     /**
      * Mass action: disable
