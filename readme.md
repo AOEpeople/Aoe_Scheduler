@@ -1,6 +1,10 @@
+<img style="float: right; height: 200px;" src="doc/images/Aoe_Scheduler_Icon.png">
+
 # AOE Scheduler for Magento
 
-![Logo](doc/images/Aoe_Scheduler.jpg "AOE Scheduler")
+[![Build Status](https://travis-ci.org/AOEpeople/Aoe_Scheduler.svg?branch=task_records)](https://travis-ci.org/AOEpeople/Aoe_Scheduler)
+
+AOE Scheduler sits on top of Magento's default cron functionality allowing you to manage the jobs, to visualize the timeline and to get some deeper insight on what's going on. On top of that AOE Scheduler provides some more functionality like a cli and a web service interface, optimizing cron execution on your server and giving you everything you need to implement complex background tasks including for your Magento store.
 
 ## Authors, contributors and maintainers
 
@@ -66,5 +70,5 @@ Please get in touch with us via the [issue tracker on GitHub](https://github.com
 ## Links
 
 - Aoe Scheduler on Magento Connect
-- Aoe Scheduler on Travis CI
+- [Aoe Scheduler on Travis CI](https://travis-ci.org/AOEpeople/Aoe_Scheduler)
 - Aoe Scheduler on Packagist

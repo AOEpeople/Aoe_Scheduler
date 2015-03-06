@@ -14,3 +14,10 @@ AOE Scheduler sits on top of Magento's default cron functionality allowing you t
 - **Web Service API**
 - **Instructions**
 - **Compatible with Magento's native cron scheduler**
+- Manuel scheduling / run of jobs (e.g. while development or for individual actions)
+
+
+
+Giving you some insight on what's happening behind the scenes and shed's some light on what might be going wrong.
+
+Givs you some feedback on if cron is working properly

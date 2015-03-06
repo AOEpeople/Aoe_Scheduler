@@ -68,3 +68,11 @@ Because of the reasons mentioned above newer versions of Aoe_Scheduler ship with
 ### I've uninstalled a module that introduced cron jobs and now I'm gettings error messages. What's going on?
 
 TODO...
+
+### Will this work in CE and EE?
+
+TODO...
+
+### Will this work in version x?
+
+TODO...
