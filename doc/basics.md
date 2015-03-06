@@ -43,3 +43,23 @@ scheduled_reason
 - Detect duplicates
 
 
+#### Job types
+
+- xml
+- db
+- db_xml
+
+crontab vs default/crontab
+xml files vs database
+- Explain how db is stored (native magento way)
+
+Explain priorities (what's overlaying what?)
+
+Specifically explain 'Cron configuration path' vs 'Cron expression' since a xml jobs 'cron expression' could be overwritten by an db overlay but at the same time there's a cron configuration path setting on the original or in the overlay record. Who wins?
+
+- cron_configuration_path wins over cron_expr
+- db_xml wins over xml
+
+if db_xml's cron_configuration_path and the xml' cron_confiruation_path isn't then the latter one wins even is the db_xml has a cron_expression
+
+Explain how empty field doesn't mean that this is a fallback, but that the field is actually empty. If the overlay field equals to the xml field than this will not be persistet (=fallback)

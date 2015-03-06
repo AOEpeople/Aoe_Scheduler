@@ -1,4 +1,4 @@
-# Frequently asked questions
+## Frequently asked questions
 
 ### Is there a way to run a single job like at the scheduler configuration with selecting the job and start "run now" via URL or something like that?
 
@@ -76,3 +76,5 @@ TODO...
 ### Will this work in version x?
 
 TODO...
+
+### Will this work in version Windows?

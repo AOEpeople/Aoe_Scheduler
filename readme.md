@@ -1,4 +1,4 @@
-<img style="float: right; height: 200px;" src="doc/images/Aoe_Scheduler_Icon.png">
+<img align="right" style="float: right; height: 200px;" src="doc/images/Aoe_Scheduler_Icon.png">
 
 # AOE Scheduler for Magento
 
@@ -21,12 +21,20 @@ Major Contributions:
 
 Please get in touch with us via the [issue tracker on GitHub](https://github.com/AOEpeople/Aoe_Scheduler/issues)
 
+## Compability
+
+- PHP: 5.3, 5.4, 5.5
+- Magento CE: 1.7.0.2 - 1.9.1.0
+- Magento EE: 
+- Operating System: Linux
+
 ## Documentation
 
 1. [What is AOE Scheduler?](doc/what-is-aoe-scheduler.md)
 1. [Module Installation](doc/installation.md)
 1. [Cron Configuration](doc/cron-configuration.md)
 1. [Some Basics (Job? Schedule? Task?)](doc/basics.md)
+1. [Creating new jobs](doc/create-job.md)
 1. [Faq](doc/faq.md)
 1. Admin Interfaces
     1. [System Configuration](doc/system-configuration.md)
@@ -41,7 +49,7 @@ Please get in touch with us via the [issue tracker on GitHub](https://github.com
 1. [Domain Model](doc/domain-model.md)
 1. [Cron Processing](doc/processing.md)
 1. Features
-    1. [Heartbeat](doc/heartbeat.md)
+    1. [Heartbeat and Monitoring](doc/heartbeat.md)
     1. [Notifications](doc/notifications.md)
     1. [Custom job parameters](doc/custom-job-parameters.md)
     1. [Global enabled/disable](doc/global-enable-disable.md)
@@ -54,10 +62,9 @@ Please get in touch with us via the [issue tracker on GitHub](https://github.com
     1. [Cron groups](doc/cron-groups.md)
     1. [Process Management](doc/process-management.md)
 1. Cookbook
-    1. [Distributed cron](doc/distributed.md)
+	1. [Distributed cron](doc/distributed.md)
     1. [Job workflows](doc/job-workflows.md)
     1. [Schedule a job programmatically](doc/programmatically.md)
-    1. [Monitoring](doc/monitoring.md)
     
 ## Changelog
 
