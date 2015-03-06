@@ -1,6 +1,6 @@
 {
   "name": "aoepeople/aoe_scheduler",
-  "license": "GPLv3",
+  "license": "GPL-3.0",
   "type": "magento-module",
   "description": "Magento Cron Scheduler",
   "homepage": "http://www.fabrizio-branca.de/magento-cron-scheduler.html",
@@ -11,7 +11,7 @@
   "authors": [
     {
       "name": "Fabrizio Branca",
-      "email": "fabrizio.branca@aoe.com"
+      "email": "{firstname}.{lastname}@aoe.com"
     },
     {
       "name": "Lee Saferite",
