@@ -17,16 +17,6 @@
                             <show_in_store>0</show_in_store>
                         </enable>
 
-                        <disabled_crons translate="label">
-                            <label>Disabled cron tasks</label>
-                            <frontend_type>text</frontend_type>
-                            <comment><![CDATA[Do not edit this field manually unless you know what you do. This field is populated by the "disable mass action" of Aoe_Scheduler.]]></comment>
-                            <sort_order>100</sort_order>
-                            <show_in_default>1</show_in_default>
-                            <show_in_website>0</show_in_website>
-                            <show_in_store>0</show_in_store>
-                        </disabled_crons>
-
                         <mark_as_error_after translate="label">
                             <label>Mark job as failed after</label>
                             <comment><![CDATA[A job will be marked es failed after it hasn't been seen for this many minutes (in cases where the process cannot be checked)]]></comment>
