@@ -130,7 +130,7 @@ class Aoe_Scheduler_Shell_Scheduler extends Mage_Shell_Abstract
         }
 
         $allowedCodes = Mage::getSingleton('aoe_scheduler/job')->getResource()->getJobCodes();
-        if(!in_array($code, $allowedCodes)) {
+        if (!in_array($code, $allowedCodes)) {
             echo "\nNo valid job found!\n\n";
             echo $this->usageHelp();
             exit(1);
@@ -168,7 +168,7 @@ class Aoe_Scheduler_Shell_Scheduler extends Mage_Shell_Abstract
         }
 
         $allowedCodes = Mage::getSingleton('aoe_scheduler/job')->getResource()->getJobCodes();
-        if(!in_array($code, $allowedCodes)) {
+        if (!in_array($code, $allowedCodes)) {
             echo "\nNo valid job found!\n\n";
             echo $this->usageHelp();
             exit(1);
@@ -247,7 +247,8 @@ class Aoe_Scheduler_Shell_Scheduler extends Mage_Shell_Abstract
     /**
      * Runs watchdog
      */
-    public function watchdogAction() {
+    public function watchdogAction()
+    {
         $processManager = Mage::getModel('aoe_scheduler/processManager'); /* @var $processManager Aoe_Scheduler_Model_ProcessManager */
         $processManager->watchdog();
     }

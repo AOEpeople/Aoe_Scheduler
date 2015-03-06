@@ -56,5 +56,4 @@ class Aoe_Scheduler_Adminhtml_SchedulerController extends Aoe_Scheduler_Controll
     {
         return Mage::getSingleton('admin/session')->isAllowed('system/aoe_scheduler/aoe_scheduler_scheduler');
     }
-
 }

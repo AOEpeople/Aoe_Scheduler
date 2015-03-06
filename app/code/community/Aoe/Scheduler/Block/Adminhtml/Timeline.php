@@ -204,7 +204,8 @@ class Aoe_Scheduler_Block_Adminhtml_Timeline extends Mage_Adminhtml_Block_Widget
             $offset = 0;
         }
 
-        $result = sprintf('<div class="task %s" id="id_%s" style="width: %spx; left: %spx;" ></div>',
+        $result = sprintf(
+            '<div class="task %s" id="id_%s" style="width: %spx; left: %spx;" ></div>',
             $schedule->getStatus(),
             $schedule->getScheduleId(),
             $duration,
@@ -212,16 +213,16 @@ class Aoe_Scheduler_Block_Adminhtml_Timeline extends Mage_Adminhtml_Block_Widget
         );
 
         if ($schedule->getStatus() == Mage_Cron_Model_Schedule::STATUS_RUNNING) {
-
             $offset += $duration;
 
             $duration = strtotime($schedule->getEta()) - time();
             $duration = $duration / $this->zoom;
 
-            $result = sprintf('<div class="estimation" style="width: %spx; left: %spx;" ></div>',
-                    $duration,
-                    $offset
-                ) . $result;
+            $result = sprintf(
+                '<div class="estimation" style="width: %spx; left: %spx;" ></div>',
+                $duration,
+                $offset
+            ) . $result;
         }
 
         return $result;
@@ -232,7 +233,8 @@ class Aoe_Scheduler_Block_Adminhtml_Timeline extends Mage_Adminhtml_Block_Widget
      *
      * @return string
      */
-    public function _toHtml() {
+    public function _toHtml()
+    {
         $html = parent::_toHtml();
         if (!$html && !Mage::getStoreConfigFlag('dev/template/allow_symlink')) {
             $url = $this->getUrl('adminhtml/system_config/edit', array('section' => 'dev')) . '#dev_template';
@@ -240,5 +242,4 @@ class Aoe_Scheduler_Block_Adminhtml_Timeline extends Mage_Adminhtml_Block_Widget
         }
         return $html;
     }
-
 }

@@ -8,12 +8,13 @@
 class Aoe_Scheduler_Block_Adminhtml_Instructions extends Mage_Adminhtml_Block_Template
 {
 
-    public function getCurrentUser() {
+    public function getCurrentUser()
+    {
         return trim(shell_exec('whoami'));
     }
 
-    public function getMagentoRootpath() {
+    public function getMagentoRootpath()
+    {
         return Mage::getBaseDir();
     }
-
 }

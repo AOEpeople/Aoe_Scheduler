@@ -38,20 +38,20 @@
 class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
 {
 
-    CONST STATUS_KILLED = 'killed';
-    CONST STATUS_DISAPPEARED = 'gone'; // the status field is limited to 7 characters
-    CONST STATUS_DIDNTDOANYTHING = 'nothing';
+    const STATUS_KILLED = 'killed';
+    const STATUS_DISAPPEARED = 'gone'; // the status field is limited to 7 characters
+    const STATUS_DIDNTDOANYTHING = 'nothing';
 
-    CONST REASON_RUNNOW_WEB = 'run_now_web';
-    CONST REASON_SCHEDULENOW_WEB = 'schedule_now_web';
-    CONST REASON_RUNNOW_CLI = 'run_now_cli';
-    CONST REASON_SCHEDULENOW_CLI = 'schedule_now_cli';
-    CONST REASON_RUNNOW_API = 'run_now_api';
-    CONST REASON_SCHEDULENOW_API = 'schedule_now_api';
-    CONST REASON_GENERATESCHEDULES = 'generate_schedules';
-    CONST REASON_DEPENDENCY_ALL = 'dependency_all';
-    CONST REASON_DEPENDENCY_SUCCESS = 'dependency_success';
-    CONST REASON_DEPENDENCY_FAILURE = 'dependency_failure';
+    const REASON_RUNNOW_WEB = 'run_now_web';
+    const REASON_SCHEDULENOW_WEB = 'schedule_now_web';
+    const REASON_RUNNOW_CLI = 'run_now_cli';
+    const REASON_SCHEDULENOW_CLI = 'schedule_now_cli';
+    const REASON_RUNNOW_API = 'run_now_api';
+    const REASON_SCHEDULENOW_API = 'schedule_now_api';
+    const REASON_GENERATESCHEDULES = 'generate_schedules';
+    const REASON_DEPENDENCY_ALL = 'dependency_all';
+    const REASON_DEPENDENCY_SUCCESS = 'dependency_success';
+    const REASON_DEPENDENCY_FAILURE = 'dependency_failure';
 
     /**
      * Prefix of model events names
@@ -70,6 +70,20 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
      */
     protected $jobWasLocked = false;
 
+    /**
+     * Placeholder to keep track of active redirect buffer.
+     *
+     * @var bool
+     */
+    protected $_redirect = false;
+
+    /**
+     * The buffer will be flushed after any output call which causes
+     * the buffer's length to equal or exceed this value.
+     *
+     * Prior to PHP 5.4.0, the value 1 set the chunk size to 4096 bytes.
+     */
+    protected $_redirectOutputHandlerChunkSize = 100; // bytes
 
 
     /**
@@ -119,7 +133,6 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
         }
 
         try {
-
             $job = $this->getJob();
 
             if (!$job) {
@@ -140,14 +153,19 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
             Mage::dispatchEvent('cron_' . $this->getJobCode() . '_before', array('schedule' => $this));
             Mage::dispatchEvent('cron_before', array('schedule' => $this));
 
-            $this->log('Start: ' . $this->getJobCode());
-
             Mage::unregister('current_cron_task');
             Mage::register('current_cron_task', $this);
 
+            $this->log('Start: ' . $this->getJobCode());
 
-            // this is where the actual task will be executed ...
-            $messages = call_user_func_array($callback, array($this));
+            $this->_startBufferToMessages();
+            try {
+                $messages = call_user_func_array($callback, array($this));
+                $this->_stopBufferToMessages();
+            } catch (Exception $e) {
+                $this->_stopBufferToMessages();
+                throw $e;
+            }
 
             $this->log('Stop: ' . $this->getJobCode());
 
@@ -157,7 +175,7 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
                 } elseif (!is_scalar($messages)) {
                     $messages = var_export($messages, 1);
                 }
-                $this->setMessages($messages);
+                $this->addMessages(PHP_EOL . '---RETURN_VALUE---' . PHP_EOL . $messages);
             }
 
             // schedules can report an error state by returning a string that starts with "ERROR:"
@@ -177,9 +195,8 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
             }
 
         } catch (Exception $e) {
-            $this
-                ->setStatus(Mage_Cron_Model_Schedule::STATUS_ERROR)
-                ->setMessages($e->__toString());
+            $this->setStatus(Mage_Cron_Model_Schedule::STATUS_ERROR);
+            $this->addMessages(PHP_EOL . '---EXCEPTION---' . PHP_EOL . $e->__toString());
             Mage::dispatchEvent('cron_' . $this->getJobCode() . '_exception', array('schedule' => $this, 'exception' => $e));
             Mage::dispatchEvent('cron_exception', array('schedule' => $this, 'exception' => $e));
             Mage::helper('aoe_scheduler')->sendErrorMail($this, $e->__toString());
@@ -224,7 +241,7 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
      * @param int $time
      * @return Aoe_Scheduler_Model_Schedule
      */
-    public function schedule($time = NULL)
+    public function schedule($time = null)
     {
         if (is_null($time)) {
             $time = time();
@@ -327,7 +344,7 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
      * @param string $message
      * @return void
      */
-    public function markAsDisappeared($message = NULL)
+    public function markAsDisappeared($message = null)
     {
         if (!is_null($message)) {
             $this->setMessages($message);
@@ -357,7 +374,8 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
      * @param int $time
      * @return $this
      */
-    public function requestKill($time=NULL) {
+    public function requestKill($time = null)
+    {
         if (is_null($time)) {
             $time = time();
         }
@@ -424,7 +442,7 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
      * @param $message
      * @param null $level
      */
-    protected function log($message, $level = NULL)
+    protected function log($message, $level = null)
     {
         if ($logFile = Mage::getStoreConfig('system/cron/logFile')) {
             Mage::log($message, $level, $logFile);
@@ -479,7 +497,7 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
         return parent::_beforeSave();
     }
 
-    public function canRun($throwException=false)
+    public function canRun($throwException = false)
     {
         if ($this->isAlwaysTask()) {
             return true;
@@ -507,7 +525,8 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
      *
      * @return $this
      */
-    public function process() {
+    public function process()
+    {
         if (!$this->canRun(true)) {
             return $this;
         }
@@ -534,4 +553,142 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
         }
     }
 
+    /**
+     * Redirect all output to the messages field of this Schedule.
+     *
+     * We use ob_start with `_addBufferToMessages` to redirect the output.
+     *
+     * @return $this
+     */
+    protected function _startBufferToMessages()
+    {
+        if (!Mage::getStoreConfigFlag('system/cron/enableJobOutputBuffer')) {
+            return $this;
+        }
+
+        if ($this->_redirect) {
+            return $this;
+        }
+
+        $this->addMessages('---START---' . PHP_EOL);
+
+        ob_start(
+            array($this, '_addBufferToMessages'),
+            $this->_redirectOutputHandlerChunkSize
+        );
+
+        $this->_redirect = true;
+    }
+
+    /**
+     * Stop redirecting all output to the messages field of this Schedule.
+     *
+     * We use ob_end_flush to stop redirecting the output.
+     *
+     * @return $this
+     */
+    protected function _stopBufferToMessages()
+    {
+        if (!Mage::getStoreConfigFlag('system/cron/enableJobOutputBuffer')) {
+            return $this;
+        }
+
+        if (!$this->_redirect) {
+            return $this;
+        }
+
+        ob_end_flush();
+        $this->addMessages('---END---' . PHP_EOL);
+
+        $this->_redirect = false;
+    }
+
+    /**
+     * Used as callback function to redirect the output buffer
+     * directly into the messages field of this schedule.
+     *
+     * @param $buffer
+     *
+     * @return string
+     */
+    public function _addBufferToMessages($buffer)
+    {
+        $this->addMessages($buffer)
+            ->saveMessages(); // Save the directly to the schedule record.
+
+        return $buffer;
+    }
+
+    /**
+     * Append data to the current messages field.
+     *
+     * @param $messages
+     *
+     * @return $this
+     */
+    public function addMessages($messages)
+    {
+        $this->setMessages($this->getMessages() . $messages);
+
+        return $this;
+    }
+
+    /**
+     * Save the messages directly to the schedule record.
+     *
+     * If the `messages` field was not updated in the database,
+     * check if this is because of `data truncation` and fix the message length.
+     *
+     * @return $this
+     */
+    public function saveMessages()
+    {
+        if (!$this->getId()) {
+            return $this->save();
+        }
+
+        $connection = Mage::getSingleton('core/resource')
+            ->getConnection('core_write');
+
+        $count = $connection
+            ->update(
+                $this->getResource()->getMainTable(),
+                array('messages' => $this->getMessages()),
+                array('schedule_id = ?' => $this->getId())
+            );
+
+        if (!$count) {
+            /**
+             * Check if the row was not updated because of data truncation.
+             */
+            $warning = $this->_getPdoWarning($connection->getConnection());
+            if ($warning && $warning->Code = 1265) {
+                $maxLength = strlen($this->getMessages()) - 5000;
+                $this->setMessages($warning->Level . ': ' .
+                    str_replace(' at row 1', '.', $warning->Message) . PHP_EOL . PHP_EOL .
+                    '...' . substr($this->getMessages(), -$maxLength));
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * Retrieve the last PDO warning.
+     *
+     * @param PDO $pdo
+     * @return mixed
+     */
+    protected function _getPdoWarning(PDO $pdo)
+    {
+        $originalErrorMode = $pdo->getAttribute(PDO::ATTR_ERRMODE);
+
+        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING);
+
+        $stm = $pdo->query('SHOW WARNINGS');
+
+        $pdo->setAttribute(PDO::ATTR_ERRMODE, $originalErrorMode);
+
+        return $stm->fetchObject();
+    }
 }

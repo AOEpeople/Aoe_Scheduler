@@ -17,7 +17,7 @@ class Aoe_Scheduler_Model_ScheduleManager
     public function logRun()
     {
         $lastRuns = Mage::app()->loadCache(self::CACHE_KEY_SCHEDULER_LASTRUNS);
-        $lastRuns = explode(',',$lastRuns);
+        $lastRuns = explode(',', $lastRuns);
         $lastRuns[] = time();
         $lastRuns = array_slice($lastRuns, -100);
         Mage::app()->saveCache(implode(',', $lastRuns), self::CACHE_KEY_SCHEDULER_LASTRUNS, array('crontab'), null);
@@ -26,7 +26,7 @@ class Aoe_Scheduler_Model_ScheduleManager
     public function getMeasuredCronInterval()
     {
         $lastRuns = Mage::app()->loadCache(self::CACHE_KEY_SCHEDULER_LASTRUNS);
-        $lastRuns = array_values(array_filter(explode(',',$lastRuns)));
+        $lastRuns = array_values(array_filter(explode(',', $lastRuns)));
         if (count($lastRuns) < 3) {
             // not enough data points
             return false;
@@ -150,7 +150,8 @@ class Aoe_Scheduler_Model_ScheduleManager
      * @param string $jobCode
      * @return $this
      */
-    public function flushSchedules($jobCode=NULL) {
+    public function flushSchedules($jobCode = null)
+    {
         /* @var $pendingSchedules Mage_Cron_Model_Resource_Schedule_Collection */
         $pendingSchedules = Mage::getModel('cron/schedule')->getCollection()
             ->addFieldToFilter('status', Mage_Cron_Model_Schedule::STATUS_PENDING)
@@ -159,7 +160,8 @@ class Aoe_Scheduler_Model_ScheduleManager
         if (!empty($jobCode)) {
             $pendingSchedules->addFieldToFilter('job_code', $jobCode);
         }
-        foreach($pendingSchedules as $key => $schedule) { /* @var Aoe_Scheduler_Model_Schedule $schedule */
+        foreach ($pendingSchedules as $key => $schedule) {
+            /* @var Aoe_Scheduler_Model_Schedule $schedule */
             $schedule->delete();
         }
         Mage::app()->saveCache(0, Mage_Cron_Model_Observer::CACHE_KEY_LAST_SCHEDULE_GENERATE_AT, array('crontab'), null);
@@ -207,7 +209,6 @@ class Aoe_Scheduler_Model_ScheduleManager
         $this->deleteDuplicates();
 
         if ($logFile = Mage::getStoreConfig('system/cron/logFile')) {
-
             $history = Mage::getModel('cron/schedule')->getCollection()
                 ->setPageSize(1)
                 ->setOrder('scheduled_at', 'desc')
@@ -316,7 +317,9 @@ class Aoe_Scheduler_Model_ScheduleManager
             $counter = array();
             foreach ($history->getIterator() as $record) { /* @var $record Aoe_Scheduler_Model_Schedule */
                 $jobCode = $record->getJobCode();
-                if (!isset($counter[$jobCode])) { $counter[$jobCode] = 0; }
+                if (!isset($counter[$jobCode])) {
+                    $counter[$jobCode] = 0;
+                }
                 $counter[$jobCode]++;
                 if ($counter[$jobCode] > $maxNo) {
                     $record->delete();
