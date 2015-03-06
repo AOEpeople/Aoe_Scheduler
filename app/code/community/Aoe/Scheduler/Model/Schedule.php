@@ -154,10 +154,10 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
             Mage::dispatchEvent('cron_' . $this->getJobCode() . '_before', array('schedule' => $this));
             Mage::dispatchEvent('cron_before', array('schedule' => $this));
 
-            $this->log('Start: ' . $this->getJobCode());
-
             Mage::unregister('current_cron_task');
             Mage::register('current_cron_task', $this);
+
+            $this->log('Start: ' . $this->getJobCode());
 
             /**
              * Save all cron output like echo, print_r, var_dump etc.
@@ -165,10 +165,13 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
              */
             $this->_startBufferToMessages();
 
-            // this is where the actual task will be executed ...
-            $messages = call_user_func_array($callback, array($this));
-
-            $this->_stopBufferToMessages();
+            try {
+                $messages = call_user_func_array($callback, array($this));
+                $this->_stopBufferToMessages();
+            } catch (Exception $e) {
+                $this->_stopBufferToMessages();
+                throw $e;
+            }
 
             $this->log('Stop: ' . $this->getJobCode());
 
