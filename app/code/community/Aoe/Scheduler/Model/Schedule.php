@@ -133,7 +133,6 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
         }
 
         try {
-
             $job = $this->getJob();
 
             if (!$job) {
@@ -159,12 +158,7 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
 
             $this->log('Start: ' . $this->getJobCode());
 
-            /**
-             * Save all cron output like echo, print_r, var_dump etc.
-             * directly into the schedule's messages field during the cron execution.
-             */
             $this->_startBufferToMessages();
-
             try {
                 $messages = call_user_func_array($callback, array($this));
                 $this->_stopBufferToMessages();
@@ -566,6 +560,10 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
      */
     protected function _startBufferToMessages()
     {
+        if (!Mage::getStoreConfigFlag('system/cron/enableJobOutputBuffer')) {
+            return $this;
+        }
+
         if ($this->_redirect) {
             return $this;
         }
@@ -587,6 +585,10 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
      */
     protected function _stopBufferToMessages()
     {
+        if (!Mage::getStoreConfigFlag('system/cron/enableJobOutputBuffer')) {
+            return $this;
+        }
+
         if (!$this->_redirect) {
             return $this;
         }
