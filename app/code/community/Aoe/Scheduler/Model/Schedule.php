@@ -198,9 +198,8 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
             }
 
         } catch (Exception $e) {
-            $this
-                ->setStatus(Mage_Cron_Model_Schedule::STATUS_ERROR)
-                ->setMessages($e->__toString());
+            $this->setStatus(Mage_Cron_Model_Schedule::STATUS_ERROR);
+            $this->addMessages(PHP_EOL . '---EXCEPTION---' . PHP_EOL . $e->__toString());
             Mage::dispatchEvent('cron_' . $this->getJobCode() . '_exception', array('schedule' => $this, 'exception' => $e));
             Mage::dispatchEvent('cron_exception', array('schedule' => $this, 'exception' => $e));
             Mage::helper('aoe_scheduler')->sendErrorMail($this, $e->__toString());
