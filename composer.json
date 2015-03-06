@@ -3,7 +3,7 @@
   "license": "GPL-3.0",
   "type": "magento-module",
   "description": "Magento Cron Scheduler",
-  "homepage": "http://www.fabrizio-branca.de/magento-cron-scheduler.html",
+  "homepage": "https://github.com/AOEpeople/Aoe_Scheduler",
   "require": {
     "php": ">=5.3",
     "magento-hackathon/magento-composer-installer": "*"
@@ -11,11 +11,13 @@
   "authors": [
     {
       "name": "Fabrizio Branca",
-      "email": "{firstname}.{lastname}@aoe.com"
+      "email": "{firstname}.{lastname}@aoe.com",
+      "role": "Author/Maintainer"
     },
     {
       "name": "Lee Saferite",
-      "email": "lee.saferite@aoe.com"
+      "email": "lee.saferite@aoe.com",
+      "role": "Contributor/Maintainer"
     }
   ],
   "replace": {
