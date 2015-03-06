@@ -1,6 +1,6 @@
 # AOE Scheduler for Magento
 
-![Logo](images/Aoe_Scheduler.jpg "AOE Scheduler")
+![Logo](doc/images/Aoe_Scheduler.jpg "AOE Scheduler")
 
 ## Documentation
 
