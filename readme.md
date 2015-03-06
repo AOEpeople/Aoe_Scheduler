@@ -42,4 +42,4 @@
     
 ## Changelog
 
-[Changelog](doc/changelog.md)
+[Changelog](changelog.md)
