@@ -9,7 +9,6 @@
 1. [Cron Configuration](doc/cron-configuration.md)
 1. [Some Basics (Job? Schedule? Task?)](doc/basics.md)
 1. [Faq](doc/faq.md)
-1. [Changelog](doc/changelog.md)
 1. Admin Interfaces
     1. [System Configuration](doc/system-configuration.md)
     1. [Job Configuration](doc/job-configuration.md)
@@ -40,3 +39,6 @@
     1. [Job workflows](doc/job-workflows.md)
     1. [Schedule a job programmatically](doc/programmatically.md)
     
+## Changelog
+
+[Changelog](doc/changelog.md)

@@ -1,2 +1,11 @@
-Walk through all the settings here.
-Advice on how to choose the cron frequency wisely
+
+## System Configuration
+
+Find the configuration in `System > Configuration > System > Cron (Scheduled Tasks)
+
+![Logo](images/system_configuration.png "System Configuration")
+
+### Configuration Options
+
+TODO: Walk through all configuration parameters here and advice what settings to use
+
