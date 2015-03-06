@@ -2,6 +2,21 @@
 
 ![Logo](doc/images/Aoe_Scheduler.jpg "AOE Scheduler")
 
+## Authors, contributors and maintainers
+
+Author:
+
+- [Fabrizio Branca](https://twitter.com/fbrnc)
+
+Major Contributions:
+
+- [Lee Saferite](https://twitter.com/leesaferite)
+- For a full list of contributors visit [AOE Scheduler on GitHub](https://github.com/AOEpeople/Aoe_Scheduler/graphs/contributors)
+
+## Ideas, bugs, contributions, comments, feature suggestions?
+
+Please get in touch with us via the [issue tracker on GitHub](https://github.com/AOEpeople/Aoe_Scheduler/issues)
+
 ## Documentation
 
 1. [What is AOE Scheduler?](doc/what-is-aoe-scheduler.md)
@@ -43,3 +58,13 @@
 ## Changelog
 
 [Changelog](changelog.md)
+
+## License
+
+[GPL v3](LICENSE.txt)
+
+## Links
+
+- Aoe Scheduler on Magento Connect
+- Aoe Scheduler on Travis CI
+- Aoe Scheduler on Packagist
