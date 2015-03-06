@@ -56,5 +56,4 @@ class Aoe_Scheduler_Model_Api extends Mage_Api_Model_Resource_Abstract
         $schedule = Mage::getModel('cron/schedule')->load($id); /* @var $schedule Aoe_Scheduler_Model_Schedule */
         return $schedule->getData();
     }
-
 }

@@ -40,5 +40,4 @@ class Aoe_Scheduler_Model_Task_Test
         }
         */
     }
-
 }

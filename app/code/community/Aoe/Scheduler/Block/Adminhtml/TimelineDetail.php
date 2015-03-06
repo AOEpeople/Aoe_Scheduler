@@ -41,5 +41,4 @@ class Aoe_Scheduler_Block_Adminhtml_TimelineDetail extends Mage_Adminhtml_Block_
     {
         return $this->schedule;
     }
-
 }

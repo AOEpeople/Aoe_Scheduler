@@ -332,7 +332,7 @@ class Aoe_Scheduler_Model_Resource_Job extends Mage_Core_Model_Resource_Db_Abstr
         );
 
         // Strip out the auto-generated name
-        if($values['name'] === $job->getJobCode()) {
+        if ($values['name'] === $job->getJobCode()) {
             $values['name'] = '';
         }
 

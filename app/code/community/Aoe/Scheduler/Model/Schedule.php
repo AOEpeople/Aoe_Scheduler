@@ -38,20 +38,20 @@
 class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
 {
 
-    CONST STATUS_KILLED = 'killed';
-    CONST STATUS_DISAPPEARED = 'gone'; // the status field is limited to 7 characters
-    CONST STATUS_DIDNTDOANYTHING = 'nothing';
+    const STATUS_KILLED = 'killed';
+    const STATUS_DISAPPEARED = 'gone'; // the status field is limited to 7 characters
+    const STATUS_DIDNTDOANYTHING = 'nothing';
 
-    CONST REASON_RUNNOW_WEB = 'run_now_web';
-    CONST REASON_SCHEDULENOW_WEB = 'schedule_now_web';
-    CONST REASON_RUNNOW_CLI = 'run_now_cli';
-    CONST REASON_SCHEDULENOW_CLI = 'schedule_now_cli';
-    CONST REASON_RUNNOW_API = 'run_now_api';
-    CONST REASON_SCHEDULENOW_API = 'schedule_now_api';
-    CONST REASON_GENERATESCHEDULES = 'generate_schedules';
-    CONST REASON_DEPENDENCY_ALL = 'dependency_all';
-    CONST REASON_DEPENDENCY_SUCCESS = 'dependency_success';
-    CONST REASON_DEPENDENCY_FAILURE = 'dependency_failure';
+    const REASON_RUNNOW_WEB = 'run_now_web';
+    const REASON_SCHEDULENOW_WEB = 'schedule_now_web';
+    const REASON_RUNNOW_CLI = 'run_now_cli';
+    const REASON_SCHEDULENOW_CLI = 'schedule_now_cli';
+    const REASON_RUNNOW_API = 'run_now_api';
+    const REASON_SCHEDULENOW_API = 'schedule_now_api';
+    const REASON_GENERATESCHEDULES = 'generate_schedules';
+    const REASON_DEPENDENCY_ALL = 'dependency_all';
+    const REASON_DEPENDENCY_SUCCESS = 'dependency_success';
+    const REASON_DEPENDENCY_FAILURE = 'dependency_failure';
 
     /**
      * Prefix of model events names
@@ -241,7 +241,7 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
      * @param int $time
      * @return Aoe_Scheduler_Model_Schedule
      */
-    public function schedule($time = NULL)
+    public function schedule($time = null)
     {
         if (is_null($time)) {
             $time = time();
@@ -344,7 +344,7 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
      * @param string $message
      * @return void
      */
-    public function markAsDisappeared($message = NULL)
+    public function markAsDisappeared($message = null)
     {
         if (!is_null($message)) {
             $this->setMessages($message);
@@ -374,7 +374,8 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
      * @param int $time
      * @return $this
      */
-    public function requestKill($time=NULL) {
+    public function requestKill($time = null)
+    {
         if (is_null($time)) {
             $time = time();
         }
@@ -441,7 +442,7 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
      * @param $message
      * @param null $level
      */
-    protected function log($message, $level = NULL)
+    protected function log($message, $level = null)
     {
         if ($logFile = Mage::getStoreConfig('system/cron/logFile')) {
             Mage::log($message, $level, $logFile);
@@ -496,7 +497,7 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
         return parent::_beforeSave();
     }
 
-    public function canRun($throwException=false)
+    public function canRun($throwException = false)
     {
         if ($this->isAlwaysTask()) {
             return true;
@@ -524,7 +525,8 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
      *
      * @return $this
      */
-    public function process() {
+    public function process()
+    {
         if (!$this->canRun(true)) {
             return $this;
         }
@@ -570,8 +572,10 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
 
         $this->addMessages('---START---' . PHP_EOL);
 
-        ob_start(array($this, '_addBufferToMessages'),
-            $this->_redirectOutputHandlerChunkSize);
+        ob_start(
+            array($this, '_addBufferToMessages'),
+            $this->_redirectOutputHandlerChunkSize
+        );
 
         $this->_redirect = true;
     }
@@ -647,7 +651,8 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
             ->getConnection('core_write');
 
         $count = $connection
-            ->update($this->getResource()->getMainTable(),
+            ->update(
+                $this->getResource()->getMainTable(),
                 array('messages' => $this->getMessages()),
                 array('schedule_id = ?' => $this->getId())
             );

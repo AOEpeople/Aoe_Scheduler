@@ -86,7 +86,7 @@ class Aoe_Scheduler_Helper_Data extends Mage_Core_Helper_Abstract
      */
     public function decorateTimeFrameCallBack($value)
     {
-        return $this->decorateTime($value, false, NULL);
+        return $this->decorateTime($value, false, null);
     }
 
     /**
@@ -97,7 +97,7 @@ class Aoe_Scheduler_Helper_Data extends Mage_Core_Helper_Abstract
      * @param string $dateFormat make sure Y-m-d is in it, if you want to have it replaced
      * @return string
      */
-    public function decorateTime($value, $echoToday = false, $dateFormat = NULL)
+    public function decorateTime($value, $echoToday = false, $dateFormat = null)
     {
         if (empty($value) || $value == '0000-00-00 00:00:00') {
             $value = '';
@@ -141,7 +141,7 @@ class Aoe_Scheduler_Helper_Data extends Mage_Core_Helper_Abstract
             return false;
         }
         $executedAt = $schedules->getFirstItem()->getExecutedAt();
-        $value = Mage::getModel('core/date')->date(NULL, $executedAt);
+        $value = Mage::getModel('core/date')->date(null, $executedAt);
         return $value;
     }
 
@@ -152,7 +152,7 @@ class Aoe_Scheduler_Helper_Data extends Mage_Core_Helper_Abstract
      * @param $time2
      * @return int
      */
-    public function dateDiff($time1, $time2 = NULL)
+    public function dateDiff($time1, $time2 = null)
     {
         if (is_null($time2)) {
             $time2 = Mage::getModel('core/date')->date();
@@ -217,15 +217,15 @@ class Aoe_Scheduler_Helper_Data extends Mage_Core_Helper_Abstract
 
     public function getGroupsToJobsMap($forceRebuild = false)
     {
-        if($this->groupsToJobsMap === null || $forceRebuild) {
+        if ($this->groupsToJobsMap === null || $forceRebuild) {
             $map = array();
 
             /* @var $jobs Aoe_Scheduler_Model_Resource_Job_Collection */
             $jobs = Mage::getSingleton('aoe_scheduler/job')->getCollection();
-            foreach($jobs as $job) {
+            foreach ($jobs as $job) {
                 /* @var Aoe_Scheduler_Model_Job $job */
                 $groups = $this->trimExplode(',', $job->getGroups(), true);
-                foreach($groups as $group) {
+                foreach ($groups as $group) {
                     $map[$group][] = $job->getJobCode();
                 }
             }
@@ -240,9 +240,9 @@ class Aoe_Scheduler_Helper_Data extends Mage_Core_Helper_Abstract
     {
         $map = $this->getGroupsToJobsMap();
 
-        foreach($groups as $group) {
-            if(isset($map[$group])) {
-                foreach($map[$group] as $jobCode) {
+        foreach ($groups as $group) {
+            if (isset($map[$group])) {
+                foreach ($map[$group] as $jobCode) {
                     $jobs[] = $jobCode;
                 }
             }
@@ -304,7 +304,8 @@ class Aoe_Scheduler_Helper_Data extends Mage_Core_Helper_Abstract
      * @param $cronExpression
      * @return bool
      */
-    public function validateCronExpression($cronExpression) {
+    public function validateCronExpression($cronExpression)
+    {
         try {
             $schedule = Mage::getModel('cron/schedule');
             /* @var $schedule Mage_Cron_Model_Schedule */
@@ -314,5 +315,4 @@ class Aoe_Scheduler_Helper_Data extends Mage_Core_Helper_Abstract
         }
         return true;
     }
-
 }

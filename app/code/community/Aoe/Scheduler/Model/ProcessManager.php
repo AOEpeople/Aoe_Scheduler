@@ -9,8 +9,8 @@
 class Aoe_Scheduler_Model_ProcessManager
 {
 
-    CONST XML_PATH_MARK_AS_ERROR = 'system/cron/mark_as_error_after';
-    CONST XML_PATH_MAX_JOB_RUNTIME = 'system/cron/max_job_runtime';
+    const XML_PATH_MARK_AS_ERROR = 'system/cron/mark_as_error_after';
+    const XML_PATH_MAX_JOB_RUNTIME = 'system/cron/max_job_runtime';
 
     /**
      * Get all schedules running on this server
@@ -48,7 +48,7 @@ class Aoe_Scheduler_Model_ProcessManager
      * @param int $ignoreId
      * @return bool
      */
-    public function isJobCodeRunning($jobCode, $ignoreId = NULL)
+    public function isJobCodeRunning($jobCode, $ignoreId = null)
     {
         $collection = Mage::getModel('cron/schedule')
             ->getCollection()
@@ -74,11 +74,10 @@ class Aoe_Scheduler_Model_ProcessManager
      */
     public function checkRunningJobs()
     {
-
         $maxJobRuntime = Mage::getStoreConfig(self::XML_PATH_MAX_JOB_RUNTIME);
 
-        foreach ($this->getAllRunningSchedules(gethostname()) as $schedule) { /* @var $schedule Aoe_Scheduler_Model_Schedule */
-
+        foreach ($this->getAllRunningSchedules(gethostname()) as $schedule) {
+            /* @var $schedule Aoe_Scheduler_Model_Schedule */
             // checks if process is still running and updates record
             $isAlive = $schedule->isAlive();
 
@@ -139,9 +138,9 @@ class Aoe_Scheduler_Model_ProcessManager
     /**
      * Run maintenance
      */
-    public function watchdog() {
+    public function watchdog()
+    {
         $this->checkRunningJobs();
         $this->processKillRequests();
     }
-
 }

@@ -240,12 +240,12 @@ class Aoe_Scheduler_Block_Adminhtml_Job_Edit_Tab_Form extends Mage_Adminhtml_Blo
 
     protected function getOriginalValueSnippet(Aoe_Scheduler_Model_Job $job, $key)
     {
-        if($job->isDbOnly()) {
+        if ($job->isDbOnly()) {
             return '';
         }
 
         $xmlJobData = $job->getXmlJobData();
-        if(!array_key_exists($key, $xmlJobData)) {
+        if (!array_key_exists($key, $xmlJobData)) {
             return '';
         }
 
@@ -259,12 +259,12 @@ class Aoe_Scheduler_Block_Adminhtml_Job_Edit_Tab_Form extends Mage_Adminhtml_Blo
 
     protected function getOriginalValueSnippetFlag(Aoe_Scheduler_Model_Job $job, $key, $trueLabel, $falseLabel)
     {
-        if($job->isDbOnly()) {
+        if ($job->isDbOnly()) {
             return '';
         }
 
         $xmlJobData = $job->getXmlJobData();
-        if(!array_key_exists($key, $xmlJobData)) {
+        if (!array_key_exists($key, $xmlJobData)) {
             return '';
         }
 
