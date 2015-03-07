@@ -42,7 +42,7 @@ Events dispatched after an error has happened
 
 ### On Excpetions
 
-* cron_<job_code>_exception
+* cron_[job_code]_exception
 	* array('schedule' => $schedule, 'exception' => $e)
 * cron_exception
 	* array('schedule' => $schedule, 'exception' => $e)

@@ -6,14 +6,29 @@
 
 AOE Scheduler sits on top of Magento's default cron functionality allowing you to manage the jobs, to visualize the timeline and to get some deeper insight on what's going on behind the scenes and to shed some light on what might be going wrong. On top of that AOE Scheduler provides some more functionality like a cli and a web service interface, optimizing cron execution on your server and giving you everything you need to implement complex background tasks including for your Magento store.
 
+## Features
+
+- **Timeline visualization**: 
+- **Cron Management**: Find a list of all jobs defined in the Magento core or in any module installed. You can enable or disable individual jobs, modify them (e.g. edit their schedule) or even create new crons from scratch
+- **Parameterized Crons**: Sometimes a simple cron run isn't enough. You might want to use the same cron but with different parameters. Example: Use this to create daily reports and weekly reports with the same job, but different input parameters.
+- **Process Management**
+- **Cron groups**
+- **Clean API**
+	- **Cli**
+	- **Web Service API**
+	- **Developer API**: Create/run jobs programmatically, events
+- **Instructions**
+- **Monitoring**: Heartbeat, Watchdog, last-seen, verification
+- **Compatible with Magento's native cron scheduler**
+- Manuel scheduling / run of jobs (e.g. while development or for individual actions)
+
+
 ## Authors, contributors and maintainers
 
 Author:
-
 - [Fabrizio Branca](https://twitter.com/fbrnc)
 
 Major Contributions:
-
 - [Lee Saferite](https://twitter.com/leesaferite)
 - For a full list of contributors visit [AOE Scheduler on GitHub](https://github.com/AOEpeople/Aoe_Scheduler/graphs/contributors)
 
@@ -76,6 +91,6 @@ Please get in touch with us via the [issue tracker on GitHub](https://github.com
 
 ## Links
 
-- Aoe Scheduler on Magento Connect
+- [Aoe Scheduler on Magento Connect](http://www.magentocommerce.com/magento-connect/aoe-scheduler.html)
 - [Aoe Scheduler on Travis CI](https://travis-ci.org/AOEpeople/Aoe_Scheduler)
-- Aoe Scheduler on Packagist
+- [Aoe Scheduler on Packagist](https://packagist.org/packages/aoepeople/aoe_scheduler)
