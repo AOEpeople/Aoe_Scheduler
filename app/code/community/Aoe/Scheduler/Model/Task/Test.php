@@ -16,6 +16,24 @@ class Aoe_Scheduler_Model_Task_Test
      */
     public function run(Aoe_Scheduler_Model_Schedule $schedule)
     {
+
+        $parameters = $schedule->getParameters();
+        if ($parameters) {
+            $parameters = unserialize($parameters);
+        }
+
+        if ($parameters && $parameters['outcome'] == 'error') {
+            return 'ERROR: This schedule has failed.';
+        }
+
+        if ($parameters && $parameters['outcome'] == 'nothing') {
+            return 'NOTHING: Did not do anything';
+        }
+
+        if ($parameters && $parameters['outcome'] == 'exception') {
+            throw new Exception('This is a dummy exception');
+        }
+
         $starttime = time();
         // $endtime = $starttime + rand(180, 360);
         $endtime = $starttime + 5;
