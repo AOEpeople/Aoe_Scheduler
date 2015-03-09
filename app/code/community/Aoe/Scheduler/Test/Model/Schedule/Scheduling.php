@@ -99,5 +99,4 @@ class Aoe_Scheduler_Test_Model_Schedule_Scheduling extends EcomDev_PHPUnit_Test_
             })
         );
     }
-
 }
