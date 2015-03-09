@@ -16,7 +16,7 @@ class Aoe_Scheduler_Adminhtml_JobController extends Aoe_Scheduler_Controller_Abs
         $codes = $this->getMassActionCodes();
         foreach ($codes as $code) {
             /** @var Aoe_Scheduler_Model_Job $job */
-            $job = Mage::getModel('aoe_schedule/job')->load($code);
+            $job = Mage::getModel('aoe_scheduler/job')->load($code);
             if ($job->getJobCode() && $job->getIsActive()) {
                 $job->setIsActive(false)->save();
                 Mage::getSingleton('adminhtml/session')->addSuccess($this->__('Disabled "%s"', $code));
@@ -35,7 +35,7 @@ class Aoe_Scheduler_Adminhtml_JobController extends Aoe_Scheduler_Controller_Abs
         $codes = $this->getMassActionCodes();
         foreach ($codes as $code) {
             /** @var Aoe_Scheduler_Model_Job $job */
-            $job = Mage::getModel('aoe_schedule/job')->load($code);
+            $job = Mage::getModel('aoe_scheduler/job')->load($code);
             if ($job->getJobCode() && !$job->getIsActive()) {
                 $job->setIsActive(true)->save();
                 Mage::getSingleton('adminhtml/session')->addSuccess($this->__('Disabled "%s"', $code));
