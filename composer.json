@@ -10,7 +10,7 @@
     "authors":[
         {
             "name":"Fabrizio Branca",
-            "email":"mail@{firstname}-{lastname}.de"
+            "email":"firstname.lastname@aoe.com"
         }
     ],
     "replace": {
