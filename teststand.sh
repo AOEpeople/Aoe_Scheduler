@@ -23,6 +23,8 @@ BUILDENV=`mktemp -d /tmp/mageteststand.XXXXXXXX`
 
 echo "Using build directory ${BUILDENV}"
 
+MAGENTO_DB_ALLOWSAME="1"
+
 git clone -b master https://github.com/AOEpeople/MageTestStand.git ${BUILDENV}
 cp -rf ${WORKSPACE} ${BUILDENV}/.modman/
 ${BUILDENV}/install.sh
