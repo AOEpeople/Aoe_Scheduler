@@ -110,30 +110,6 @@ class Aoe_Scheduler_Model_ScheduleManager
     }
 
     /**
-     * Flushed all future pending schedules.
-     *
-     * @param string $jobCode
-     * @return $this
-     */
-    public function flushSchedules($jobCode = null)
-    {
-        /* @var $pendingSchedules Mage_Cron_Model_Resource_Schedule_Collection */
-        $pendingSchedules = Mage::getModel('cron/schedule')->getCollection()
-            ->addFieldToFilter('status', Mage_Cron_Model_Schedule::STATUS_PENDING)
-            ->addFieldToFilter('scheduled_at', array('gt' => strftime('%Y-%m-%d %H:%M:%S', time())))
-            ->addOrder('scheduled_at', 'ASC');
-        if (!empty($jobCode)) {
-            $pendingSchedules->addFieldToFilter('job_code', $jobCode);
-        }
-        foreach ($pendingSchedules as $key => $schedule) {
-            /* @var Aoe_Scheduler_Model_Schedule $schedule */
-            $schedule->delete();
-        }
-        Mage::app()->saveCache(0, Mage_Cron_Model_Observer::CACHE_KEY_LAST_SCHEDULE_GENERATE_AT, array('crontab'), null);
-        return $this;
-    }
-
-    /**
      * Generate cron schedule.
      * Rewrites the original method to remove duplicates afterwards (that exists because of a bug)
      *
@@ -188,6 +164,45 @@ class Aoe_Scheduler_Model_ScheduleManager
         return $this;
     }
 
+    /**
+     * Flushed all future pending schedules.
+     *
+     * @param string $jobCode
+     * @return $this
+     */
+    public function flushSchedules($jobCode = null)
+    {
+        /* @var $pendingSchedules Mage_Cron_Model_Resource_Schedule_Collection */
+        $pendingSchedules = Mage::getModel('cron/schedule')->getCollection()
+            ->addFieldToFilter('status', Mage_Cron_Model_Schedule::STATUS_PENDING)
+            ->addFieldToFilter('scheduled_at', array('gt' => strftime('%Y-%m-%d %H:%M:%S', time())))
+            ->addOrder('scheduled_at', 'ASC');
+        if (!empty($jobCode)) {
+            $pendingSchedules->addFieldToFilter('job_code', $jobCode);
+        }
+        foreach ($pendingSchedules as $key => $schedule) {
+            /* @var Aoe_Scheduler_Model_Schedule $schedule */
+            $schedule->delete();
+        }
+        Mage::app()->saveCache(0, Mage_Cron_Model_Observer::CACHE_KEY_LAST_SCHEDULE_GENERATE_AT, array('crontab'), null);
+        return $this;
+    }
+
+    /**
+     * Delete all schedules
+     *
+     * @return $this
+     */
+    public function deleteAll()
+    {
+        /* @var $schedules Mage_Cron_Model_Resource_Schedule_Collection */
+        $schedules = Mage::getModel('cron/schedule')->getCollection();
+        foreach ($schedules as $key => $schedule) { /* @var Aoe_Scheduler_Model_Schedule $schedule */
+            $schedule->delete();
+        }
+        Mage::app()->saveCache(0, Mage_Cron_Model_Observer::CACHE_KEY_LAST_SCHEDULE_GENERATE_AT, array('crontab'), null);
+        return $this;
+    }
 
     /**
      * Generate jobs for config information

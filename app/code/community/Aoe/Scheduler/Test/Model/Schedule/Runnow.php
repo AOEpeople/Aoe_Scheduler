@@ -1,6 +1,6 @@
 <?php
 
-class Aoe_Scheduler_Test_Model_Schedule extends EcomDev_PHPUnit_Test_Case
+class Aoe_Scheduler_Test_Model_Schedule_Runnow extends EcomDev_PHPUnit_Test_Case
 {
     /**
      * @test
