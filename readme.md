@@ -2,7 +2,7 @@
 
 # AOE Scheduler for Magento
 
-[![Build Status](https://travis-ci.org/AOEpeople/Aoe_Scheduler.svg?branch=task_records)](https://travis-ci.org/AOEpeople/Aoe_Scheduler)
+[![Build Status](https://travis-ci.org/AOEpeople/Aoe_Scheduler.svg?branch=version1)](https://travis-ci.org/AOEpeople/Aoe_Scheduler)
 
 **Note: This is a release candidate of version 1.0.0! Please read the [changelog](changelog.md) and carefully test everything on a non-production environment before rolling this out to production. The final stable version will be released March 15th, 2015.** 
 
