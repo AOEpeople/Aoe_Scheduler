@@ -20,7 +20,8 @@ This is a major release or Aoe_Scheduler. Many things have been added and improv
 - **Database overlays**: This is probably the biggest addition to the new Aoe_Scheduler. Behind the scenes Magento was already doing this to some degree, but - as so often - this was not clearly documented and exposed to the developers. Job definitions now can not only live in XML but also be definied in the database. You can **edit existing jobs** (the database records can override XML jobs) e.g. disabled them, add some parameters or change settings like the schedule or you can **create new jobs from scratch via the Magento admin** without writing a single line of XML.  
 - **Process management**: Aoe_Scheduler is now keeping track of pids and hostnames of schedules allowing you to actually **check if a schedule is still running** and to **actively kill it** in case you need this job to stop (e.g. before deploying a new build,...)  
 - **Documentation**: Still work in progress, but we're getting there... :)
-- **Tests**: Some integration [tests](doc/tests.md) are added. 
+- **Tests**: Some integration [tests](doc/tests.md) are added.
+- **Schedule meta-data**: Aoe_Scheduler now records who triggered a schedule and why (Aoe_Scheduler_Model_Schedule::REASON_*) 
 - **Travis CI**: Some basic build and CS checks: https://travis-ci.org/AOEpeople/Aoe_Scheduler
 - **Message buffer**: Contribution from [Mike Weerdenburg](https://github.com/weerdenburg). Thank you!
 - **Job descriptions and titles**: Contribution from [Matthias Zeis](https://github.com/mzeis), Thank you!
