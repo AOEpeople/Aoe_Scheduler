@@ -82,10 +82,10 @@
                         </logFile>
 
                         <maxNoOfSuccessfulTasks translate="label">
-                            <label>Maximum number of successful tasks to keep</label>
+                            <label>Maximum number of successful schedules to keep</label>
                             <frontend_type>text</frontend_type>
                             <sort_order>170</sort_order>
-                            <comment><![CDATA[Only keeps this number of entries for every tasks even if it is shorter than the configured success lifetime. Set to 0 to keep them all until they hit the lifetime.]]></comment>
+                            <comment><![CDATA[Only keeps this number of entries for every schedule even if it is shorter than the configured success lifetime. Set to 0 to keep them all until they hit the lifetime.]]></comment>
                             <show_in_default>1</show_in_default>
                         </maxNoOfSuccessfulTasks>
 
