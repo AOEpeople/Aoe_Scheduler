@@ -691,4 +691,22 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
 
         return $stm->fetchObject();
     }
+
+    /**
+     * Bypass parent's setCronExpr is the expression is "always"
+     * This will break trySchedule, but always tasks will never be tried to scheduled anyway
+     *
+     * @param $expr
+     * @return $this
+     * @throws Mage_Core_Exception
+     */
+    public function setCronExpr($expr)
+    {
+        if ($expr == 'always') {
+            $this->setData('cron_expr', $expr);
+        } else {
+            parent::setCronExpr($expr);
+        }
+        return $this;
+    }
 }
