@@ -24,7 +24,7 @@ script:
   # Code Style
   - php phpcs.phar --standard=./phpcs.xml --encoding=utf-8 --report-width=180 ./app ./shell
   # Unit Tests
-  - curl -sSL https://raw.githubusercontent.com/AOEpeople/MageTestStand/master/setup.sh | bashbash ./teststand.sh
+  - curl -sSL https://raw.githubusercontent.com/AOEpeople/MageTestStand/master/setup.sh | bash
 notifications:
   email:
     recipients:
