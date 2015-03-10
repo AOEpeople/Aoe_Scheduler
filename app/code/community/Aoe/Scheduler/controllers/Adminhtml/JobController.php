@@ -69,7 +69,7 @@ class Aoe_Scheduler_Adminhtml_JobController extends Aoe_Scheduler_Controller_Abs
                 ->schedule()
                 ->save();
 
-            Mage::getSingleton('adminhtml/session')->addSuccess($this->__('Job "%s" has been scheduled.', $key));
+            $this->_getSession()->addSuccess($this->__('Job "%s" has been scheduled.', $key));
         }
         $this->_redirect('*/*/index');
     }
@@ -95,14 +95,14 @@ class Aoe_Scheduler_Adminhtml_JobController extends Aoe_Scheduler_Controller_Abs
             $messages = $schedule->getMessages();
 
             if ($schedule->getStatus() == Mage_Cron_Model_Schedule::STATUS_SUCCESS) {
-                Mage::getSingleton('adminhtml/session')->addSuccess($this->__('Ran "%s" (Duration: %s sec)', $key, intval($schedule->getDuration())));
+                $this->_getSession()->addSuccess($this->__('Ran "%s" (Duration: %s sec)', $key, intval($schedule->getDuration())));
                 if ($messages) {
-                    Mage::getSingleton('adminhtml/session')->addSuccess($this->__('"%s" messages:<pre>%s</pre>', $key, $messages));
+                    $this->_getSession()->addSuccess($this->__('"%s" messages:<pre>%s</pre>', $key, $messages));
                 }
             } else {
-                Mage::getSingleton('adminhtml/session')->addError($this->__('Error while running "%s"', $key));
+                $this->_getSession()->addError($this->__('Error while running "%s"', $key));
                 if ($messages) {
-                    Mage::getSingleton('adminhtml/session')->addError($this->__('"%s" messages:<pre>%s</pre>', $key, $messages));
+                    $this->_getSession()->addError($this->__('"%s" messages:<pre>%s</pre>', $key, $messages));
                 }
             }
         }
