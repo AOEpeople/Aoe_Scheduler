@@ -77,7 +77,6 @@ Please get in touch with us via the [issue tracker on GitHub](https://github.com
 1. [Domain Model](doc/domain-model.md)
 1. [Cron Processing](doc/processing.md)
 1. [Unit Tests](doc/tests.md) 
-1. [Tips and Tricks](doc/tips-tricks.md)
 1. Features
     1. [Heartbeat and Monitoring](doc/heartbeat.md)
     1. [Notifications](doc/notifications.md)
@@ -93,6 +92,8 @@ Please get in touch with us via the [issue tracker on GitHub](https://github.com
     1. [Process Management](doc/process-management.md)
     1. [Output buffering](doc/output-buffering.md) 
 1. Cookbook
+	1. [How to declutter your timeline](doc/declutter-timeline.md)
+	1. [How to integrate into deployments](doc/deployment-integration.md) 
 	1. [Distributed cron](doc/distributed.md)
     1. [Job workflows](doc/job-workflows.md)
     1. [Schedule a job programmatically](doc/programmatically.md)

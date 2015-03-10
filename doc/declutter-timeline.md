@@ -1,8 +1,6 @@
-## Tips and Tricks
+## Declutter your timeline view and optimize cron processing
 
-### Declutter your timeline view and optimize cron processing
-
-#### Replace high frequency schedules with 'always'
+### Replace high frequency schedules with 'always'
 
 Some jobs come with a high frequency schedule like `* * * * *` (or strange enough some write it as `*/1 * * * *`). Even running a job every 5 minutes (`*/5 * * * *`) can be considered a  high frequency.
 
@@ -14,13 +12,13 @@ A good candidate for this change is **core_email_queue_send_all**. Go to 'System
 
 ![](images/always.png)
 
-#### Disable unused jobs
+### Disable unused jobs
 
 Another candidate for this would be **newsletter_send_all**, but since you might not be sending newsletters from within Magento anyways you might want to disable this job completely:
 
 ![](images/disabled.png)
 
-#### Only keep 20 schedules
+### Only keep 20 schedules
 
 Ideally everything works fine and you'll see only green bars in the timeline view. If you have too many jobs and decided to keep every schedule for a day or longer ("Success History Lifetime") your timeline view might take a while to load.
 
