@@ -19,7 +19,12 @@ class Aoe_Scheduler_Adminhtml_JobController extends Aoe_Scheduler_Controller_Abs
             $job = Mage::getModel('aoe_scheduler/job')->load($code);
             if ($job->getJobCode() && $job->getIsActive()) {
                 $job->setIsActive(false)->save();
-                Mage::getSingleton('adminhtml/session')->addSuccess($this->__('Disabled "%s"', $code));
+                $this->_getSession()->addSuccess($this->__('Disabled "%s"', $code));
+
+                /* @var Aoe_Scheduler_Model_ScheduleManager $scheduleManager */
+                $scheduleManager = Mage::getModel('aoe_scheduler/scheduleManager');
+                $scheduleManager->flushSchedules($job->getJobCode());
+                $this->_getSession()->addNotice($this->__('Pending schedules have been flushed.'));
             }
         }
         $this->_redirect('*/*/index');
@@ -38,7 +43,12 @@ class Aoe_Scheduler_Adminhtml_JobController extends Aoe_Scheduler_Controller_Abs
             $job = Mage::getModel('aoe_scheduler/job')->load($code);
             if ($job->getJobCode() && !$job->getIsActive()) {
                 $job->setIsActive(true)->save();
-                Mage::getSingleton('adminhtml/session')->addSuccess($this->__('Disabled "%s"', $code));
+                $this->_getSession()->addSuccess($this->__('Disabled "%s"', $code));
+
+                /* @var Aoe_Scheduler_Model_ScheduleManager $scheduleManager */
+                $scheduleManager = Mage::getModel('aoe_scheduler/scheduleManager');
+                $scheduleManager->generateSchedules();
+                $this->_getSession()->addNotice($this->__('Jobs have been scheduled.'));
             }
         }
         $this->_redirect('*/*/index');
