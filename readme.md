@@ -52,9 +52,29 @@ Please get in touch with us via the [issue tracker on GitHub](https://github.com
 
 ## Compability
 
-- PHP: 5.3, 5.4, 5.5
-- Magento CE: 1.7.0.2 - 1.9.1.0
+- PHP: 
+  - 5.3
+  - 5.4
+  - 5.5
+- Magento CE: 
+  - 1.6.2.0
+  - 1.7.0.2
+  - 1.8.0.0
+  - 1.8.1.0
+  - 1.9.0.1
+  - 1.9.1.0
 - Magento EE: 
+  - 1.11.0.0
+  - 1.11.0.2
+  - 1.11.1.0
+  - 1.11.2.0
+  - 1.12.0.0
+  - 1.12.0.1
+  - 1.12.0.2
+  - 1.13.0.2
+  - 1.13.1.0
+  - 1.14.0.1
+  - 1.14.1.0
 - Operating System: Linux
 
 ## Documentation
