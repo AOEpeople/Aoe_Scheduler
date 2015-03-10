@@ -127,19 +127,12 @@ class Aoe_Scheduler_Model_ScheduleManager
 
         $startTime = microtime(true);
 
-        // create an index of schedules that already exists (in order to avoid duplicates)
-        $schedules = $this->getPendingSchedules();
-        $exists = array();
-        foreach ($schedules as $schedule) { /* @var $schedule Aoe_Scheduler_Model_Schedule */
-            $exists[$schedule->getJobCode().'/'.$schedule->getScheduledAt()] = 1;
-        }
-
         /* @var $jobs Aoe_Scheduler_Model_Resource_Job_Collection */
         $jobs = Mage::getSingleton('aoe_scheduler/job')->getCollection();
         $jobs->setActiveOnly(true);
         foreach ($jobs as $job) {
             /* @var Aoe_Scheduler_Model_Job $job */
-            $this->generateSchedulesForJob($job, $exists);
+            $this->generateSchedulesForJob($job);
         }
 
         /**
@@ -208,14 +201,19 @@ class Aoe_Scheduler_Model_ScheduleManager
      * Generate jobs for config information
      *
      * @param Aoe_Scheduler_Model_Job $job
-     * @param   array $exists
-     * @internal param $jobs
-     * @return  Mage_Cron_Model_Observer
+     *
+     * @return $this
      */
-    protected function generateSchedulesForJob(Aoe_Scheduler_Model_Job $job, array $exists)
+    public function generateSchedulesForJob(Aoe_Scheduler_Model_Job $job)
     {
         if (!$job->canBeScheduled()) {
             return $this;
+        }
+
+        $exists = array();
+        foreach ($this->getPendingSchedules(array($job->getJobCode()), array()) as $schedule) {
+            /* @var Aoe_Scheduler_Model_Schedule $schedule */
+            $exists[$schedule->getJobCode() . '/' . $schedule->getScheduledAt()] = 1;
         }
 
         $now = time();
