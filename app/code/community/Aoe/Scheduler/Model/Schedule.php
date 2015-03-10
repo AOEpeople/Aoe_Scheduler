@@ -497,6 +497,14 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
         return parent::_beforeSave();
     }
 
+    /**
+     * Check if this schedule can be run
+     *
+     * @param bool $throwException
+     * @return bool
+     * @throws Exception
+     * @throws Mage_Core_Exception
+     */
     public function canRun($throwException = false)
     {
         if ($this->isAlwaysTask()) {
@@ -527,7 +535,7 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
      */
     public function process()
     {
-        if (!$this->canRun(true)) {
+        if (!$this->canRun(false)) {
             return $this;
         }
         $this->runNow(!$this->isAlwaysTask());
