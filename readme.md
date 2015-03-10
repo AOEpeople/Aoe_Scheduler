@@ -16,13 +16,13 @@ This documentation is currently being written. Sadly, at this point it's still m
 
 ## Changelog
 
-Version 1.0.0 is a major release. If your updating from version 0.X please check out the change log and verify everything is still working as expected after updating. 
+Version 1.0.0 is a major release. If you're updating from version 0.X please check out the changelog and verify everything is still working as expected after updating. 
 
 [Changelog](changelog.md)
 
 ## Features
 
-- **Timeline visualization**: A admin interface visualizes all past, current and future jobs showing their status, results, the runtime and some more details. 
+- **Timeline visualization**: The timeline view visualizes all past, current and future jobs showing their status, results, the runtime and some more details. 
 - **Cron Management**: Find a list of all jobs defined in the Magento core or in any module installed. You can enable or disable individual jobs, modify them (e.g. edit their schedule) or even create new crons from scratch
 - **Parameterized Crons**: Sometimes a simple cron run isn't enough. You might want to use the same cron but with different parameters. Example: Use this to create daily reports and weekly reports with the same job, but different input parameters.
 - **Process Management**: Check if jobs are actually still running and kill them through Aoe_Scheduler if required.
