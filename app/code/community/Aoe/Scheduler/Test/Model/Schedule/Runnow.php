@@ -2,6 +2,13 @@
 
 class Aoe_Scheduler_Test_Model_Schedule_Runnow extends EcomDev_PHPUnit_Test_Case
 {
+
+    public function setup() {
+        // delete all schedules
+        $scheduleManager = Mage::getModel('aoe_scheduler/scheduleManager'); /* @var Aoe_Scheduler_Model_ScheduleManager $scheduleManager */
+        $scheduleManager->deleteAll();
+    }
+
     /**
      * @test
      * @return Aoe_Scheduler_Model_Schedule
@@ -10,9 +17,7 @@ class Aoe_Scheduler_Test_Model_Schedule_Runnow extends EcomDev_PHPUnit_Test_Case
     {
         /* @var Aoe_Scheduler_Model_Schedule $schedule */
         $schedule = Mage::getModel('cron/schedule');
-
         $this->assertInstanceOf('Aoe_Scheduler_Model_Schedule', $schedule);
-
         return $schedule;
     }
 

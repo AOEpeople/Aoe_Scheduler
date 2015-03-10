@@ -32,7 +32,7 @@ class Aoe_Scheduler_Test_Model_Schedule_Scheduling extends EcomDev_PHPUnit_Test_
     {
         // delete all schedules
         $scheduleManager = Mage::getModel('aoe_scheduler/scheduleManager'); /* @var Aoe_Scheduler_Model_ScheduleManager $scheduleManager */
-        $scheduleManager->flushSchedules();
+        $scheduleManager->deleteAll();
 
         // fake schedule generation to avoid it to be generated on the next run:
         Mage::app()->saveCache(time(), Mage_Cron_Model_Observer::CACHE_KEY_LAST_SCHEDULE_GENERATE_AT, array('crontab'), null);
@@ -74,28 +74,34 @@ class Aoe_Scheduler_Test_Model_Schedule_Scheduling extends EcomDev_PHPUnit_Test_
                 $observer->dispatch(new Varien_Event_Observer());
             }),
             array(function () {
-                exec('/usr/bin/php ' . Mage::getBaseDir() . '/cron.php');
-                sleep(10);
+                shell_exec('/usr/bin/php ' . Mage::getBaseDir() . '/cron.php');
+                shell_exec('cd ' . Mage::getBaseDir() . '/shell && /usr/bin/php scheduler.php --action wait');
+                //sleep(10);
             }),
             array(function () {
-                exec('/bin/sh ' . Mage::getBaseDir() . '/cron.sh');
-                sleep(10);
+                shell_exec('/bin/sh ' . Mage::getBaseDir() . '/cron.sh');
+                shell_exec('cd ' . Mage::getBaseDir() . '/shell && /usr/bin/php scheduler.php --action wait');
+                //sleep(10);
             }),
             array(function () {
-                exec('/bin/sh ' . Mage::getBaseDir() . '/cron.sh cron.php -mdefault 1');
-                sleep(10);
+                shell_exec('/bin/sh ' . Mage::getBaseDir() . '/cron.sh cron.php -mdefault 1');
+                shell_exec('cd ' . Mage::getBaseDir() . '/shell && /usr/bin/php scheduler.php --action wait');
+                //sleep(10);
             }),
             array(function () {
-                exec('cd ' . Mage::getBaseDir() . '/shell && /usr/bin/php scheduler.php --action cron --mode default');
-                sleep(10);
+                shell_exec('cd ' . Mage::getBaseDir() . '/shell && /usr/bin/php scheduler.php --action cron --mode default');
+                shell_exec('cd ' . Mage::getBaseDir() . '/shell && /usr/bin/php scheduler.php --action wait');
+                //sleep(10);
             }),
             array(function () {
-                exec('/bin/bash ' . Mage::getBaseDir() . '/scheduler_cron.sh');
-                sleep(10);
+                shell_exec('/bin/bash ' . Mage::getBaseDir() . '/scheduler_cron.sh');
+                shell_exec('cd ' . Mage::getBaseDir() . '/shell && /usr/bin/php scheduler.php --action wait');
+                //sleep(10);
             }),
             array(function () {
-                exec('/bin/bash ' . Mage::getBaseDir() . '/scheduler_cron.sh --mode default');
-                sleep(10);
+                shell_exec('/bin/bash ' . Mage::getBaseDir() . '/scheduler_cron.sh --mode default');
+                shell_exec('cd ' . Mage::getBaseDir() . '/shell && /usr/bin/php scheduler.php --action wait');
+                //sleep(10);
             })
         );
     }

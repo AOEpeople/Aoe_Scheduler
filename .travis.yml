@@ -12,6 +12,7 @@ matrix:
 env:
   global:
     - MAGENTO_DB_ALLOWSAME=1
+    - SKIP_CLEANUP=1
   matrix:
     - MAGENTO_VERSION=magento-ce-1.9.1.0
     - MAGENTO_VERSION=magento-ce-1.9.0.1
