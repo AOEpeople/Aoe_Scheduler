@@ -76,32 +76,26 @@ class Aoe_Scheduler_Test_Model_Schedule_Scheduling extends EcomDev_PHPUnit_Test_
             array(function () {
                 shell_exec('/usr/bin/php ' . Mage::getBaseDir() . '/cron.php');
                 shell_exec('cd ' . Mage::getBaseDir() . '/shell && /usr/bin/php scheduler.php --action wait');
-                //sleep(10);
             }),
             array(function () {
                 shell_exec('/bin/sh ' . Mage::getBaseDir() . '/cron.sh');
                 shell_exec('cd ' . Mage::getBaseDir() . '/shell && /usr/bin/php scheduler.php --action wait');
-                //sleep(10);
             }),
             array(function () {
                 shell_exec('/bin/sh ' . Mage::getBaseDir() . '/cron.sh cron.php -mdefault 1');
                 shell_exec('cd ' . Mage::getBaseDir() . '/shell && /usr/bin/php scheduler.php --action wait');
-                //sleep(10);
             }),
             array(function () {
                 shell_exec('cd ' . Mage::getBaseDir() . '/shell && /usr/bin/php scheduler.php --action cron --mode default');
                 shell_exec('cd ' . Mage::getBaseDir() . '/shell && /usr/bin/php scheduler.php --action wait');
-                //sleep(10);
             }),
             array(function () {
                 shell_exec('/bin/bash ' . Mage::getBaseDir() . '/scheduler_cron.sh');
                 shell_exec('cd ' . Mage::getBaseDir() . '/shell && /usr/bin/php scheduler.php --action wait');
-                //sleep(10);
             }),
             array(function () {
                 shell_exec('/bin/bash ' . Mage::getBaseDir() . '/scheduler_cron.sh --mode default');
                 shell_exec('cd ' . Mage::getBaseDir() . '/shell && /usr/bin/php scheduler.php --action wait');
-                //sleep(10);
             })
         );
     }
