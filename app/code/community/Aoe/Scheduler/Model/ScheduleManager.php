@@ -11,6 +11,35 @@ class Aoe_Scheduler_Model_ScheduleManager
     const XML_PATH_HISTORY_MAXNO = 'system/cron/maxNoOfSuccessfulTasks';
     const CACHE_KEY_SCHEDULER_LASTRUNS = 'cron_lastruns';
 
+
+    /**
+     * @author Lee Saferite <lee.saferite@aoe.com>
+     * @return $this
+     * @throws Exception
+     */
+    public function cleanMissedSchedules()
+    {
+        $schedules = Mage::getModel('cron/schedule')->getCollection()
+            ->addFieldToFilter('status', Mage_Cron_Model_Schedule::STATUS_PENDING)
+            ->addFieldToFilter('scheduled_at', array('lt' => strftime('%Y-%m-%d %H:%M:%S', time())))
+            ->addOrder('scheduled_at', 'DESC');
+
+        $seenJobs = array();
+        foreach ($schedules as $key => $schedule) {
+            /* @var Aoe_Scheduler_Model_Schedule $schedule */
+            if (isset($seenJobs[$schedule->getJobCode()])) {
+                $schedule
+                    ->setMessages('Multiple tasks with the same job code were piling up. Skipping execution of duplicates.')
+                    ->setStatus(Mage_Cron_Model_Schedule::STATUS_MISSED)
+                    ->save();
+            } else {
+                $seenJobs[$schedule->getJobCode()] = 1;
+            }
+        }
+
+        return $this;
+    }
+
     /**
      * Get pending schedules
      *
@@ -35,22 +64,6 @@ class Aoe_Scheduler_Model_ScheduleManager
         if (!empty($blacklist)) {
             $pendingSchedules->addFieldToFilter('job_code', array('nin' => $blacklist));
         }
-
-        // let's do a cleanup and not execute multiple schedule from the same job in a run but mark them as missed
-        // this happens if the cron was blocked by another task and jobs keep piling up.
-        $seenJobs = array(); /* @var Aoe_Scheduler_Model_Schedule[] $seenJobs */
-        foreach ($pendingSchedules as $key => $schedule) { /* @var Aoe_Scheduler_Model_Schedule $schedule */
-            if (isset($seenJobs[$schedule->getJobCode()])) {
-                $previousSchedule = $seenJobs[$schedule->getJobCode()];
-                $pendingSchedules->removeItemByKey($previousSchedule->getId());
-                $previousSchedule
-                    ->setMessages('Multiple tasks with the same job code were piling up. Skipping execution of duplicates.')
-                    ->setStatus(Mage_Cron_Model_Schedule::STATUS_MISSED)
-                    ->save();
-            }
-            $seenJobs[$schedule->getJobCode()] = $schedule;
-        }
-        unset($seenJobs);
 
         return $pendingSchedules;
     }
@@ -115,31 +128,24 @@ class Aoe_Scheduler_Model_ScheduleManager
      *
      * @return $this
      */
-    public function generateSchedules($force = false)
+    public function generateAllSchedules()
     {
         /**
          * check if schedule generation is needed
          */
         $lastRun = Mage::app()->loadCache(Mage_Cron_Model_Observer::CACHE_KEY_LAST_SCHEDULE_GENERATE_AT);
-        if (!$force && $lastRun > time() - Mage::getStoreConfig(Mage_Cron_Model_Observer::XML_PATH_SCHEDULE_GENERATE_EVERY) * 60) {
+        if ($lastRun > time() - Mage::getStoreConfig(Mage_Cron_Model_Observer::XML_PATH_SCHEDULE_GENERATE_EVERY) * 60) {
             return $this;
         }
 
         $startTime = microtime(true);
-
-        // create an index of schedules that already exists (in order to avoid duplicates)
-        $schedules = $this->getPendingSchedules();
-        $exists = array();
-        foreach ($schedules as $schedule) { /* @var $schedule Aoe_Scheduler_Model_Schedule */
-            $exists[$schedule->getJobCode().'/'.$schedule->getScheduledAt()] = 1;
-        }
 
         /* @var $jobs Aoe_Scheduler_Model_Resource_Job_Collection */
         $jobs = Mage::getSingleton('aoe_scheduler/job')->getCollection();
         $jobs->setActiveOnly(true);
         foreach ($jobs as $job) {
             /* @var Aoe_Scheduler_Model_Job $job */
-            $this->generateSchedulesForJob($job, $exists);
+            $this->generateJobSchedules($job);
         }
 
         /**
@@ -208,14 +214,19 @@ class Aoe_Scheduler_Model_ScheduleManager
      * Generate jobs for config information
      *
      * @param Aoe_Scheduler_Model_Job $job
-     * @param   array $exists
-     * @internal param $jobs
-     * @return  Mage_Cron_Model_Observer
+     *
+     * @return $this
      */
-    protected function generateSchedulesForJob(Aoe_Scheduler_Model_Job $job, array $exists)
+    public function generateJobSchedules(Aoe_Scheduler_Model_Job $job)
     {
         if (!$job->canBeScheduled()) {
             return $this;
+        }
+
+        $exists = array();
+        foreach ($this->getPendingSchedules(array($job->getJobCode()), array()) as $schedule) {
+            /* @var Aoe_Scheduler_Model_Schedule $schedule */
+            $exists[$schedule->getJobCode() . '/' . $schedule->getScheduledAt()] = 1;
         }
 
         $now = time();

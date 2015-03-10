@@ -20,22 +20,33 @@ class Aoe_Scheduler_Model_Observer /* extends Mage_Cron_Model_Observer */
             return;
         }
 
-        $processManager = Mage::getModel('aoe_scheduler/processManager'); /* @var $processManager Aoe_Scheduler_Model_ProcessManager */
+        /* @var Aoe_Scheduler_Model_ProcessManager $processManager */
+        $processManager = Mage::getModel('aoe_scheduler/processManager');
         $processManager->watchdog();
 
-        $scheduleManager = Mage::getModel('aoe_scheduler/scheduleManager'); /* @var $scheduleManager Aoe_Scheduler_Model_ScheduleManager */
+        /* @var Aoe_Scheduler_Model_ScheduleManager $scheduleManager */
+        $scheduleManager = Mage::getModel('aoe_scheduler/scheduleManager');
         $scheduleManager->logRun();
 
-        $helper = Mage::helper('aoe_scheduler'); /* @var Aoe_Scheduler_Helper_Data $helper */
+        // Generate white/black lists for jobs to run
+        /* @var Aoe_Scheduler_Helper_Data $helper */
+        $helper = Mage::helper('aoe_scheduler');
         $includeJobs = $helper->addGroupJobs((array)$observer->getIncludeJobs(), (array)$observer->getIncludeGroups());
         $excludeJobs = $helper->addGroupJobs((array)$observer->getExcludeJobs(), (array)$observer->getExcludeGroups());
 
-        $schedules = $scheduleManager->getPendingSchedules($includeJobs, $excludeJobs); /* @var $schedules Mage_Cron_Model_Resource_Schedule_Collection */
-        foreach ($schedules as $schedule) { /* @var $schedule Aoe_Scheduler_Model_Schedule */
+        // Coalesce all jobs that should have run before now, by job code, by marking the oldest entries as missed.
+        $scheduleManager->cleanMissedSchedules();
+
+        // Iterate over all pending jobs
+        foreach ($scheduleManager->getPendingSchedules($includeJobs, $excludeJobs) as $schedule) {
+            /* @var Aoe_Scheduler_Model_Schedule $schedule */
             $schedule->process();
         }
 
-        $scheduleManager->generateSchedules();
+        // Generate new schedules
+        $scheduleManager->generateAllSchedules();
+
+        // Clean up schedule history
         $scheduleManager->cleanup();
     }
 

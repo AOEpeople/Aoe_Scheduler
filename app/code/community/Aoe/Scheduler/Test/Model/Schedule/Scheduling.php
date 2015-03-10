@@ -14,7 +14,7 @@ class Aoe_Scheduler_Test_Model_Schedule_Scheduling extends EcomDev_PHPUnit_Test_
         $collection = Mage::getModel('cron/schedule')->getCollection();
         $this->assertCount(0, $collection);
 
-        $scheduleManager->generateSchedules();
+        $scheduleManager->generateAllSchedules();
         $collection = Mage::getModel('cron/schedule')->getCollection(); /* @var $collection Mage_Cron_Model_Resource_Schedule_Collection */
         $this->assertGreaterThan(0, $collection->count());
 
