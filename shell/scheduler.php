@@ -249,6 +249,32 @@ class Aoe_Scheduler_Shell_Scheduler extends Mage_Shell_Abstract
     }
 
     /**
+     * Flush schedules
+     */
+    public function flushSchedulesAction()
+    {
+        $scheduleManager = Mage::getModel('aoe_scheduler/scheduleManager'); /* @var $scheduleManager Aoe_Scheduler_Model_ScheduleManager */
+        switch ($this->getArg('mode')) {
+            case 'future': $scheduleManager->flushSchedules(); break;
+            case 'all': $scheduleManager->deleteAll(); break;
+            default:
+                echo "\nInvalid mode!\n\n";
+                echo $this->usageHelp();
+                exit(1);
+        }
+    }
+
+    /**
+     * Display extra help
+     *
+     * @return string
+     */
+    public function flushSchedulesActionHelp()
+    {
+        return "--mode (future|all)	        Flush schedules.";
+    }
+
+    /**
      * Print all running schedules
      *
      * @return void
