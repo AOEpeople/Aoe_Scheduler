@@ -36,7 +36,7 @@ sudo crontab -u <?php echo $this->getCurrentUser() ?> -e
 <pre class="cron-configuration">
 <span class="croncommand mailto">MAILTO="<?php echo Mage::getSingleton('admin/session')->getUser()->getEmail(); ?>"
 </span><span class="croncommand classic"><?php echo $schedule ?> <?php echo $maintenanceModeCheck ?>/bin/sh <?php echo $this->getMagentoRootpath() ?>/cron.sh
-</span><span class="croncommand scheduler"><?php echo $schedule ?> <?php echo $maintenanceModeCheck ?>/bin/sh <?php echo $this->getMagentoRootpath() ?>/scheduler_cron.sh
+</span><span class="croncommand scheduler"><?php echo $schedule ?> <?php echo $maintenanceModeCheck ?>/bin/bash <?php echo $this->getMagentoRootpath() ?>/scheduler_cron.sh
 </span><span class="croncommand split"><?php echo $schedule ?> <?php echo $maintenanceModeCheck ?>/bin/bash <?php echo $this->getMagentoRootpath() ?>/scheduler_cron.sh --mode always
 <?php echo $schedule ?> <?php echo $maintenanceModeCheck ?>/bin/bash <?php echo $this->getMagentoRootpath() ?>/scheduler_cron.sh --mode default
 </span><span class="croncommand crongroups"><?php echo $schedule ?> <?php echo $maintenanceModeCheck ?>/bin/bash <?php echo $this->getMagentoRootpath() ?>/scheduler_cron.sh --mode always --includeGroups my_queue_jobs
