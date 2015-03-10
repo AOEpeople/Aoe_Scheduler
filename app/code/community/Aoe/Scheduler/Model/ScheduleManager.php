@@ -12,6 +12,34 @@ class Aoe_Scheduler_Model_ScheduleManager
     const CACHE_KEY_SCHEDULER_LASTRUNS = 'cron_lastruns';
 
     /**
+     * Mark missed schedule records by changing status
+     *
+     * @return $this
+     */
+    public function cleanMissedSchedules()
+    {
+        $schedules = Mage::getModel('cron/schedule')->getCollection()
+            ->addFieldToFilter('status', Mage_Cron_Model_Schedule::STATUS_PENDING)
+            ->addFieldToFilter('scheduled_at', array('lt' => strftime('%Y-%m-%d %H:%M:%S', time())))
+            ->addOrder('scheduled_at', 'DESC');
+
+        $seenJobs = array();
+        foreach ($schedules as $key => $schedule) {
+            /* @var Aoe_Scheduler_Model_Schedule $schedule */
+            if (isset($seenJobs[$schedule->getJobCode()])) {
+                $schedule
+                    ->setMessages('Multiple tasks with the same job code were piling up. Skipping execution of duplicates.')
+                    ->setStatus(Mage_Cron_Model_Schedule::STATUS_MISSED)
+                    ->save();
+            } else {
+                $seenJobs[$schedule->getJobCode()] = 1;
+            }
+        }
+
+        return $this;
+    }
+
+    /**
      * Get pending schedules
      *
      * @param array $whitelist
@@ -35,22 +63,6 @@ class Aoe_Scheduler_Model_ScheduleManager
         if (!empty($blacklist)) {
             $pendingSchedules->addFieldToFilter('job_code', array('nin' => $blacklist));
         }
-
-        // let's do a cleanup and not execute multiple schedule from the same job in a run but mark them as missed
-        // this happens if the cron was blocked by another task and jobs keep piling up.
-        $seenJobs = array(); /* @var Aoe_Scheduler_Model_Schedule[] $seenJobs */
-        foreach ($pendingSchedules as $key => $schedule) { /* @var Aoe_Scheduler_Model_Schedule $schedule */
-            if (isset($seenJobs[$schedule->getJobCode()])) {
-                $previousSchedule = $seenJobs[$schedule->getJobCode()];
-                $pendingSchedules->removeItemByKey($previousSchedule->getId());
-                $previousSchedule
-                    ->setMessages('Multiple tasks with the same job code were piling up. Skipping execution of duplicates.')
-                    ->setStatus(Mage_Cron_Model_Schedule::STATUS_MISSED)
-                    ->save();
-            }
-            $seenJobs[$schedule->getJobCode()] = $schedule;
-        }
-        unset($seenJobs);
 
         return $pendingSchedules;
     }
