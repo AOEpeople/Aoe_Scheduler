@@ -207,12 +207,12 @@ class Aoe_Scheduler_Adminhtml_JobController extends Aoe_Scheduler_Controller_Abs
                     return;
                 }
 
-                // flush and generate future schedules
-                $scheduleManager = Mage::getModel('aoe_scheduler/scheduleManager');
                 /* @var $scheduleManager Aoe_Scheduler_Model_ScheduleManager */
+                $scheduleManager = Mage::getModel('aoe_scheduler/scheduleManager');
                 $scheduleManager->flushSchedules($job->getJobCode());
                 $scheduleManager->generateSchedules();
-                $this->_getSession()->addNotice($this->__('Future pending jobs have been flushed and regenerated'));
+                $this->_getSession()->addNotice($this->__('Pending schedules have been flushed.'));
+                $this->_getSession()->addNotice($this->__('Jobs have been scheduled.'));
 
                 // go to grid
                 $this->_redirect('*/*');
@@ -244,13 +244,10 @@ class Aoe_Scheduler_Adminhtml_JobController extends Aoe_Scheduler_Controller_Abs
             $job->delete();
             $this->_getSession()->addSuccess($this->__('The job has been deleted.'));
 
-            // flush and generate future schedules
             /* @var Aoe_Scheduler_Model_ScheduleManager $scheduleManager */
             $scheduleManager = Mage::getModel('aoe_scheduler/scheduleManager');
             $scheduleManager->flushSchedules($job->getJobCode());
-            $scheduleManager->generateSchedules();
-
-            $this->_getSession()->addNotice($this->__('Future pending jobs have been flushed and regenerated'));
+            $this->_getSession()->addNotice($this->__('Pending schedules have been flushed.'));
         } catch (Exception $e) {
             $this->_getSession()->addError($e->getMessage());
         }
