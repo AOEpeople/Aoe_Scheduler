@@ -198,6 +198,57 @@ class Aoe_Scheduler_Shell_Scheduler extends Mage_Shell_Abstract
     }
 
     /**
+     * Active wait until no schedules are running
+     */
+    public function waitAction()
+    {
+        $timeout = $this->getArg('timeout') ? $this->getArg('timeout') : 60;
+        $startTime = time();
+        $sleepBetweenPolls = 2;
+        $processManager = Mage::getModel('aoe_scheduler/processManager'); /* @var $processManager Aoe_Scheduler_Model_ProcessManager */
+        do {
+            sleep($sleepBetweenPolls);
+            $aliveSchedules = 0;
+            echo "Currently running schedules:\n";
+            foreach ($processManager->getAllRunningSchedules() as $schedule) { /* @var $schedule Aoe_Scheduler_Model_Schedule */
+                $status = $schedule->isAlive();
+                if (is_null($status)) {
+                    $status = '?';
+                } else {
+                    $status = $status ? 'alive' : 'dead (updating status to "disappeared")';
+                }
+                if ($status) {
+                    $aliveSchedules++;
+                }
+                echo sprintf(
+                    "%-30s %-10s %-10s %-10s %-10s\n",
+                    $schedule->getJobCode(),
+                    $schedule->getHost() ? $schedule->getHost() : '(no host)',
+                    $schedule->getPid() ? $schedule->getPid() : '(no pid)',
+                    $schedule->getLastSeen() ? $schedule->getLastSeen() : '(never)',
+                    $status
+                );
+            }
+            if ($aliveSchedules == 0) {
+                echo "No schedules found\n";
+                return;
+            }
+        } while(time() - $startTime < $timeout);
+        echo "Timeout reached\n";
+        exit(1);
+    }
+
+    /**
+     * Display extra help
+     *
+     * @return string
+     */
+    public function waitActionHelp()
+    {
+        return "[--timout <timeout=60>]	        Active wait until no schedules are running.";
+    }
+
+    /**
      * Print all running schedules
      *
      * @return void
