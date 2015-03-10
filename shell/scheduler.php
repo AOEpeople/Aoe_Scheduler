@@ -233,7 +233,7 @@ class Aoe_Scheduler_Shell_Scheduler extends Mage_Shell_Abstract
                 echo "No schedules found\n";
                 return;
             }
-        } while(time() - $startTime < $timeout);
+        } while (time() - $startTime < $timeout);
         echo "Timeout reached\n";
         exit(1);
     }
