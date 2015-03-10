@@ -115,13 +115,13 @@ class Aoe_Scheduler_Model_ScheduleManager
      *
      * @return $this
      */
-    public function generateSchedules()
+    public function generateSchedules($force = false)
     {
         /**
          * check if schedule generation is needed
          */
         $lastRun = Mage::app()->loadCache(Mage_Cron_Model_Observer::CACHE_KEY_LAST_SCHEDULE_GENERATE_AT);
-        if ($lastRun > time() - Mage::getStoreConfig(Mage_Cron_Model_Observer::XML_PATH_SCHEDULE_GENERATE_EVERY) * 60) {
+        if (!$force && $lastRun > time() - Mage::getStoreConfig(Mage_Cron_Model_Observer::XML_PATH_SCHEDULE_GENERATE_EVERY) * 60) {
             return $this;
         }
 
