@@ -366,7 +366,7 @@ class Aoe_Scheduler_Shell_Scheduler extends Mage_Shell_Abstract
      */
     public function cronActionHelp()
     {
-        return "--mode (always|default) [--exclude <comma seperated list of groups>] [--include <comma seperated list of groups>]";
+        return "--mode (always|default) [--exclude <comma separated list of groups>] [--include <comma separated list of groups>]";
     }
 }
 
