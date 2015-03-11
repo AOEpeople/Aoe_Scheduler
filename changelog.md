@@ -25,4 +25,4 @@ This is a major release or Aoe_Scheduler. Many things have been added and improv
 - **Travis CI**: Some basic build and CS checks: https://travis-ci.org/AOEpeople/Aoe_Scheduler
 - **Message buffer**: Contribution from [Mike Weerdenburg](https://github.com/weerdenburg). Thank you!
 - **Job descriptions and titles**: Contribution from [Matthias Zeis](https://github.com/mzeis), Thank you!
-- **Bugfixes and other contributions**: Thanks, [Nicolai Essig](https://github.com/thakilla), [Chernjie](https://github.com/chernjie), [Jason Evans](https://github.com/jasonevans1)! (and maybe some other! I'm sorry if I missed you here. Let me know and I'll add you to the list!)
+- **Bugfixes and other contributions**: Thanks, [Robin Fritze](https://github.com/robinfritze), [Nicolai Essig](https://github.com/thakilla), [Chernjie](https://github.com/chernjie), [Jason Evans](https://github.com/jasonevans1)! (and maybe some other! I'm sorry if I missed you here. Let me know and I'll add you to the list!)
