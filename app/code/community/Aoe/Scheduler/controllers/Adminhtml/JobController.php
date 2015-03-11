@@ -24,7 +24,7 @@ class Aoe_Scheduler_Adminhtml_JobController extends Aoe_Scheduler_Controller_Abs
                 /* @var Aoe_Scheduler_Model_ScheduleManager $scheduleManager */
                 $scheduleManager = Mage::getModel('aoe_scheduler/scheduleManager');
                 $scheduleManager->flushSchedules($job->getJobCode());
-                $this->_getSession()->addNotice($this->__('Pending schedules have been flushed.'));
+                $this->_getSession()->addNotice($this->__('Pending schedules for "%s" have been flushed.', $job->getJobCode()));
             }
         }
         $this->_redirect('*/*/index');
@@ -43,12 +43,12 @@ class Aoe_Scheduler_Adminhtml_JobController extends Aoe_Scheduler_Controller_Abs
             $job = Mage::getModel('aoe_scheduler/job')->load($code);
             if ($job->getJobCode() && !$job->getIsActive()) {
                 $job->setIsActive(true)->save();
-                $this->_getSession()->addSuccess($this->__('Disabled "%s"', $code));
+                $this->_getSession()->addSuccess($this->__('Enabled "%s"', $code));
 
                 /* @var Aoe_Scheduler_Model_ScheduleManager $scheduleManager */
                 $scheduleManager = Mage::getModel('aoe_scheduler/scheduleManager');
-                $scheduleManager->generateSchedules();
-                $this->_getSession()->addNotice($this->__('Jobs have been scheduled.'));
+                $scheduleManager->generateSchedulesForJob($job);
+                $this->_getSession()->addNotice($this->__('Job "%s" has been scheduled.', $job->getJobCode()));
             }
         }
         $this->_redirect('*/*/index');
@@ -69,7 +69,7 @@ class Aoe_Scheduler_Adminhtml_JobController extends Aoe_Scheduler_Controller_Abs
                 ->schedule()
                 ->save();
 
-            Mage::getSingleton('adminhtml/session')->addSuccess($this->__('Scheduled "%s"', $key));
+            $this->_getSession()->addSuccess($this->__('Job "%s" has been scheduled.', $key));
         }
         $this->_redirect('*/*/index');
     }
@@ -95,14 +95,14 @@ class Aoe_Scheduler_Adminhtml_JobController extends Aoe_Scheduler_Controller_Abs
             $messages = $schedule->getMessages();
 
             if ($schedule->getStatus() == Mage_Cron_Model_Schedule::STATUS_SUCCESS) {
-                Mage::getSingleton('adminhtml/session')->addSuccess($this->__('Ran "%s" (Duration: %s sec)', $key, intval($schedule->getDuration())));
+                $this->_getSession()->addSuccess($this->__('Ran "%s" (Duration: %s sec)', $key, intval($schedule->getDuration())));
                 if ($messages) {
-                    Mage::getSingleton('adminhtml/session')->addSuccess($this->__('"%s" messages:<pre>%s</pre>', $key, $messages));
+                    $this->_getSession()->addSuccess($this->__('"%s" messages:<pre>%s</pre>', $key, $messages));
                 }
             } else {
-                Mage::getSingleton('adminhtml/session')->addError($this->__('Error while running "%s"', $key));
+                $this->_getSession()->addError($this->__('Error while running "%s"', $key));
                 if ($messages) {
-                    Mage::getSingleton('adminhtml/session')->addError($this->__('"%s" messages:<pre>%s</pre>', $key, $messages));
+                    $this->_getSession()->addError($this->__('"%s" messages:<pre>%s</pre>', $key, $messages));
                 }
             }
         }
@@ -210,9 +210,9 @@ class Aoe_Scheduler_Adminhtml_JobController extends Aoe_Scheduler_Controller_Abs
                 /* @var $scheduleManager Aoe_Scheduler_Model_ScheduleManager */
                 $scheduleManager = Mage::getModel('aoe_scheduler/scheduleManager');
                 $scheduleManager->flushSchedules($job->getJobCode());
-                $scheduleManager->generateSchedules();
-                $this->_getSession()->addNotice($this->__('Pending schedules have been flushed.'));
-                $this->_getSession()->addNotice($this->__('Jobs have been scheduled.'));
+                $scheduleManager->generateSchedulesForJob($job);
+                $this->_getSession()->addNotice($this->__('Pending schedules for "%s" have been flushed.', $job->getJobCode()));
+                $this->_getSession()->addNotice($this->__('Job "%s" has been scheduled.', $job->getJobCode()));
 
                 // go to grid
                 $this->_redirect('*/*');
@@ -247,7 +247,7 @@ class Aoe_Scheduler_Adminhtml_JobController extends Aoe_Scheduler_Controller_Abs
             /* @var Aoe_Scheduler_Model_ScheduleManager $scheduleManager */
             $scheduleManager = Mage::getModel('aoe_scheduler/scheduleManager');
             $scheduleManager->flushSchedules($job->getJobCode());
-            $this->_getSession()->addNotice($this->__('Pending schedules have been flushed.'));
+            $this->_getSession()->addNotice($this->__('Pending schedules for "%s" have been flushed.', $job->getJobCode()));
         } catch (Exception $e) {
             $this->_getSession()->addError($e->getMessage());
         }

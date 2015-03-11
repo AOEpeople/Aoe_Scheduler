@@ -70,7 +70,7 @@ abstract class Aoe_Scheduler_Controller_AbstractController extends Mage_Adminhtm
         $scheduleManager = Mage::getModel('aoe_scheduler/scheduleManager');
         $scheduleManager->generateSchedules();
 
-        Mage::getSingleton('adminhtml/session')->addSuccess($this->__('Generated schedule'));
+        $this->_getSession()->addSuccess($this->__('Generated schedule'));
         $this->_redirect('*/*/index');
     }
 }

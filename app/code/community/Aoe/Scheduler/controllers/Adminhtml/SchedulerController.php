@@ -20,7 +20,7 @@ class Aoe_Scheduler_Adminhtml_SchedulerController extends Aoe_Scheduler_Controll
                 ->delete();
         }
         $message = $this->__('Deleted task(s) "%s"', implode(', ', $ids));
-        Mage::getSingleton('adminhtml/session')->addSuccess($message);
+        $this->_getSession()->addSuccess($message);
         if ($logFile = Mage::getStoreConfig('system/cron/logFile')) {
             Mage::log($message, null, $logFile);
         }
@@ -40,7 +40,7 @@ class Aoe_Scheduler_Adminhtml_SchedulerController extends Aoe_Scheduler_Controll
             $schedule->load($id)->requestKill();
         }
         $message = $this->__('Kill requests saved for task(s) "%s" (will be killed via cron)', implode(', ', $ids));
-        Mage::getSingleton('adminhtml/session')->addSuccess($message);
+        $this->_getSession()->addSuccess($message);
         if ($logFile = Mage::getStoreConfig('system/cron/logFile')) {
             Mage::log($message, null, $logFile);
         }

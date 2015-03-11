@@ -30,12 +30,19 @@ class Aoe_Scheduler_Model_Observer /* extends Mage_Cron_Model_Observer */
         $includeJobs = $helper->addGroupJobs((array)$observer->getIncludeJobs(), (array)$observer->getIncludeGroups());
         $excludeJobs = $helper->addGroupJobs((array)$observer->getExcludeJobs(), (array)$observer->getExcludeGroups());
 
-        $schedules = $scheduleManager->getPendingSchedules($includeJobs, $excludeJobs); /* @var $schedules Mage_Cron_Model_Resource_Schedule_Collection */
-        foreach ($schedules as $schedule) { /* @var $schedule Aoe_Scheduler_Model_Schedule */
+        // Coalesce all jobs that should have run before now, by job code, by marking the oldest entries as missed.
+        $scheduleManager->cleanMissedSchedules();
+
+        // Iterate over all pending jobs
+        foreach ($scheduleManager->getPendingSchedules($includeJobs, $excludeJobs) as $schedule) {
+            /* @var Aoe_Scheduler_Model_Schedule $schedule */
             $schedule->process();
         }
 
+        // Generate new schedules
         $scheduleManager->generateSchedules();
+
+        // Clean up schedule history
         $scheduleManager->cleanup();
     }
 
