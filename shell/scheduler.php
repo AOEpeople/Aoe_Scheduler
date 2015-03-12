@@ -368,6 +368,11 @@ class Aoe_Scheduler_Shell_Scheduler extends Mage_Shell_Abstract
     {
         return "--mode (always|default) [--exclude <comma separated list of groups>] [--include <comma separated list of groups>]";
     }
+
+    protected function _applyPhpVariables()
+    {
+        // Disable this feature as cron jobs should run with CLI settings only
+    }
 }
 
 $shell = new Aoe_Scheduler_Shell_Scheduler();
