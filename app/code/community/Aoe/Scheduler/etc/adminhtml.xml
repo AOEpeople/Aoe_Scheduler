@@ -8,9 +8,9 @@
                     <sort_order>1</sort_order>
                     <children>
                         <aoe_scheduler_cron translate="title">
-                            <title>Schedule Configuration</title>
+                            <title>Job Configuration</title>
                             <sort_order>10</sort_order>
-                            <action>adminhtml/cron/index</action>
+                            <action>adminhtml/job/index</action>
                         </aoe_scheduler_cron>
                         <aoe_scheduler_scheduler translate="title">
                             <title>List View</title>
@@ -22,6 +22,11 @@
                             <sort_order>30</sort_order>
                             <action>adminhtml/timeline/index</action>
                         </aoe_scheduler_timeline>
+                        <aoe_scheduler_instructions translate="title">
+                            <title>Instructions</title>
+                            <sort_order>40</sort_order>
+                            <action>adminhtml/instructions/index</action>
+                        </aoe_scheduler_instructions>
                     </children>
                 </aoe_scheduler>
             </children>
@@ -49,6 +54,10 @@
                                         <title>Timeline View</title>
                                         <sort_order>30</sort_order>
                                     </aoe_scheduler_timeline>
+                                    <aoe_scheduler_instructions translate="title">
+                                        <title>Instructions</title>
+                                        <sort_order>40</sort_order>
+                                    </aoe_scheduler_instructions>
                                 </children>
                             </aoe_scheduler>
                         </children>

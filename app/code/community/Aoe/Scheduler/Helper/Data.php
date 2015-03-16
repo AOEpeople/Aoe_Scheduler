@@ -13,6 +13,8 @@ class Aoe_Scheduler_Helper_Data extends Mage_Core_Helper_Abstract
     const XML_PATH_EMAIL_IDENTITY = 'system/cron/error_email_identity';
     const XML_PATH_EMAIL_RECIPIENT = 'system/cron/error_email';
 
+    protected $groupsToJobsMap = null;
+
     /**
      * Explodes a string and trims all values for whitespace in the ends.
      * If $onlyNonEmptyValues is set, then all blank ('') values are removed.
@@ -84,7 +86,7 @@ class Aoe_Scheduler_Helper_Data extends Mage_Core_Helper_Abstract
      */
     public function decorateTimeFrameCallBack($value)
     {
-        return $this->decorateTime($value, false, NULL);
+        return $this->decorateTime($value, false, null);
     }
 
     /**
@@ -95,7 +97,7 @@ class Aoe_Scheduler_Helper_Data extends Mage_Core_Helper_Abstract
      * @param string $dateFormat make sure Y-m-d is in it, if you want to have it replaced
      * @return string
      */
-    public function decorateTime($value, $echoToday = false, $dateFormat = NULL)
+    public function decorateTime($value, $echoToday = false, $dateFormat = null)
     {
         if (empty($value) || $value == '0000-00-00 00:00:00') {
             $value = '';
@@ -116,20 +118,30 @@ class Aoe_Scheduler_Helper_Data extends Mage_Core_Helper_Abstract
      */
     public function getLastHeartbeat()
     {
-        if ($this->isDisabled('aoescheduler_heartbeat')) {
+        return $this->getLastExecutionTime('aoescheduler_heartbeat');
+    }
+
+    /**
+     * Get last execution time
+     *
+     * @param $jobCode
+     * @return bool
+     */
+    public function getLastExecutionTime($jobCode)
+    {
+        if ($this->isDisabled($jobCode)) {
             return false;
         }
-        $schedules = Mage::getModel('cron/schedule')->getCollection();
-        /* @var $schedules Mage_Cron_Model_Mysql4_Schedule_Collection */
+        $schedules = Mage::getModel('cron/schedule')->getCollection(); /* @var $schedules Mage_Cron_Model_Mysql4_Schedule_Collection */
         $schedules->getSelect()->limit(1)->order('executed_at DESC');
         $schedules->addFieldToFilter('status', Mage_Cron_Model_Schedule::STATUS_SUCCESS);
-        $schedules->addFieldToFilter('job_code', 'aoescheduler_heartbeat');
+        $schedules->addFieldToFilter('job_code', $jobCode);
         $schedules->load();
         if (count($schedules) == 0) {
             return false;
         }
         $executedAt = $schedules->getFirstItem()->getExecutedAt();
-        $value = Mage::getModel('core/date')->date(NULL, $executedAt);
+        $value = Mage::getModel('core/date')->date(null, $executedAt);
         return $value;
     }
 
@@ -140,7 +152,7 @@ class Aoe_Scheduler_Helper_Data extends Mage_Core_Helper_Abstract
      * @param $time2
      * @return int
      */
-    public function dateDiff($time1, $time2 = NULL)
+    public function dateDiff($time1, $time2 = null)
     {
         if (is_null($time2)) {
             $time2 = Mage::getModel('core/date')->date();
@@ -158,9 +170,85 @@ class Aoe_Scheduler_Helper_Data extends Mage_Core_Helper_Abstract
      */
     public function isDisabled($jobCode)
     {
-        $disabledJobs = Mage::getStoreConfig('system/cron/disabled_crons');
-        $disabledJobs = $this->trimExplode(',', $disabledJobs);
-        return in_array($jobCode, $disabledJobs);
+        /* @var $job Aoe_Scheduler_Model_Job */
+        $job = Mage::getModel('aoe_scheduler/job')->load($jobCode);
+        return ($job->getJobCode() && !$job->getIsActive());
+    }
+
+    /**
+     * Check if a job matches the group include/exclude lists
+     *
+     * @param $jobCode
+     * @param array $include
+     * @param array $exclude
+     * @return mixed
+     */
+    public function matchesIncludeExclude($jobCode, array $include, array $exclude)
+    {
+        $include = array_filter(array_map('trim', $include));
+        $exclude = array_filter(array_map('trim', $exclude));
+
+        sort($include);
+        sort($exclude);
+
+        $key = $jobCode . '|' . implode(',', $include) . '|' . implode(',', $exclude);
+        static $cache = array();
+        if (!isset($cache[$key])) {
+            if (count($include) == 0 && count($exclude) == 0) {
+                $cache[$key] = true;
+            } else {
+                $cache[$key] = true;
+                /* @var $job Aoe_Scheduler_Model_Job */
+                $job = Mage::getModel('aoe_scheduler/job')->load($jobCode);
+                $groups = $this->trimExplode(',', $job->getGroups(), true);
+                if (count($include) > 0) {
+                    $cache[$key] = (count(array_intersect($groups, $include)) > 0);
+                }
+                if (count($exclude) > 0) {
+                    if (count(array_intersect($groups, $exclude)) > 0) {
+                        $cache[$key] = false;
+                    }
+                }
+            }
+
+        }
+        return $cache[$key];
+    }
+
+    public function getGroupsToJobsMap($forceRebuild = false)
+    {
+        if ($this->groupsToJobsMap === null || $forceRebuild) {
+            $map = array();
+
+            /* @var $jobs Aoe_Scheduler_Model_Resource_Job_Collection */
+            $jobs = Mage::getSingleton('aoe_scheduler/job')->getCollection();
+            foreach ($jobs as $job) {
+                /* @var Aoe_Scheduler_Model_Job $job */
+                $groups = $this->trimExplode(',', $job->getGroups(), true);
+                foreach ($groups as $group) {
+                    $map[$group][] = $job->getJobCode();
+                }
+            }
+
+            $this->groupsToJobsMap = $map;
+        }
+
+        return $this->groupsToJobsMap;
+    }
+
+    public function addGroupJobs(array $jobs, array $groups)
+    {
+        $map = $this->getGroupsToJobsMap();
+
+        foreach ($groups as $group) {
+            if (isset($map[$group])) {
+                foreach ($map[$group] as $jobCode) {
+                    $jobs[] = $jobCode;
+                }
+            }
+        }
+
+        return $jobs;
     }
 
     /**
@@ -173,7 +261,7 @@ class Aoe_Scheduler_Helper_Data extends Mage_Core_Helper_Abstract
     public function sendErrorMail(Aoe_Scheduler_Model_Schedule $schedule, $error)
     {
         if (!Mage::getStoreConfig(self::XML_PATH_EMAIL_RECIPIENT)) {
-            return $this;
+            return;
         }
 
         $translate = Mage::getSingleton('core/translate'); /* @var $translate Mage_Core_Model_Translate */
@@ -192,5 +280,39 @@ class Aoe_Scheduler_Helper_Data extends Mage_Core_Helper_Abstract
         $translate->setTranslateInline(true);
     }
 
-}
+    /**
+     * Get callback from runModel
+     *
+     * @param $runModel
+     * @return array
+     */
+    public function getCallBack($runModel)
+    {
+        if (!preg_match(Mage_Cron_Model_Observer::REGEX_RUN_MODEL, (string)$runModel, $run)) {
+            Mage::throwException(Mage::helper('cron')->__('Invalid model/method definition, expecting "model/class::method".'));
+        }
+        if (!($model = Mage::getModel($run[1])) || !method_exists($model, $run[2])) {
+            Mage::throwException(Mage::helper('cron')->__('Invalid callback: %s::%s does not exist', $run[1], $run[2]));
+        }
+        $callback = array($model, $run[2]);
+        return $callback;
+    }
 
+    /**
+     * Validate cron expression
+     *
+     * @param $cronExpression
+     * @return bool
+     */
+    public function validateCronExpression($cronExpression)
+    {
+        try {
+            $schedule = Mage::getModel('cron/schedule');
+            /* @var $schedule Mage_Cron_Model_Schedule */
+            $schedule->setCronExpr($cronExpression);
+        } catch (Exception $e) {
+            return false;
+        }
+        return true;
+    }
+}

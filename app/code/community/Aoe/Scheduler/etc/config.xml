@@ -2,7 +2,7 @@
 <config>
     <modules>
         <Aoe_Scheduler>
-            <version>0.4.4</version>
+            <version>1.0.1</version>
         </Aoe_Scheduler>
     </modules>
 
@@ -22,7 +22,12 @@
         <models>
             <aoe_scheduler>
                 <class>Aoe_Scheduler_Model</class>
+                <resourceModel>aoe_scheduler_resource</resourceModel>
             </aoe_scheduler>
+
+            <aoe_scheduler_resource>
+                <class>Aoe_Scheduler_Model_Resource</class>
+            </aoe_scheduler_resource>
 
             <cron>
                 <rewrite>
@@ -30,7 +35,10 @@
                     <schedule>Aoe_Scheduler_Model_Schedule</schedule>
                 </rewrite>
             </cron>
+
         </models>
+
+
 
         <template>
             <email>
@@ -124,7 +132,7 @@
             <aoescheduler_testtask>
                 <!--<schedule><cron_expr>*/5 * * * *</cron_expr></schedule>-->
                 <run>
-                    <model>aoe_scheduler/testTask::run</model>
+                    <model>aoe_scheduler/task_test::run</model>
                 </run>
             </aoescheduler_testtask>
 
@@ -133,8 +141,9 @@
                     <config_path>system/cron/scheduler_cron_expr_heartbeat</config_path>
                 </schedule>
                 <run>
-                    <model>aoe_scheduler/heartbeatTask::run</model>
+                    <model>aoe_scheduler/task_heartbeat::run</model>
                 </run>
+                <groups>all</groups>
             </aoescheduler_heartbeat>
         </jobs>
     </crontab>
@@ -162,8 +171,3 @@
     </phpunit>
 
 </config>
-
-
-
-
-

@@ -1,20 +1,27 @@
 {
-    "name": "aoepeople/aoe_scheduler",
-    "license": "GPLv3",
-    "type": "magento-module",
-    "description": "Magento Cron Scheduler",
-    "homepage": "http://www.fabrizio-branca.de/magento-cron-scheduler.html",
-    "require": {
-        "magento-hackathon/magento-composer-installer": "*"
+  "name": "aoepeople/aoe_scheduler",
+  "license": "GPL-3.0",
+  "type": "magento-module",
+  "description": "Magento Cron Scheduler",
+  "homepage": "https://github.com/AOEpeople/Aoe_Scheduler",
+  "require": {
+    "php": ">=5.3",
+    "magento-hackathon/magento-composer-installer": "*"
+  },
+  "authors": [
+    {
+      "name": "Fabrizio Branca",
+      "email": "firstname.lastname@aoe.com",
+      "role": "Author/Maintainer"
     },
-    "authors":[
-        {
-            "name":"Fabrizio Branca",
-            "email":"firstname.lastname@aoe.com"
-        }
-    ],
-    "replace": {
-        "fbrnc/Aoe_Scheduler":"*"
+    {
+      "name": "Lee Saferite",
+      "email": "lee.saferite@aoe.com",
+      "role": "Contributor/Maintainer"
     }
+  ],
+  "replace": {
+    "fbrnc/aoe_scheduler": "*"
+  }
 }
 

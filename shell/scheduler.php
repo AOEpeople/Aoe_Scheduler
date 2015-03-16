@@ -62,10 +62,11 @@ class Aoe_Scheduler_Shell_Scheduler extends Mage_Shell_Abstract
      */
     public function listAllCodesAction()
     {
-        $collection = Mage::getModel('aoe_scheduler/collection_crons');
-        foreach ($collection as $configuration) {
-            /* @var $configuration Aoe_Scheduler_Model_Configuration */
-            echo sprintf("%-50s %-20s %s\n", $configuration->getId(), $configuration->getCronExpr(), $configuration->getStatus());
+        /** @var Aoe_Scheduler_Model_Resource_Job_Collection $jobs */
+        $jobs = Mage::getSingleton('aoe_scheduler/job')->getCollection();
+        foreach ($jobs as $job) {
+            /* @var $job Aoe_Scheduler_Model_Job */
+            echo sprintf("%-50s %-20s %s\n", $job->getJobCode(), $job->getCronExpression(), $job->getIsActive() ? 'Enabled' : 'Disabled');
         }
     }
 
@@ -76,7 +77,6 @@ class Aoe_Scheduler_Shell_Scheduler extends Mage_Shell_Abstract
      */
     public function lastRunAction()
     {
-
         $code = $this->getArg('code');
         if (empty($code)) {
             echo "\nNo code found!\n\n";
@@ -84,14 +84,13 @@ class Aoe_Scheduler_Shell_Scheduler extends Mage_Shell_Abstract
             exit(1);
         }
 
-        $collection = Mage::getModel('cron/schedule')->getCollection();
-        /* @var $collection Mage_Cron_Model_Resource_Schedule_Collection */
+        $collection = Mage::getModel('cron/schedule')->getCollection(); /* @var $collection Mage_Cron_Model_Resource_Schedule_Collection */
+
         $collection->addFieldToFilter('job_code', $code)
             ->addFieldToFilter('status', Mage_Cron_Model_Schedule::STATUS_SUCCESS)
             ->addOrder('finished_at', Varien_Data_Collection_Db::SORT_ORDER_DESC)
             ->getSelect()->limit(1);
-        $schedule = $collection->getFirstItem();
-        /* @var $schedule Aoe_Scheduler_Model_Schedule */
+        $schedule = $collection->getFirstItem(); /* @var $schedule Aoe_Scheduler_Model_Schedule */
         if (!$schedule || !$schedule->getId()) {
             echo "\nNo schedule found\n\n";
             exit(1);
@@ -129,8 +128,16 @@ class Aoe_Scheduler_Shell_Scheduler extends Mage_Shell_Abstract
             echo $this->usageHelp();
             exit(1);
         }
-        $schedule = Mage::getModel('cron/schedule');
-        /* @var $schedule Aoe_Scheduler_Model_Schedule */
+
+        $allowedCodes = Mage::getSingleton('aoe_scheduler/job')->getResource()->getJobCodes();
+        if (!in_array($code, $allowedCodes)) {
+            echo "\nNo valid job found!\n\n";
+            echo $this->usageHelp();
+            exit(1);
+        }
+
+        $schedule = Mage::getModel('cron/schedule'); /* @var $schedule Aoe_Scheduler_Model_Schedule */
+        $schedule->setScheduledReason(Aoe_Scheduler_Model_Schedule::REASON_SCHEDULENOW_CLI);
         $schedule->setJobCode($code);
         $schedule->schedule();
         $schedule->save();
@@ -159,9 +166,17 @@ class Aoe_Scheduler_Shell_Scheduler extends Mage_Shell_Abstract
             echo $this->usageHelp();
             exit(1);
         }
-        $schedule = Mage::getModel('cron/schedule');
-        /* @var $schedule Aoe_Scheduler_Model_Schedule */
+
+        $allowedCodes = Mage::getSingleton('aoe_scheduler/job')->getResource()->getJobCodes();
+        if (!in_array($code, $allowedCodes)) {
+            echo "\nNo valid job found!\n\n";
+            echo $this->usageHelp();
+            exit(1);
+        }
+
+        $schedule = Mage::getModel('cron/schedule'); /* @var $schedule Aoe_Scheduler_Model_Schedule */
         $schedule->setJobCode($code);
+        $schedule->setScheduledReason(Aoe_Scheduler_Model_Schedule::REASON_RUNNOW_CLI);
         $schedule->runNow(false);
         if ($schedule->getJobWasLocked()) {
             echo "\nJob was not executed because it was locked!\n\n";
@@ -183,16 +198,93 @@ class Aoe_Scheduler_Shell_Scheduler extends Mage_Shell_Abstract
     }
 
     /**
+     * Active wait until no schedules are running
+     */
+    public function waitAction()
+    {
+        $timeout = $this->getArg('timeout') ? $this->getArg('timeout') : 60;
+        $startTime = time();
+        $sleepBetweenPolls = 2;
+        $processManager = Mage::getModel('aoe_scheduler/processManager'); /* @var $processManager Aoe_Scheduler_Model_ProcessManager */
+        do {
+            sleep($sleepBetweenPolls);
+            $aliveSchedules = 0;
+            echo "Currently running schedules:\n";
+            foreach ($processManager->getAllRunningSchedules() as $schedule) { /* @var $schedule Aoe_Scheduler_Model_Schedule */
+                $status = $schedule->isAlive();
+                if (is_null($status)) {
+                    $status = '?';
+                } else {
+                    $status = $status ? 'alive' : 'dead (updating status to "disappeared")';
+                }
+                if ($status) {
+                    $aliveSchedules++;
+                }
+                echo sprintf(
+                    "%-30s %-10s %-10s %-10s %-10s\n",
+                    $schedule->getJobCode(),
+                    $schedule->getHost() ? $schedule->getHost() : '(no host)',
+                    $schedule->getPid() ? $schedule->getPid() : '(no pid)',
+                    $schedule->getLastSeen() ? $schedule->getLastSeen() : '(never)',
+                    $status
+                );
+            }
+            if ($aliveSchedules == 0) {
+                echo "No schedules found\n";
+                return;
+            }
+        } while (time() - $startTime < $timeout);
+        echo "Timeout reached\n";
+        exit(1);
+    }
+
+    /**
+     * Display extra help
+     *
+     * @return string
+     */
+    public function waitActionHelp()
+    {
+        return "[--timout <timeout=60>]	        Active wait until no schedules are running.";
+    }
+
+    /**
+     * Flush schedules
+     */
+    public function flushSchedulesAction()
+    {
+        $scheduleManager = Mage::getModel('aoe_scheduler/scheduleManager'); /* @var $scheduleManager Aoe_Scheduler_Model_ScheduleManager */
+        switch ($this->getArg('mode')) {
+            case 'future': $scheduleManager->flushSchedules();
+                break;
+            case 'all': $scheduleManager->deleteAll();
+                break;
+            default:
+                echo "\nInvalid mode!\n\n";
+                echo $this->usageHelp();
+                exit(1);
+        }
+    }
+
+    /**
+     * Display extra help
+     *
+     * @return string
+     */
+    public function flushSchedulesActionHelp()
+    {
+        return "--mode (future|all)	        Flush schedules.";
+    }
+
+    /**
      * Print all running schedules
      *
      * @return void
      */
     public function listAllRunningSchedulesAction()
     {
-        $processManager = Mage::getModel('aoe_scheduler/processManager');
-        /* @var $processManager Aoe_Scheduler_Model_ProcessManager */
-        foreach ($processManager->getAllRunningSchedules() as $schedule) {
-            /* @var $schedule Aoe_Scheduler_Model_Schedule */
+        $processManager = Mage::getModel('aoe_scheduler/processManager'); /* @var $processManager Aoe_Scheduler_Model_ProcessManager */
+        foreach ($processManager->getAllRunningSchedules() as $schedule) { /* @var $schedule Aoe_Scheduler_Model_Schedule */
             $status = $schedule->isAlive();
             if (is_null($status)) {
                 $status = '?';
@@ -217,10 +309,8 @@ class Aoe_Scheduler_Shell_Scheduler extends Mage_Shell_Abstract
      */
     public function killAllAction()
     {
-        $processManager = Mage::getModel('aoe_scheduler/processManager');
-        /* @var $processManager Aoe_Scheduler_Model_ProcessManager */
-        foreach ($processManager->getAllRunningSchedules(gethostname()) as $schedule) {
-            /* @var $schedule Aoe_Scheduler_Model_Schedule */
+        $processManager = Mage::getModel('aoe_scheduler/processManager'); /* @var $processManager Aoe_Scheduler_Model_ProcessManager */
+        foreach ($processManager->getAllRunningSchedules(gethostname()) as $schedule) { /* @var $schedule Aoe_Scheduler_Model_Schedule */
             if ($schedule->isAlive() === true) {
                 $schedule->kill();
                 echo sprintf(
@@ -233,6 +323,20 @@ class Aoe_Scheduler_Shell_Scheduler extends Mage_Shell_Abstract
         }
     }
 
+    /**
+     * Runs watchdog
+     */
+    public function watchdogAction()
+    {
+        $processManager = Mage::getModel('aoe_scheduler/processManager'); /* @var $processManager Aoe_Scheduler_Model_ProcessManager */
+        $processManager->watchdog();
+    }
+
+    /**
+     * Cron action
+     *
+     *
+     */
     public function cronAction()
     {
         Mage::app('admin')->setUseSessionInUrl(false);
@@ -262,7 +366,12 @@ class Aoe_Scheduler_Shell_Scheduler extends Mage_Shell_Abstract
      */
     public function cronActionHelp()
     {
-        return "--mode (always|default) [--exclude <comma seperated list of groups>] [--include <comma seperated list of groups>]";
+        return "--mode (always|default) [--exclude <comma separated list of groups>] [--include <comma separated list of groups>]";
+    }
+
+    protected function _applyPhpVariables()
+    {
+        // Disable this feature as cron jobs should run with CLI settings only
     }
 }
 

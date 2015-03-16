@@ -17,16 +17,6 @@
                             <show_in_store>0</show_in_store>
                         </enable>
 
-                        <disabled_crons translate="label">
-                            <label>Disabled cron tasks</label>
-                            <frontend_type>text</frontend_type>
-                            <comment><![CDATA[Do not edit this field manually unless you know what you do. This field is populated by the "disable mass action" of Aoe_Scheduler.]]></comment>
-                            <sort_order>100</sort_order>
-                            <show_in_default>1</show_in_default>
-                            <show_in_website>0</show_in_website>
-                            <show_in_store>0</show_in_store>
-                        </disabled_crons>
-
                         <mark_as_error_after translate="label">
                             <label>Mark job as failed after</label>
                             <comment><![CDATA[A job will be marked es failed after it hasn't been seen for this many minutes (in cases where the process cannot be checked)]]></comment>
@@ -36,6 +26,16 @@
                             <show_in_website>0</show_in_website>
                             <show_in_store>0</show_in_store>
                         </mark_as_error_after>
+
+                        <max_job_runtime translate="label">
+                            <label>Maximum job runtime</label>
+                            <comment><![CDATA[If set a single job can't run longer than this time (in minutes). If the job is actually still running this process will be actively killed.]]></comment>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>111</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </max_job_runtime>
 
                         <scheduler_cron_expr_heartbeat>
                             <label>Heartbeat task schedule (cron syntax)</label>
@@ -82,10 +82,10 @@
                         </logFile>
 
                         <maxNoOfSuccessfulTasks translate="label">
-                            <label>Maximum number of successful tasks to keep</label>
+                            <label>Maximum number of successful schedules to keep</label>
                             <frontend_type>text</frontend_type>
                             <sort_order>170</sort_order>
-                            <comment><![CDATA[Only keeps this number of entries for every tasks even if it is shorter than the configured success lifetime. Set to 0 to keep them all until they hit the lifetime.]]></comment>
+                            <comment><![CDATA[Only keeps this number of entries for every schedule even if it is shorter than the configured success lifetime. Set to 0 to keep them all until they hit the lifetime.]]></comment>
                             <show_in_default>1</show_in_default>
                         </maxNoOfSuccessfulTasks>
 
@@ -97,6 +97,15 @@
                             <comment><![CDATA[Cron tasks are usually not designed to run in CLI context and not in the context of the webserver. Also they could run longer than the configured maximum execution time. This is why you should rather use "scheduleNow" instead of "runNow" and let the scheduler pick up the task on the next run. However, if you know what you're doing and/or if you don't want to wait while testing and developing a cron task you can enable this feature here.]]></comment>
                             <show_in_default>1</show_in_default>
                         </enableRunNow>
+
+                        <enableJobOutputBuffer translate="label">
+                            <label>Enable Job Output Buffering</label>
+                            <comment><![CDATA[If this is enabled jobs will capture normal output for storage in the schedule record messages field]]></comment>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>200</sort_order>
+                            <show_in_default>1</show_in_default>
+                        </enableJobOutputBuffer>
 
                     </fields>
                 </cron>

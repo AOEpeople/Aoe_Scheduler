@@ -5,9 +5,8 @@
  *
  * @author Fabrizio Branca
  */
-abstract class Aoe_Scheduler_Adminhtml_AbstractController extends Mage_Adminhtml_Controller_Action
+abstract class Aoe_Scheduler_Controller_AbstractController extends Mage_Adminhtml_Controller_Action
 {
-
     /**
      * Index action
      *
@@ -42,7 +41,7 @@ abstract class Aoe_Scheduler_Adminhtml_AbstractController extends Mage_Adminhtml
             $lastHeartbeat = Mage::helper('aoe_scheduler')->getLastHeartbeat();
             if ($lastHeartbeat === false) {
                 // no heartbeat task found
-                $this->_getSession()->addError($this->__('No heartbeat task found. Check if cron is configured correctly.'));
+                $this->_getSession()->addError($this->__('No heartbeat task found. Check if cron is configured correctly. (<a href="%s">See Instructions</a>)', $this->getUrl('adminhtml/instructions/index')));
             } else {
                 $timespan = Mage::helper('aoe_scheduler')->dateDiff($lastHeartbeat);
                 if ($timespan <= 5 * 60) {
@@ -55,7 +54,6 @@ abstract class Aoe_Scheduler_Adminhtml_AbstractController extends Mage_Adminhtml
                     $this->_getSession()->addError($this->__('Last heartbeat is older than one hour. Please check your settings and your configuration!'));
                 }
             }
-
         }
     }
 
@@ -66,15 +64,13 @@ abstract class Aoe_Scheduler_Adminhtml_AbstractController extends Mage_Adminhtml
      */
     public function generateScheduleAction()
     {
-
         Mage::app()->removeCache(Mage_Cron_Model_Observer::CACHE_KEY_LAST_SCHEDULE_GENERATE_AT);
 
-        $observer = Mage::getModel('cron/observer');
-        /* @var $observer Mage_Cron_Model_Observer */
-        $observer->generate();
-        Mage::getSingleton('adminhtml/session')->addSuccess($this->__('Generated schedule'));
+        /* @var Aoe_Scheduler_Model_ScheduleManager $scheduleManager */
+        $scheduleManager = Mage::getModel('aoe_scheduler/scheduleManager');
+        $scheduleManager->generateSchedules();
+
+        $this->_getSession()->addSuccess($this->__('Generated schedule'));
         $this->_redirect('*/*/index');
     }
-
 }
-

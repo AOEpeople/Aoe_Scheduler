@@ -36,7 +36,7 @@ class Aoe_Scheduler_Block_Adminhtml_Timeline extends Mage_Adminhtml_Block_Widget
      */
     protected function _construct()
     {
-        $this->_headerText = Mage::helper('aoe_scheduler')->__('Scheduler Timeline');
+        $this->_headerText = $this->__('Scheduler Timeline');
         $this->loadSchedules();
         parent::_construct();
     }
@@ -45,17 +45,17 @@ class Aoe_Scheduler_Block_Adminhtml_Timeline extends Mage_Adminhtml_Block_Widget
     /**
      * Prepare layout
      *
-     * @return Aoe_Scheduler_Block_Adminhtml_Cron
+     * @return $this
      */
     protected function _prepareLayout()
     {
         $this->removeButton('add');
         $this->_addButton('add_new', array(
-            'label' => Mage::helper('aoe_scheduler')->__('Generate Schedule'),
+            'label' => $this->__('Generate Schedule'),
             'onclick' => "setLocation('{$this->getUrl('*/*/generateSchedule')}')",
         ));
         $this->_addButton('configure', array(
-            'label' => Mage::helper('aoe_scheduler')->__('Cron Configuration'),
+            'label' => $this->__('Cron Configuration'),
             'onclick' => "setLocation('{$this->getUrl('adminhtml/system_config/edit', array('section' => 'system'))}#system_cron')",
         ));
         return parent::_prepareLayout();
@@ -93,14 +93,14 @@ class Aoe_Scheduler_Block_Adminhtml_Timeline extends Mage_Adminhtml_Block_Widget
      */
     protected function loadSchedules()
     {
+        /* @var Mage_Cron_Model_Resource_Schedule_Collection $collection */
         $collection = Mage::getModel('cron/schedule')->getCollection();
-        /* @var $collection Mage_Cron_Model_Mysql4_Schedule_Collection */
 
         $minDate = null;
         $maxDate = null;
 
         foreach ($collection as $schedule) {
-            /* @var $schedule Aoe_Scheduler_Model_Schedule */
+            /* @var Aoe_Scheduler_Model_Schedule $schedule */
             $startTime = $schedule->getStarttime();
             $minDate = is_null($minDate) ? $startTime : min($minDate, $startTime);
             $maxDate = is_null($maxDate) ? $startTime : max($maxDate, $startTime);
@@ -204,7 +204,8 @@ class Aoe_Scheduler_Block_Adminhtml_Timeline extends Mage_Adminhtml_Block_Widget
             $offset = 0;
         }
 
-        $result = sprintf('<div class="task %s" id="id_%s" style="width: %spx; left: %spx;" ></div>',
+        $result = sprintf(
+            '<div class="task %s" id="id_%s" style="width: %spx; left: %spx;" ></div>',
             $schedule->getStatus(),
             $schedule->getScheduleId(),
             $duration,
@@ -212,19 +213,33 @@ class Aoe_Scheduler_Block_Adminhtml_Timeline extends Mage_Adminhtml_Block_Widget
         );
 
         if ($schedule->getStatus() == Mage_Cron_Model_Schedule::STATUS_RUNNING) {
-
             $offset += $duration;
 
             $duration = strtotime($schedule->getEta()) - time();
             $duration = $duration / $this->zoom;
 
-            $result = sprintf('<div class="estimation" style="width: %spx; left: %spx;" ></div>',
-                    $duration,
-                    $offset
-                ) . $result;
+            $result = sprintf(
+                '<div class="estimation" style="width: %spx; left: %spx;" ></div>',
+                $duration,
+                $offset
+            ) . $result;
         }
 
         return $result;
     }
 
+    /**
+     * Check if symlinks are allowed
+     *
+     * @return string
+     */
+    public function _toHtml()
+    {
+        $html = parent::_toHtml();
+        if (!$html && !Mage::getStoreConfigFlag('dev/template/allow_symlink')) {
+            $url = $this->getUrl('adminhtml/system_config/edit', array('section' => 'dev')) . '#dev_template';
+            $html = $this->__('Warning: You installed Aoe_Scheduler using symlinks (e.g. via modman), but forgot to allow symlinks for template files! Please go to <a href="%s">System > Configuration > Advanced > Developer > Template Settings</a> and set "Allow Symlinks" to "yes"', $url);
+        }
+        return $html;
+    }
 }

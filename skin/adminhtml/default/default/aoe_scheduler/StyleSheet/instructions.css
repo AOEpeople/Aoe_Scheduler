@@ -1,0 +1,17 @@
+.configuration label {
+    padding-left: 5px;
+}
+
+h5 {
+    margin-top: 20px;
+}
+
+pre {
+    padding: 5px 10px;
+    background-color: black;
+    color: #eee;
+    font-size: 15px;
+    overflow: auto;
+    word-wrap: normal;
+    white-space: pre;
+}
