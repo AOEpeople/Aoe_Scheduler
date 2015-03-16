@@ -2,6 +2,10 @@
 
 ### Version 1.0.0
 
+#### What's new in Aoe_Scheduler v1.0.x? (Youtube)
+
+[![](http://img.youtube.com/vi/cbMPIfUjCPs/hqdefault.jpg)](http://www.youtube.com/watch?v=cbMPIfUjCPs)
+
 This is a major release or Aoe_Scheduler. Many things have been added and improved. Please take some time to verify everything is still working as expected after updated.
 
 #### Important: 
