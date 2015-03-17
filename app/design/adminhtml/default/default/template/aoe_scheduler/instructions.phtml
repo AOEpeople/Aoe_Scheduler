@@ -44,7 +44,7 @@ sudo crontab -u <?php echo $this->getCurrentUser() ?> -e
 <?php echo $schedule ?> <?php echo $maintenanceModeCheck ?>/bin/bash <?php echo $this->getMagentoRootpath() ?>/scheduler_cron.sh --mode default --includeGroups groupA,groupB
 <?php echo $schedule ?> <?php echo $maintenanceModeCheck ?>/bin/bash <?php echo $this->getMagentoRootpath() ?>/scheduler_cron.sh --mode default --includeGroups groupC
 <?php echo $schedule ?> <?php echo $maintenanceModeCheck ?>/bin/bash <?php echo $this->getMagentoRootpath() ?>/scheduler_cron.sh --mode default --excludeGroups groupA,groupB,groupC
-</span><span class="watchdog">*/10 * * * * /usr/bin/php <?php echo $this->getMagentoRootpath() ?>/shell/scheduler.php --action watchdog
+</span><span class="watchdog">*/10 * * * * <?php echo $maintenanceModeCheck ?>cd <?php echo $this->getMagentoRootpath() ?>/shell && /usr/bin/php scheduler.php --action watchdog
 </span></pre>
 
 </div>
