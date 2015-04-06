@@ -19,6 +19,9 @@ env:
     - MAGENTO_VERSION=magento-ce-1.8.1.0
     - MAGENTO_VERSION=magento-ce-1.8.0.0
     - MAGENTO_VERSION=magento-ce-1.7.0.2
+    - MAGENTO_VERSION=magento-ce-1.6.2.0
+    - MAGENTO_VERSION=magento-mirror-1.5.1.0
+    - MAGENTO_VERSION=magento-mirror-1.4.2.0
 before_script:
   - curl -OL https://squizlabs.github.io/PHP_CodeSniffer/phpcs.phar
 script:
