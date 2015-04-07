@@ -6,7 +6,7 @@
 
 [![](http://img.youtube.com/vi/cbMPIfUjCPs/hqdefault.jpg)](http://www.youtube.com/watch?v=cbMPIfUjCPs)
 
-This is a major release or Aoe_Scheduler. Many things have been added and improved. Please take some time to verify everything is still working as expected after updated.
+This is a major release of Aoe_Scheduler. Many things have been added and improved. Please take some time to verify everything is still working as expected after updated.
 
 #### Important: 
 - **task_records overlays:** In case you used the experimental task_records branch from GitHub please note that any "database overlays" you might have created will be deleted, since these database overlays are now being stored in a different way. If you don't know what this is about you can safely ignore this note :)
