@@ -1,16 +1,16 @@
 <_>
-   <form_key>KPSFo822WySjqMCh</form_key>
+   <form_key>69BXhUF8UUEo78D5</form_key>
    <_create/>
    <name>Aoe_Scheduler</name>
    <channel>community</channel>
    <version_ids>
-      <version_ids>1</version_ids>
+      <version_ids>2</version_ids>
    </version_ids>
    <summary>Scheduler / Cron Management</summary>
-   <description>This extension allows you to manage your scheduler task. Schedules can be disabled. From version 0.1.0 this extension also comes with a graphical timeline view.</description>
-   <license>OSL v3.0</license>
-   <license_uri>http://www.opensource.org/licenses/osl-3.0.php</license_uri>
-   <version>0.3.2</version>
+   <description>This extension allows you to manage and visualize cron scheduler tasks.</description>
+   <license>GPL v3.0</license>
+   <license_uri>http://www.gnu.org/licenses/gpl-3.0.html</license_uri>
+   <version>1.0.1</version>
    <stability>stable</stability>
    <notes>GIT Revision: 62e81fad14b8de9bb7cbc6d137fc4bcddf5f921d, Build Date: 2013-03-04 07:48:24</notes>
    <authors>
@@ -24,7 +24,7 @@
          <email>magento@fabrizio-branca.de</email>
       </email>
    </authors>
-   <depends_php_min>5.2.0</depends_php_min>
+   <depends_php_min>5.3.0</depends_php_min>
    <depends_php_max>6.0.0</depends_php_max>
    <depends>
       <package>
@@ -41,7 +41,7 @@
             <max/>
          </max>
          <files>
-            <files>                                                  </files>
+            <files>                                                          </files>
          </files>
       </package>
       <extension>
@@ -58,7 +58,7 @@
    </depends>
    <contents>
       <target>
-         <target/>
+         <target>magelocal</target>
          <target>magecommunity</target>
          <target>mageetc</target>
          <target>mageweb</target>
@@ -67,6 +67,8 @@
          <target>magedesign</target>
          <target>magedesign</target>
          <target>mageskin</target>
+         <target>magelocale</target>
+         <target>mage</target>
       </target>
       <path>
          <path/>
@@ -78,9 +80,11 @@
          <path>/adminhtml/default/default/template/aoe_scheduler/</path>
          <path>/adminhtml/default/default/layout/aoe_scheduler/</path>
          <path>/adminhtml/default/default/aoe_scheduler/</path>
+         <path>/sv_SE/Aoe_Scheduler.csv</path>
+         <path>/scheduler_cron.sh</path>
       </path>
       <type>
-         <type/>
+         <type>file</type>
          <type>dir</type>
          <type>file</type>
          <type>file</type>
@@ -89,8 +93,12 @@
          <type>dir</type>
          <type>dir</type>
          <type>dir</type>
+         <type>file</type>
+         <type>file</type>
       </type>
       <include>
+         <include/>
+         <include/>
          <include/>
          <include/>
          <include/>
@@ -111,6 +119,12 @@
          <ignore/>
          <ignore/>
          <ignore/>
+         <ignore/>
+         <ignore/>
       </ignore>
    </contents>
+   <page>1</page>
+   <limit>200</limit>
+   <folder/>
+   <package/>
 </_>
