@@ -18,6 +18,15 @@ class Aoe_Scheduler_Shell_Scheduler extends Mage_Shell_Abstract
             } else {
                 $actionMethodName = $action . 'Action';
                 if (method_exists($this, $actionMethodName)) {
+                    // Disable use of SID in generated URLs - This is standard for cron job bootstrapping
+                    Mage::app()->setUseSessionInUrl(false);
+                    // Disable permissions masking by default - This is Magento standard, but not recommended for security reasons
+                    umask(0);
+                    // Load the global event area - This is non-standard be should be standard
+                    Mage::app()->addEventArea(Mage_Core_Model_App_Area::AREA_GLOBAL);
+                    // Load the crontab event area - This is standard for cron job bootstrapping
+                    Mage::app()->addEventArea('crontab');
+                    // Run the command
                     $this->$actionMethodName();
                 } else {
                     echo "Action $action not found!\n";
@@ -342,9 +351,6 @@ class Aoe_Scheduler_Shell_Scheduler extends Mage_Shell_Abstract
      */
     public function cronAction()
     {
-        Mage::app('admin')->setUseSessionInUrl(false);
-        umask(0);
-
         $mode = $this->getArg('mode');
         switch ($mode) {
             case 'always':
@@ -353,8 +359,6 @@ class Aoe_Scheduler_Shell_Scheduler extends Mage_Shell_Abstract
                 $excludeGroups = array_filter(array_map('trim', explode(',', $this->getArg('excludeGroups'))));
                 $includeJobs = array_filter(array_map('trim', explode(',', $this->getArg('includeJobs'))));
                 $excludeJobs = array_filter(array_map('trim', explode(',', $this->getArg('excludeJobs'))));
-                Mage::getConfig()->init()->loadEventObservers('crontab');
-                Mage::app()->addEventArea('crontab');
                 Mage::dispatchEvent($mode, array(
                     'include_groups' => $includeGroups,
                     'exclude_groups' => $excludeGroups,
