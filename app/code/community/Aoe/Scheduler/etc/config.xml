@@ -35,10 +35,12 @@
                     <schedule>Aoe_Scheduler_Model_Schedule</schedule>
                 </rewrite>
             </cron>
-
+            <cron_resource>
+                <rewrite>
+                    <schedule_collection>Aoe_Scheduler_Model_Resource_Schedule_Collection</schedule_collection>
+                </rewrite>
+            </cron_resource>
         </models>
-
-
 
         <template>
             <email>
