@@ -8,12 +8,8 @@ jQuery(function() {
             jQuery('.configuration input[name="use-crongroups"]').attr('checked', false).attr("disabled", true);
         }
         if (jQuery('.configuration input[name="use-crongroups"]').is(':checked')) {
-            jQuery('.configuration input[name="split-always-default"]').attr('checked', true).attr("disabled", true);
             jQuery('.configuration input[name="scheduler-cron"]').attr('checked', true).attr("disabled", true);
             jQuery('.crongroups').show();
-        } else if (jQuery('.configuration input[name="split-always-default"]').is(':checked')) {
-            jQuery('.configuration input[name="scheduler-cron"]').attr('checked', true).attr("disabled", true);
-            jQuery('.split').show();
         } else if (jQuery('.configuration input[name="scheduler-cron"]').is(':checked')) {
             jQuery('.scheduler').show();
         }

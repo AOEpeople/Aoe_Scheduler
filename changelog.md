@@ -1,5 +1,10 @@
 ## Changelog
 
+### Version 1.1.1
+
+- **Fixed Instructions**: When using `scheduler_cron.sh` (instead of `cron.sh`) you need to configure the default and always job in two seperate lines since we're not doing any ugly launching-processes-in-the-background there.
+The instructions were wrong before suggesting that `scheduler_cron.sh` only without any parameters would be a sufficient configuration. But this would lead to the always tasks never being executed.
+
 ### Version 1.1.0
 
 - **Error Log**: New configuration options were introduced that allow you to enable a per-job error-log that will be written to ```var/log/cron/<jobCode>_<jobId>.log```. Also you can specifiy the error level (defaults to '-1' which might be a little too verbose for many use cases). This will bypass Magento's `mageCoreErrorHandler` that would hide some errors.
