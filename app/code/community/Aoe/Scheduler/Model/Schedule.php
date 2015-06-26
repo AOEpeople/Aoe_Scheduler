@@ -388,12 +388,16 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
      * Request kill
      *
      * @param int $time
+     * @param string $message
      * @return $this
      */
-    public function requestKill($time = null)
+    public function requestKill($time=null, $message=null)
     {
         if (is_null($time)) {
             $time = time();
+        }
+        if (!is_null($message)) {
+            $this->addMessages($message);
         }
         $this->setKillRequest(strftime('%Y-%m-%d %H:%M:%S', $time))
            ->save();
