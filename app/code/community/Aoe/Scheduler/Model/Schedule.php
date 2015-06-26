@@ -589,10 +589,12 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
         $settings = array(
             'error_reporting' => intval(Mage::getStoreConfig('system/cron/errorLevel')),
             'log_errors' => true,
+            'display_errors' => true,
             'error_log' => $this->getErrorLogFile()
         );
 
-        set_error_handler(null); // switch to PHP default error handling
+        restore_error_handler();
+        // (doesn't work for PHP 5.3) set_error_handler(null); // switch to PHP default error handling
 
         if (!is_dir(dirname($settings['error_log']))) {
             mkdir(dirname($settings['error_log']), 0775, true);
