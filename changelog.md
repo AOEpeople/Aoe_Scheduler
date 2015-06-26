@@ -1,5 +1,12 @@
 ## Changelog
 
+### Version 1.1.2
+
+- **More robust process management**:
+  - Prevent all tasks to be cleaned up immediately if `system/cron/mark_as_error_after` was set to 0
+  - Check if task is alive before marking it disappeared
+  - Add message if job was killed because of `system/cron/max_job_runtime`
+
 ### Version 1.1.1
 
 - **Fixed Instructions**: When using `scheduler_cron.sh` (instead of `cron.sh`) you need to configure the default and always job in two seperate lines since we're not doing any ugly launching-processes-in-the-background there.
