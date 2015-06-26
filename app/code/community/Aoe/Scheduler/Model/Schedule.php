@@ -589,7 +589,7 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
         $settings = array(
             'error_reporting' => intval(Mage::getStoreConfig('system/cron/errorLevel')),
             'log_errors' => true,
-            'error_log' => Mage::getBaseDir('log') . DS . 'cron' . DS . $this->getId() . '.log'
+            'error_log' => $this->getErrorLogFile()
         );
 
         set_error_handler(null); // switch to PHP default error handling
@@ -619,6 +619,22 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
         foreach ($this->errorSettingsBackup as $key => $value) {
             ini_set($key, $value);
         }
+    }
+
+    /**
+     * Get error log filename
+     *
+     * @return string
+     */
+    public function getErrorLogFile()
+    {
+        $replace = array(
+            '###PID###' => $this->getPid(),
+            '###ID###' => $this->getId(),
+            '###JOBCODE###' => $this->getJobCode()
+        );
+        $basedir = Mage::getBaseDir('log') . DS . 'cron' . DS;
+        return $basedir . str_replace(array_keys($replace), array_values($replace), Mage::getStoreConfig('system/cron/errorLogFilename'));
     }
 
     /**

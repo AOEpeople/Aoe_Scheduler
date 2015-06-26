@@ -160,6 +160,7 @@
                 <enableRunNow>0</enableRunNow>
                 <enableErrorLog>0</enableErrorLog>
                 <errorLevel>-1</errorLevel>
+                <errorLogFilename>###JOBCODE###.log</errorLogFilename>
             </cron>
         </system>
     </default>

@@ -109,7 +109,7 @@
 
                         <enableErrorLog translate="label">
                             <label>Enable Error Log</label>
-                            <comment><![CDATA[If enabled AOE_Scheduler will bypass Magento's error handling and will capture the error log in a schedule specific file in var/log/cron/<jobId>.log]]></comment>
+                            <comment><![CDATA[If enabled AOE_Scheduler will bypass Magento's error handling and will capture the error log in a schedule specific file in var/log/cron/]]></comment>
                             <frontend_type>select</frontend_type>
                             <source_model>adminhtml/system_config_source_yesno</source_model>
                             <sort_order>210</sort_order>
@@ -118,7 +118,7 @@
 
                         <errorLevel translate="label">
                             <label>Error Level</label>
-                            <comment><![CDATA[Error level accepted by 'error_reporting'. This needs to be the int value. Constants are not supported! Example: -1 or 32767 (E_ALL) to log everything. ]]></comment>
+                            <comment><![CDATA[Error level accepted by 'error_reporting'. This needs to be the int value. Constants are not supported! Example: -1 or 32767 (E_ALL) to log everything.]]></comment>
                             <frontend_type>text</frontend_type>
                             <sort_order>220</sort_order>
                             <show_in_default>1</show_in_default>
@@ -126,6 +126,17 @@
                                 <enableErrorLog>1</enableErrorLog>
                             </depends>
                         </errorLevel>
+
+                        <errorLogFilename translate="label">
+                            <label>Error log filename</label>
+                            <comment><![CDATA[###PID### will be replaced with the process id.<br />###ID### will be replaced with the job id.<br />###JOBCODE### will be replaced with the job code.]]></comment>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>230</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <depends>
+                                <enableErrorLog>1</enableErrorLog>
+                            </depends>
+                        </errorLogFilename>
 
                     </fields>
                 </cron>

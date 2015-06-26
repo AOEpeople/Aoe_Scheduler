@@ -2,8 +2,9 @@
 
 ### Version 1.1.0
 
-- **Error Log**: New configuration options were introduced that allow you to enable a per-job error-log that will be written to ```var/log/cron/<jobId>.log```. Also you can specifiy the error level (defaults to '-1' which might be a little too verbose for many use cases). This will bypass Magento's `mageCoreErrorHandler` that would hide some errors.
+- **Error Log**: New configuration options were introduced that allow you to enable a per-job error-log that will be written to ```var/log/cron/<jobCode>_<jobId>.log```. Also you can specifiy the error level (defaults to '-1' which might be a little too verbose for many use cases). This will bypass Magento's `mageCoreErrorHandler` that would hide some errors.
 Please note that currently the files in var/log/cron will not be automatically deleted (even if the corresponding job is deleted). Until this feature will be added please use log rotation or other scripts to prevent that directory from growing.
+The filename and the prefix can be configured.
 - **New states**: Introduced `Aoe_Scheduler_Model_Schedule::STATUS_SKIP_LOCKED` and `Aoe_Scheduler_Model_Schedule::STATUS_SKIP_OTHERJOBRUNNING` for more fine-grained information why a job wasn't run.
 Also the grid and timeline view will now show these skipped jobs.
 - **Bugfix**: Timeline view didn't render if jobs had been executed via `php scheduler.php --action runNow --code <jobCode>`
