@@ -42,6 +42,9 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
     const STATUS_DISAPPEARED = 'gone'; // the status field is limited to 7 characters
     const STATUS_DIDNTDOANYTHING = 'nothing';
 
+    const STATUS_SKIP_LOCKED = 'locked';
+    const STATUS_SKIP_OTHERJOBRUNNING = 'other_job_running';
+
     const REASON_RUNNOW_WEB = 'run_now_web';
     const REASON_SCHEDULENOW_WEB = 'schedule_now_web';
     const REASON_RUNNOW_CLI = 'run_now_cli';
@@ -85,6 +88,13 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
      */
     protected $_redirectOutputHandlerChunkSize = 100; // bytes
 
+    /**
+     * Backup of the original error settings
+     *
+     * @var array
+     */
+    protected $errorSettingsBackup = array();
+
 
     /**
      * Initialize from job
@@ -109,10 +119,16 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
      */
     public function runNow($tryLockJob = true)
     {
+        // if this schedule doesn't exist yet, create it
+        if (!$this->getCreatedAt()) {
+            $this->schedule();
+        }
+
         // lock job (see below) prevents the exact same schedule from being executed from more than one process (or server)
         // the following check will prevent multiple schedules of the same type to be run in parallel
         $processManager = Mage::getModel('aoe_scheduler/processManager'); /* @var $processManager Aoe_Scheduler_Model_ProcessManager */
         if ($processManager->isJobCodeRunning($this->getJobCode(), $this->getId())) {
+            $this->setStatus(self::STATUS_SKIP_OTHERJOBRUNNING);
             $this->log(sprintf('Job "%s" (id: %s) will not be executed because there is already another process with the same job code running. Skipping.', $this->getJobCode(), $this->getId()));
             return $this;
         }
@@ -121,15 +137,11 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
         // workaround could be to do this: $this->setStatus(Mage_Cron_Model_Schedule::STATUS_PENDING)->save();
         $this->jobWasLocked = false;
         if ($tryLockJob && !$this->tryLockJob()) {
+            $this->setStatus(self::STATUS_SKIP_LOCKED);
             // another cron started this job intermittently, so skip it
             $this->jobWasLocked = true;
             $this->log(sprintf('Job "%s" (id: %s) is locked. Skipping.', $this->getJobCode(), $this->getId()));
             return $this;
-        }
-
-        // if this schedule doesn't exist yet, create it
-        if (!$this->getCreatedAt()) {
-            $this->schedule();
         }
 
         try {
@@ -138,8 +150,6 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
             if (!$job) {
                 Mage::throwException(sprintf("Could not create job with jobCode '%s'", $this->getJobCode()));
             }
-
-            $callback = $job->getCallback();
 
             $startTime = time();
             $this
@@ -159,10 +169,16 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
             $this->log('Start: ' . $this->getJobCode());
 
             $this->_startBufferToMessages();
+            $this->jobErrorContext();
+
+            $callback = $job->getCallback();
+
             try {
                 $messages = call_user_func_array($callback, array($this));
+                $this->restoreErrorContext();
                 $this->_stopBufferToMessages();
             } catch (Exception $e) {
+                $this->restoreErrorContext();
                 $this->_stopBufferToMessages();
                 throw $e;
             }
@@ -559,6 +575,66 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
         } else {
             return false;
         }
+    }
+
+    /**
+     * Switch the job error context
+     */
+    protected function jobErrorContext()
+    {
+        if (!Mage::getStoreConfigFlag('system/cron/enableErrorLog')) {
+            return;
+        }
+
+        $settings = array(
+            'error_reporting' => intval(Mage::getStoreConfig('system/cron/errorLevel')),
+            'log_errors' => true,
+            'error_log' => $this->getErrorLogFile()
+        );
+
+        set_error_handler(null); // switch to PHP default error handling
+
+        if (!is_dir(dirname($settings['error_log']))) {
+            mkdir(dirname($settings['error_log']), 0775, true);
+        }
+
+        foreach ($settings as $key => $value) {
+            // backup original settings first
+            $this->errorSettingsBackup[$key] = ini_get($key);
+            // set new value
+            ini_set($key, $value);
+        }
+    }
+
+    /**
+     * Restore the original error context
+     */
+    protected function restoreErrorContext()
+    {
+        if (!Mage::getStoreConfigFlag('system/cron/enableErrorLog')) {
+            return;
+        }
+
+        restore_error_handler();
+        foreach ($this->errorSettingsBackup as $key => $value) {
+            ini_set($key, $value);
+        }
+    }
+
+    /**
+     * Get error log filename
+     *
+     * @return string
+     */
+    public function getErrorLogFile()
+    {
+        $replace = array(
+            '###PID###' => $this->getPid(),
+            '###ID###' => $this->getId(),
+            '###JOBCODE###' => $this->getJobCode()
+        );
+        $basedir = Mage::getBaseDir('log') . DS . 'cron' . DS;
+        return $basedir . str_replace(array_keys($replace), array_values($replace), Mage::getStoreConfig('system/cron/errorLogFilename'));
     }
 
     /**

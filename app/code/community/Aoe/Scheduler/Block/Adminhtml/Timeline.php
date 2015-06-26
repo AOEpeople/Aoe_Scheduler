@@ -102,6 +102,9 @@ class Aoe_Scheduler_Block_Adminhtml_Timeline extends Mage_Adminhtml_Block_Widget
         foreach ($collection as $schedule) {
             /* @var Aoe_Scheduler_Model_Schedule $schedule */
             $startTime = $schedule->getStarttime();
+            if (empty($startTime)) {
+                continue;
+            }
             $minDate = is_null($minDate) ? $startTime : min($minDate, $startTime);
             $maxDate = is_null($maxDate) ? $startTime : max($maxDate, $startTime);
             $this->schedules[$schedule->getJobCode()][] = $schedule;

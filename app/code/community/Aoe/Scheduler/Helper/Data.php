@@ -62,6 +62,8 @@ class Aoe_Scheduler_Helper_Data extends Mage_Core_Helper_Abstract
             case Mage_Cron_Model_Schedule::STATUS_RUNNING:
                 $result = '<span class="bar-yellow"><span>' . $status . '</span></span>';
                 break;
+            case Aoe_Scheduler_Model_Schedule::STATUS_SKIP_OTHERJOBRUNNING:
+            case Aoe_Scheduler_Model_Schedule::STATUS_SKIP_LOCKED:
             case Mage_Cron_Model_Schedule::STATUS_MISSED:
                 $result = '<span class="bar-orange"><span>' . $status . '</span></span>';
                 break;
