@@ -32,6 +32,12 @@ class Aoe_Scheduler_Model_Task_Test
         }
         sleep($duration);
 
+        /* // testing the error log feature...
+        array_keys('ssdsd');
+        error_log( "Hello, errors!" );
+        $t = I_AM_NOT_DEFINED;
+        */
+
         if ($parameters && $parameters['outcome'] == 'error') {
             return 'ERROR: This schedule has failed.';
         }

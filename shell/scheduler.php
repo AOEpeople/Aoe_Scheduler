@@ -184,7 +184,8 @@ class Aoe_Scheduler_Shell_Scheduler extends Mage_Shell_Abstract
         }
         $schedule->save();
 
-        echo "Status: " . $schedule->getStatus() . "\nMessages:\n" . trim($schedule->getMessages(), "\n") . "\n";
+        echo "\nStatus: " . $schedule->getStatus() . "\n";
+        echo "Messages:\n" . trim($schedule->getMessages(), "\n") . "\n";
     }
 
     /**

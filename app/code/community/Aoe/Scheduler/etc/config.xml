@@ -158,6 +158,8 @@
                 <error_email_template>system_cron_error_email_template</error_email_template>
                 <logFile>cron.log</logFile>
                 <enableRunNow>0</enableRunNow>
+                <enableErrorLog>0</enableErrorLog>
+                <errorLevel>-1</errorLevel>
             </cron>
         </system>
     </default>
