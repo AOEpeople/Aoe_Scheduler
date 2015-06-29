@@ -391,7 +391,7 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
      * @param string $message
      * @return $this
      */
-    public function requestKill($time=null, $message=null)
+    public function requestKill($time = null, $message = null)
     {
         if (is_null($time)) {
             $time = time();
