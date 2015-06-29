@@ -6,8 +6,6 @@
 
 [![waffle.io](https://badge.waffle.io/aoepeople/aoe_scheduler.png?label=ready&title=waffle.io)](https://waffle.io/aoepeople/aoe_scheduler)
 
-https://badge.waffle.io/aoepeople/aoe_scheduler.png?label=ready&title=waffle.io
-
 AOE Scheduler sits on top of Magento's default cron functionality allowing you to manage the jobs, to visualize the timeline and to get some deeper insight on what's going on behind the scenes and to shed some light on what might be going wrong. On top of that AOE Scheduler provides some more functionality like a cli and a web service interface, optimizing cron execution on your server and giving you everything you need to implement complex background tasks including for your Magento store.
 
 ![](doc/images/timeline2.jpg)
