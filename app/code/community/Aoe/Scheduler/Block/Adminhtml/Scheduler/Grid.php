@@ -176,6 +176,7 @@ class Aoe_Scheduler_Block_Adminhtml_Scheduler_Grid extends Mage_Adminhtml_Block_
                     Aoe_Scheduler_Model_Schedule::STATUS_DIDNTDOANYTHING      => Aoe_Scheduler_Model_Schedule::STATUS_DIDNTDOANYTHING,
                     Aoe_Scheduler_Model_Schedule::STATUS_SKIP_LOCKED          => Aoe_Scheduler_Model_Schedule::STATUS_SKIP_LOCKED,
                     Aoe_Scheduler_Model_Schedule::STATUS_SKIP_OTHERJOBRUNNING => Aoe_Scheduler_Model_Schedule::STATUS_SKIP_OTHERJOBRUNNING,
+                    Aoe_Scheduler_Model_Schedule::STATUS_DIED                 => Aoe_Scheduler_Model_Schedule::STATUS_DIED,
                 )
             )
         );

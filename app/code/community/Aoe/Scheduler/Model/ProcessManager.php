@@ -127,8 +127,6 @@ class Aoe_Scheduler_Model_ProcessManager
 
     }
 
-
-
     /**
      * Process kill requests
      *

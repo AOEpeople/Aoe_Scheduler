@@ -1,5 +1,14 @@
 ## Changelog
 
+### Version 1.2.0
+
+- **Even more robust process management**:
+  - Now no job should ever disappear without you being able to track what happened. Using `register_shutdown_function()`, 'pcntl_signal()` and the custom php error logs introduced in 1.1 you should be able to detect
+     - if a job died because of a PHP fatal error
+     - if there was a hidden `exit` or `die` in the job implementation that would have resulted in the scheduler to stop without saving the status
+     - if the script stopped because of the memory_limit
+     - if the process was killed from outside (using CTRL+C or `kill <pid>`. Please note that `kill -9 <pid>` can not be detected!)
+
 ### Version 1.1.2
 
 - **More robust process management**:
