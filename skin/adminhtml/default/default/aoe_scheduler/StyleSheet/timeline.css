@@ -141,6 +141,7 @@ div.hours {
 
 .details-headline.error, .task.error,
 .details-headline.killed, .task.killed,
+.details-headline.died, .task.died,
 .details-headline.gone, .task.gone { background-color: #E41300; }
 
 .details-headline.success, .task.success { background-color: #36B963; }

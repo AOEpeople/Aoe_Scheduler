@@ -39,11 +39,13 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
 {
 
     const STATUS_KILLED = 'killed';
-    const STATUS_DISAPPEARED = 'gone'; // the status field is limited to 7 characters
+    const STATUS_DISAPPEARED = 'gone';
     const STATUS_DIDNTDOANYTHING = 'nothing';
 
     const STATUS_SKIP_LOCKED = 'locked';
     const STATUS_SKIP_OTHERJOBRUNNING = 'other_job_running';
+
+    const STATUS_DIED = 'died'; // note that died != killed
 
     const REASON_RUNNOW_WEB = 'run_now_web';
     const REASON_SCHEDULENOW_WEB = 'schedule_now_web';
@@ -160,6 +162,10 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
                 ->setPid(getmypid())
                 ->save();
 
+            Aoe_Scheduler_Helper_GracefulDead::configure();
+
+            $GLOBALS['currently_running_schedule'] = $this;
+
             Mage::dispatchEvent('cron_' . $this->getJobCode() . '_before', array('schedule' => $this));
             Mage::dispatchEvent('cron_before', array('schedule' => $this));
 
@@ -174,7 +180,9 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
             $callback = $job->getCallback();
 
             try {
+                // this is where the magic happens
                 $messages = call_user_func_array($callback, array($this));
+
                 $this->restoreErrorContext();
                 $this->_stopBufferToMessages();
             } catch (Exception $e) {
@@ -223,6 +231,7 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
         Mage::dispatchEvent('cron_after', array('schedule' => $this));
 
         $this->save();
+        unset($GLOBALS['currently_running_schedule']);
 
         return $this;
     }
