@@ -808,4 +808,21 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
         }
         return $this;
     }
+
+    /**
+     * Gets statuses that are currently in the scheduler table
+     *
+     * @return array
+     */
+    public function getStatuses()
+    {
+        $statuses = clone $this->getCollection()
+            ->setOrder('status', Zend_Db_Select::SQL_ASC);
+        $statuses->getSelect()
+            ->group('status')
+            ->reset(Zend_Db_Select::COLUMNS)
+            ->columns('status');
+        return $statuses->getConnection()
+            ->fetchCol($statuses->getSelect());
+    }
 }

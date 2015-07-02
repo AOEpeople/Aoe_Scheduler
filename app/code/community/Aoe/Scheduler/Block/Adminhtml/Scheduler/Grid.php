@@ -165,19 +165,7 @@ class Aoe_Scheduler_Block_Adminhtml_Scheduler_Grid extends Mage_Adminhtml_Block_
                 'index'          => 'status',
                 'frame_callback' => array($viewHelper, 'decorateStatus'),
                 'type'           => 'options',
-                'options'        => array(
-                    Mage_Cron_Model_Schedule::STATUS_PENDING                  => Mage_Cron_Model_Schedule::STATUS_PENDING,
-                    Mage_Cron_Model_Schedule::STATUS_SUCCESS                  => Mage_Cron_Model_Schedule::STATUS_SUCCESS,
-                    Mage_Cron_Model_Schedule::STATUS_ERROR                    => Mage_Cron_Model_Schedule::STATUS_ERROR,
-                    Mage_Cron_Model_Schedule::STATUS_MISSED                   => Mage_Cron_Model_Schedule::STATUS_MISSED,
-                    Mage_Cron_Model_Schedule::STATUS_RUNNING                  => Mage_Cron_Model_Schedule::STATUS_RUNNING,
-                    Aoe_Scheduler_Model_Schedule::STATUS_DISAPPEARED          => Aoe_Scheduler_Model_Schedule::STATUS_DISAPPEARED,
-                    Aoe_Scheduler_Model_Schedule::STATUS_KILLED               => Aoe_Scheduler_Model_Schedule::STATUS_KILLED,
-                    Aoe_Scheduler_Model_Schedule::STATUS_DIDNTDOANYTHING      => Aoe_Scheduler_Model_Schedule::STATUS_DIDNTDOANYTHING,
-                    Aoe_Scheduler_Model_Schedule::STATUS_SKIP_LOCKED          => Aoe_Scheduler_Model_Schedule::STATUS_SKIP_LOCKED,
-                    Aoe_Scheduler_Model_Schedule::STATUS_SKIP_OTHERJOBRUNNING => Aoe_Scheduler_Model_Schedule::STATUS_SKIP_OTHERJOBRUNNING,
-                    Aoe_Scheduler_Model_Schedule::STATUS_DIED                 => Aoe_Scheduler_Model_Schedule::STATUS_DIED,
-                )
+                'options'        => Mage::getSingleton('cron/schedule')->getStatuses()
             )
         );
 
