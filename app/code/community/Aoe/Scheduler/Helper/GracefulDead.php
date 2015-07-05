@@ -16,17 +16,17 @@ class Aoe_Scheduler_Helper_GracefulDead
     {
         static $configured = false;
         if (!$configured) {
-            register_shutdown_function(array('Aoe_Scheduler_Helper_GracefulDead', 'beforeDying_shutdown'));
+            register_shutdown_function(array('Aoe_Scheduler_Helper_GracefulDead', 'beforeDyingShutdown'));
             if (extension_loaded('pcntl')) {
                 declare(ticks = 1);
-                pcntl_signal(SIGINT, array('Aoe_Scheduler_Helper_GracefulDead', 'beforeDying_sigint')); // CTRL + C
-                pcntl_signal(SIGTERM, array('Aoe_Scheduler_Helper_GracefulDead', 'beforeDying_sigterm')); // kill <pid>
+                pcntl_signal(SIGINT, array('Aoe_Scheduler_Helper_GracefulDead', 'beforeDyingSigint')); // CTRL + C
+                pcntl_signal(SIGTERM, array('Aoe_Scheduler_Helper_GracefulDead', 'beforeDyingSigterm')); // kill <pid>
             }
             $configured = true;
         }
     }
 
-    public static function beforeDying($message=null, $exit=false)
+    public static function beforeDying($message = null, $exit = false)
     {
         if (isset($GLOBALS['currently_running_schedule'])) {
             $schedule = $GLOBALS['currently_running_schedule'];  /* @var $schedule Aoe_Scheduler_Model_Schedule */
@@ -47,7 +47,7 @@ class Aoe_Scheduler_Helper_GracefulDead
     /**
      * Callback
      */
-    public static function beforeDying_shutdown()
+    public static function beforeDyingShutdown()
     {
         self::beforeDying('TRIGGER: shutdown function', false);
     }
@@ -55,7 +55,7 @@ class Aoe_Scheduler_Helper_GracefulDead
     /**
      * Callback
      */
-    public static function beforeDying_sigint()
+    public static function beforeDyingSigint()
     {
         self::beforeDying('TRIGGER: Signal SIGINT', true);
     }
@@ -63,7 +63,7 @@ class Aoe_Scheduler_Helper_GracefulDead
     /**
      * Callback
      */
-    public static function beforeDying_sigterm()
+    public static function beforeDyingSigterm()
     {
         self::beforeDying('TRIGGER: Signal SIGTERM', true);
     }
