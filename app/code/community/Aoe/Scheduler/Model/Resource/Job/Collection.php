@@ -13,8 +13,6 @@ class Aoe_Scheduler_Model_Resource_Job_Collection extends Varien_Data_Collection
     {
         $this->model = 'aoe_scheduler/job';
         $this->resourceModel = 'aoe_scheduler/job';
-
-        return $this;
     }
 
     /**

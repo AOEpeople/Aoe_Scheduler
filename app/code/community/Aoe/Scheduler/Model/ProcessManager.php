@@ -31,7 +31,7 @@ class Aoe_Scheduler_Model_ProcessManager
     /**
      * Get all schedules marked as to be killed
      *
-     * @param null $host
+     * @param string|null $host
      * @return object
      */
     public function getAllKillRequests($host = null)
