@@ -28,8 +28,8 @@ class Aoe_Scheduler_Helper_GracefulDead
 
     public static function beforeDying($message = null, $exit = false)
     {
-        if (isset($GLOBALS['currently_running_schedule'])) {
-            $schedule = $GLOBALS['currently_running_schedule'];  /* @var $schedule Aoe_Scheduler_Model_Schedule */
+        $schedule = Mage::registry('currently_running_schedule');  /* @var $schedule Aoe_Scheduler_Model_Schedule */
+        if ($schedule !== null) {
             if ($message) {
                 $schedule->addMessages($message);
             }
@@ -37,7 +37,7 @@ class Aoe_Scheduler_Helper_GracefulDead
                 ->setStatus(Aoe_Scheduler_Model_Schedule::STATUS_DIED)
                 ->setFinishedAt(strftime('%Y-%m-%d %H:%M:%S', time()))
                 ->save();
-            unset($GLOBALS['currently_running_schedule']);
+            Mage::unregister('currently_running_schedule');
         }
         if ($exit) {
             exit;

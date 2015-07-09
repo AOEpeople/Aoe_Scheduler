@@ -164,7 +164,7 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
 
             Aoe_Scheduler_Helper_GracefulDead::configure();
 
-            $GLOBALS['currently_running_schedule'] = $this;
+            Mage::register('currently_running_schedule', $this);
 
             Mage::dispatchEvent('cron_' . $this->getJobCode() . '_before', array('schedule' => $this));
             Mage::dispatchEvent('cron_before', array('schedule' => $this));
@@ -231,7 +231,7 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
         Mage::dispatchEvent('cron_after', array('schedule' => $this));
 
         $this->save();
-        unset($GLOBALS['currently_running_schedule']);
+        Mage::unregister('currently_running_schedule');
 
         return $this;
     }
