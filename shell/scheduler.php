@@ -349,12 +349,19 @@ class Aoe_Scheduler_Shell_Scheduler extends Mage_Shell_Abstract
         switch ($mode) {
             case 'always':
             case 'default':
-                $includeGroups = array_filter(array_map('trim', explode(',', $this->getArg('include'))));
-                $excludeGroups = array_filter(array_map('trim', explode(',', $this->getArg('exclude'))));
-                Mage::getConfig()->init()->loadEventObservers('crontab');
-                Mage::app()->addEventArea('crontab');
-                Mage::dispatchEvent($mode, array('include' => $includeGroups, 'exclude' => $excludeGroups));
-                break;
+            $includeGroups = array_filter(array_map('trim', explode(',', $this->getArg('includeGroups'))));
+            $excludeGroups = array_filter(array_map('trim', explode(',', $this->getArg('excludeGroups'))));
+            $includeJobs = array_filter(array_map('trim', explode(',', $this->getArg('includeJobs'))));
+            $excludeJobs = array_filter(array_map('trim', explode(',', $this->getArg('excludeJobs'))));
+            Mage::getConfig()->init()->loadEventObservers('crontab');
+            Mage::app()->addEventArea('crontab');
+            Mage::dispatchEvent($mode, array(
+                'include_groups' => $includeGroups,
+                'exclude_groups' => $excludeGroups,
+                'include_jobs' => $includeJobs,
+                'exclude_jobs' => $excludeJobs,
+            ));
+            break;
             default:
                 echo "\nInvalid mode!\n\n";
                 echo $this->usageHelp();
