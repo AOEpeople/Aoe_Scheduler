@@ -361,7 +361,7 @@ class Aoe_Scheduler_Shell_Scheduler extends Mage_Shell_Abstract
                     'include_jobs' => $includeJobs,
                     'exclude_jobs' => $excludeJobs,
                 ));
-            break;
+                break;
             default:
                 echo "\nInvalid mode!\n\n";
                 echo $this->usageHelp();
