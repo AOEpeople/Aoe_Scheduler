@@ -40,6 +40,9 @@ INCLUDE_GROUPS=""
 EXCLUDE_GROUPS=""
 INCLUDE_JOBS=""
 EXCLUDE_JOBS=""
+ACTION=""
+WORKERS=10
+WAIT=1
 
 # Parse command line args (very simplistic)
 while [ $# -gt 0 ]; do
@@ -64,6 +67,18 @@ while [ $# -gt 0 ]; do
             EXCLUDE_JOBS=$2
             shift 2
         ;;
+        --action)
+            ACTION=$2
+            shift 2
+        ;;
+        --workers)
+            WORKERS=$2
+            shift 2
+        ;;
+        --wait)
+            WAIT=$2
+            shift 2
+        ;;
         --)
             shift
             break
@@ -79,6 +94,74 @@ done
 if [ -z "${MODE}" ]; then
     echo "Cron run mode MUST be defined." 1>&2
     exit 1
+fi
+
+if [ "${MODE}" = "daemonize" ]; then
+    cd "${DIR}"
+    while true; do
+        # Count the number of running jobs right now
+        RUNNING_WORKERS=`ps aux | grep "${SCHEDULER} --action daemonRun" | grep -v grep | wc -l`
+        # Only fetch the next job if there are enough available workers
+        if [ "${RUNNING_WORKERS}" -lt ${WORKERS} ]; then
+            # Fetches the next schedule --code and --id to run
+            NEXT_JOB=`${PHP_BIN} ${SCHEDULER} --action daemonNext`
+            if [ ! -z "${NEXT_JOB}" ]; then
+                # Strip the --id param so we can search for jobs with the same code
+                NEXT_WITHOUT_ID=`echo $NEXT_JOB | sed -r 's/--id [0-9]+//g'`
+                # Only run this schedule now if a worker is not running a job with the same code
+                if ! ps auxwww | grep "${SCHEDULER} --action daemonRun ${NEXT_WITHOUT_ID}" | grep -v grep 1>/dev/null 2>/dev/null ; then
+                    "${PHP_BIN}" "${SCHEDULER}" --action daemonRun ${NEXT_JOB} &
+                else
+                    # Otherwise mark it as missed
+                    "${PHP_BIN}" "${SCHEDULER}" --action daemonMultiple ${NEXT_JOB} &
+                fi
+            fi
+        fi
+        sleep "${WAIT}"
+    done
+fi
+
+function getDaemonPid {
+    DAEMON_PID=`ps aux | grep "$0 --mode daemonize" | grep -v grep | awk '{print $2}'`
+}
+
+if [ "${MODE}" = "daemon" ]; then
+    getDaemonPid
+    case "${ACTION}" in
+        start)
+            if [ ! -z "${DAEMON_PID}" ]; then
+                echo "Daemon is already running"
+            else
+                $0 --mode daemonize &
+                getDaemonPid
+                echo "Daemon started, PID ${DAEMON_PID}"
+            fi
+        ;;
+        stop)
+            if [ -z "${DAEMON_PID}" ]; then
+                echo "Daemon is not running"
+            else
+                kill "${DAEMON_PID}"
+                getDaemonPid
+                if [ -z "${DAEMON_PID}" ]; then
+                    echo "Daemon stopped"
+                else
+                    echo "Failed to stop daemon"
+                fi
+            fi
+        ;;
+        status)
+            if [ ! -z "${DAEMON_PID}" ]; then
+                echo "Daemon is running, PID ${DAEMON_PID}"
+            else
+                echo "Daemon is not running"
+            fi
+        ;;
+        *)
+            echo "Usage: ./scheduler_cron.sh --mode daemon --action (start|stop|status)"
+        ;;
+    esac
+    exit 0
 fi
 
 # Unique identifier for this cron job run
