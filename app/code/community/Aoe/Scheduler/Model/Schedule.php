@@ -816,13 +816,18 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
      */
     public function getStatuses()
     {
-        $statuses = clone $this->getCollection()
+        $schedules = clone $this->getCollection()
             ->setOrder('status', Zend_Db_Select::SQL_ASC);
-        $statuses->getSelect()
+        $schedules->getSelect()
             ->group('status')
             ->reset(Zend_Db_Select::COLUMNS)
             ->columns('status');
-        return $statuses->getConnection()
-            ->fetchCol($statuses->getSelect());
+        $statuses = $schedules->getConnection()
+            ->fetchCol($schedules->getSelect());
+        $statusArray = array();
+        foreach ($statuses as $status) {
+            $statusArray[$status] = $status;
+        }
+        return $statusArray;
     }
 }
