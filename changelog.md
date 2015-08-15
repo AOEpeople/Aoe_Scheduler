@@ -1,5 +1,8 @@
 ## Changelog
 
+
+- **Fix**: Died jobs does not get cleaned (#146) 
+
 ### Version 1.2.1
 
 - **Fix**: Lock identifiers in scheduler_cron.php might be wrong (Thanks, @Caprico85)
