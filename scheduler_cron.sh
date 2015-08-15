@@ -82,7 +82,7 @@ if [ -z "${MODE}" ]; then
 fi
 
 # Unique identifier for this cron job run
-IDENTIFIER=$(echo -n "${MODE}${INCLUDE_GROUPS}${EXCLUDE_GROUPS}${INCLUDE_JOBS}${EXCLUDE_JOBS}" | "${MD5SUM_BIN}" - | cut -f1 -d' ')
+IDENTIFIER=$(echo -n "${MODE}|${INCLUDE_GROUPS}|${EXCLUDE_GROUPS}|${INCLUDE_JOBS}|${EXCLUDE_JOBS}" | "${MD5SUM_BIN}" - | cut -f1 -d' ')
 
 # Lock process to one run per set of options (This REQUIRES 'set -e' or 'set -o errexit')
 # This is to prevent multiple processes for the same cron parameters (And the only reason we don't call PHP directly)
