@@ -94,7 +94,7 @@ class Aoe_Scheduler_Adminhtml_JobController extends Aoe_Scheduler_Controller_Abs
 
             $messages = $schedule->getMessages();
 
-            if (in_array($schedule->getStatus(), array(Aoe_Scheduler_Model_Schedule::STATUS_SUCCESS, Aoe_Scheduler_Model_Schedule::STATUS_DIDNTDOANYTHING)) {
+            if (in_array($schedule->getStatus(), array(Aoe_Scheduler_Model_Schedule::STATUS_SUCCESS, Aoe_Scheduler_Model_Schedule::STATUS_DIDNTDOANYTHING))) {
                 $this->_getSession()->addSuccess($this->__('Ran "%s" (Duration: %s sec)', $key, intval($schedule->getDuration())));
                 if ($messages) {
                     $this->_getSession()->addSuccess($this->__('"%s" messages:<pre>%s</pre>', $key, $messages));
