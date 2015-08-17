@@ -53,21 +53,21 @@ class Aoe_Scheduler_Helper_Data extends Mage_Core_Helper_Abstract
     public function decorateStatus($status)
     {
         switch ($status) {
-            case Mage_Cron_Model_Schedule::STATUS_SUCCESS:
+            case Aoe_Scheduler_Model_Schedule::STATUS_SUCCESS:
                 $result = '<span class="bar-green"><span>' . $status . '</span></span>';
                 break;
-            case Mage_Cron_Model_Schedule::STATUS_PENDING:
+            case Aoe_Scheduler_Model_Schedule::STATUS_PENDING:
                 $result = '<span class="bar-lightgray"><span>' . $status . '</span></span>';
                 break;
-            case Mage_Cron_Model_Schedule::STATUS_RUNNING:
+            case Aoe_Scheduler_Model_Schedule::STATUS_RUNNING:
                 $result = '<span class="bar-yellow"><span>' . $status . '</span></span>';
                 break;
             case Aoe_Scheduler_Model_Schedule::STATUS_SKIP_OTHERJOBRUNNING:
             case Aoe_Scheduler_Model_Schedule::STATUS_SKIP_LOCKED:
-            case Mage_Cron_Model_Schedule::STATUS_MISSED:
+            case Aoe_Scheduler_Model_Schedule::STATUS_MISSED:
                 $result = '<span class="bar-orange"><span>' . $status . '</span></span>';
                 break;
-            case Mage_Cron_Model_Schedule::STATUS_ERROR:
+            case Aoe_Scheduler_Model_Schedule::STATUS_ERROR:
             case Aoe_Scheduler_Model_Schedule::STATUS_DISAPPEARED:
             case Aoe_Scheduler_Model_Schedule::STATUS_KILLED:
                 $result = '<span class="bar-red"><span>' . $status . '</span></span>';
@@ -136,7 +136,7 @@ class Aoe_Scheduler_Helper_Data extends Mage_Core_Helper_Abstract
         }
         $schedules = Mage::getModel('cron/schedule')->getCollection(); /* @var $schedules Mage_Cron_Model_Mysql4_Schedule_Collection */
         $schedules->getSelect()->limit(1)->order('executed_at DESC');
-        $schedules->addFieldToFilter('status', Mage_Cron_Model_Schedule::STATUS_SUCCESS);
+        $schedules->addFieldToFilter('status', Aoe_Scheduler_Model_Schedule::STATUS_SUCCESS);
         $schedules->addFieldToFilter('job_code', $jobCode);
         $schedules->load();
         if (count($schedules) == 0) {

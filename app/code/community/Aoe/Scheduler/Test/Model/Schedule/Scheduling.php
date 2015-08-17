@@ -49,7 +49,7 @@ class Aoe_Scheduler_Test_Model_Schedule_Scheduling extends EcomDev_PHPUnit_Test_
         // check for pending status
         $loadedSchedule = Mage::getModel('cron/schedule')->load($scheduleId); /* @var Aoe_Scheduler_Model_Schedule $loadedSchedule */
         $this->assertEquals($scheduleId, $loadedSchedule->getId());
-        $this->assertEquals(Mage_Cron_Model_Schedule::STATUS_PENDING, $loadedSchedule->getStatus());
+        $this->assertEquals(Aoe_Scheduler_Model_Schedule::STATUS_PENDING, $loadedSchedule->getStatus());
 
         // run cron
         $runCronCallBack();
@@ -57,7 +57,7 @@ class Aoe_Scheduler_Test_Model_Schedule_Scheduling extends EcomDev_PHPUnit_Test_
         // check for success status
         $loadedSchedule = Mage::getModel('cron/schedule')->load($scheduleId); /* @var Aoe_Scheduler_Model_Schedule $loadedSchedule */
         $this->assertEquals($scheduleId, $loadedSchedule->getId());
-        $this->assertEquals(Mage_Cron_Model_Schedule::STATUS_SUCCESS, $loadedSchedule->getStatus());
+        $this->assertEquals(Aoe_Scheduler_Model_Schedule::STATUS_SUCCESS, $loadedSchedule->getStatus());
     }
 
     /**

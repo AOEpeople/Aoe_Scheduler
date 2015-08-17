@@ -44,7 +44,7 @@ class Aoe_Scheduler_Test_Model_Schedule_Runnow extends EcomDev_PHPUnit_Test_Case
         $this->assertEquals(gethostname(), $loadedSchedule->getHost());
         $this->assertEquals(getmypid(), $loadedSchedule->getPid());
 
-        $this->assertEquals(Mage_Cron_Model_Schedule::STATUS_SUCCESS, $loadedSchedule->getStatus());
+        $this->assertEquals(Aoe_Scheduler_Model_Schedule::STATUS_SUCCESS, $loadedSchedule->getStatus());
 
         $this->assertEventDispatched(
             array(
@@ -83,7 +83,7 @@ class Aoe_Scheduler_Test_Model_Schedule_Runnow extends EcomDev_PHPUnit_Test_Case
         $this->assertEquals(gethostname(), $loadedSchedule->getHost());
         $this->assertEquals(getmypid(), $loadedSchedule->getPid());
 
-        $this->assertEquals(Mage_Cron_Model_Schedule::STATUS_ERROR, $loadedSchedule->getStatus());
+        $this->assertEquals(Aoe_Scheduler_Model_Schedule::STATUS_ERROR, $loadedSchedule->getStatus());
 
         $this->assertEventDispatched(
             array(
@@ -161,7 +161,7 @@ class Aoe_Scheduler_Test_Model_Schedule_Runnow extends EcomDev_PHPUnit_Test_Case
         $this->assertEquals(gethostname(), $loadedSchedule->getHost());
         $this->assertEquals(getmypid(), $loadedSchedule->getPid());
 
-        $this->assertEquals(Mage_Cron_Model_Schedule::STATUS_ERROR, $loadedSchedule->getStatus());
+        $this->assertEquals(Aoe_Scheduler_Model_Schedule::STATUS_ERROR, $loadedSchedule->getStatus());
 
         $this->assertEventDispatched(
             array(

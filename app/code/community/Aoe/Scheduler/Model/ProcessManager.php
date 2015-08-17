@@ -21,7 +21,7 @@ class Aoe_Scheduler_Model_ProcessManager
     public function getAllRunningSchedules($host = null)
     {
         $collection = Mage::getModel('cron/schedule')->getCollection();
-        $collection->addFieldToFilter('status', Mage_Cron_Model_Schedule::STATUS_RUNNING);
+        $collection->addFieldToFilter('status', Aoe_Scheduler_Model_Schedule::STATUS_RUNNING);
         if (!is_null($host)) {
             $collection->addFieldToFilter('host', $host);
         }
@@ -52,7 +52,7 @@ class Aoe_Scheduler_Model_ProcessManager
     {
         $collection = Mage::getModel('cron/schedule')
             ->getCollection()
-            ->addFieldToFilter('status', Mage_Cron_Model_Schedule::STATUS_RUNNING)
+            ->addFieldToFilter('status', Aoe_Scheduler_Model_Schedule::STATUS_RUNNING)
             ->addFieldToFilter('job_code', $jobCode);
         if (!is_null($ignoreId)) {
             $collection->addFieldToFilter('schedule_id', array('neq' => $ignoreId));
@@ -97,7 +97,7 @@ class Aoe_Scheduler_Model_ProcessManager
             $maxAge = time() - $markAsErrorAfter * 60;
 
             $schedules = Mage::getModel('cron/schedule')->getCollection()/* @var $schedules Mage_Cron_Model_Resource_Schedule_Collection */
-            ->addFieldToFilter('status', Mage_Cron_Model_Schedule::STATUS_RUNNING)
+            ->addFieldToFilter('status', Aoe_Scheduler_Model_Schedule::STATUS_RUNNING)
                 ->addFieldToFilter('last_seen', array('lt' => strftime('%Y-%m-%d %H:%M:00', $maxAge)))
                 ->load();
 
@@ -113,7 +113,7 @@ class Aoe_Scheduler_Model_ProcessManager
         // clean up "running"(!?) tasks that have never been seen (for whatever reason) and have been scheduled before maxAge
         // by robinfritze. @see https://github.com/AOEpeople/Aoe_Scheduler/issues/40#issuecomment-67749476
         $schedules = Mage::getModel('cron/schedule')->getCollection() /* @var $schedules Mage_Cron_Model_Resource_Schedule_Collection */
-            ->addFieldToFilter('status', Mage_Cron_Model_Schedule::STATUS_RUNNING)
+            ->addFieldToFilter('status', Aoe_Scheduler_Model_Schedule::STATUS_RUNNING)
             ->addFieldToFilter('last_seen', array('null' => true))
             ->addFieldToFilter('host', array('null' => true))
             ->addFieldToFilter('pid', array('null' => true))

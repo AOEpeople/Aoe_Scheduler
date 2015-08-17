@@ -19,7 +19,7 @@ class Aoe_Scheduler_Model_ScheduleManager
     public function cleanMissedSchedules()
     {
         $schedules = Mage::getModel('cron/schedule')->getCollection()
-            ->addFieldToFilter('status', Mage_Cron_Model_Schedule::STATUS_PENDING)
+            ->addFieldToFilter('status', Aoe_Scheduler_Model_Schedule::STATUS_PENDING)
             ->addFieldToFilter('scheduled_at', array('lt' => strftime('%Y-%m-%d %H:%M:%S', time())))
             ->addOrder('scheduled_at', 'DESC');
 
@@ -29,7 +29,7 @@ class Aoe_Scheduler_Model_ScheduleManager
             if (isset($seenJobs[$schedule->getJobCode()])) {
                 $schedule
                     ->setMessages('Multiple tasks with the same job code were piling up. Skipping execution of duplicates.')
-                    ->setStatus(Mage_Cron_Model_Schedule::STATUS_MISSED)
+                    ->setStatus(Aoe_Scheduler_Model_Schedule::STATUS_MISSED)
                     ->save();
             } else {
                 $seenJobs[$schedule->getJobCode()] = 1;
@@ -50,7 +50,7 @@ class Aoe_Scheduler_Model_ScheduleManager
     public function getPendingSchedules(array $whitelist = array(), array $blacklist = array())
     {
         $pendingSchedules = Mage::getModel('cron/schedule')->getCollection()
-            ->addFieldToFilter('status', Mage_Cron_Model_Schedule::STATUS_PENDING)
+            ->addFieldToFilter('status', Aoe_Scheduler_Model_Schedule::STATUS_PENDING)
             ->addFieldToFilter('scheduled_at', array('lt' => strftime('%Y-%m-%d %H:%M:%S', time())))
             ->addOrder('scheduled_at', 'ASC');
 
@@ -82,7 +82,7 @@ class Aoe_Scheduler_Model_ScheduleManager
             $ts = strftime('%Y-%m-%d %H:%M:00', time());
             $schedule = Mage::getModel('cron/schedule') /* @var $schedule Aoe_Scheduler_Model_Schedule */
                 ->setJobCode($jobCode)
-                ->setStatus(Mage_Cron_Model_Schedule::STATUS_RUNNING)
+                ->setStatus(Aoe_Scheduler_Model_Schedule::STATUS_RUNNING)
                 ->setCreatedAt($ts)
                 ->setScheduledAt($ts)
                 ->save();
@@ -108,7 +108,7 @@ class Aoe_Scheduler_Model_ScheduleManager
 				CONCAT(job_code, scheduled_at) AS jobkey,
 				count(*) AS qty
 			FROM {$cron_schedule}
-			WHERE status = '" . Mage_Cron_Model_Schedule::STATUS_PENDING . "'
+			WHERE status = '" . Aoe_Scheduler_Model_Schedule::STATUS_PENDING . "'
 			GROUP BY jobkey
 			HAVING qty > 1;
 		");
@@ -179,7 +179,7 @@ class Aoe_Scheduler_Model_ScheduleManager
     {
         /* @var $pendingSchedules Mage_Cron_Model_Resource_Schedule_Collection */
         $pendingSchedules = Mage::getModel('cron/schedule')->getCollection()
-            ->addFieldToFilter('status', Mage_Cron_Model_Schedule::STATUS_PENDING)
+            ->addFieldToFilter('status', Aoe_Scheduler_Model_Schedule::STATUS_PENDING)
             ->addFieldToFilter('scheduled_at', array('gt' => strftime('%Y-%m-%d %H:%M:%S', time())))
             ->addOrder('scheduled_at', 'ASC');
         if (!empty($jobCode)) {
@@ -304,7 +304,7 @@ class Aoe_Scheduler_Model_ScheduleManager
         $maxNo = Mage::getStoreConfig(self::XML_PATH_HISTORY_MAXNO);
         if ($maxNo) {
             $history = Mage::getModel('cron/schedule')->getCollection()
-                ->addFieldToFilter('status', Mage_Cron_Model_Schedule::STATUS_SUCCESS)
+                ->addFieldToFilter('status', Aoe_Scheduler_Model_Schedule::STATUS_SUCCESS)
                 ->setOrder('finished_at', 'desc')
                 ->load();
             $counter = array();
