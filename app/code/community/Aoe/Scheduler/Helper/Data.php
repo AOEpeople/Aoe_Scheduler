@@ -54,6 +54,7 @@ class Aoe_Scheduler_Helper_Data extends Mage_Core_Helper_Abstract
     {
         switch ($status) {
             case Aoe_Scheduler_Model_Schedule::STATUS_SUCCESS:
+            case Aoe_Scheduler_Model_Schedule::STATUS_DIDNTDOANYTHING:
                 $result = '<span class="bar-green"><span>' . $status . '</span></span>';
                 break;
             case Aoe_Scheduler_Model_Schedule::STATUS_PENDING:
