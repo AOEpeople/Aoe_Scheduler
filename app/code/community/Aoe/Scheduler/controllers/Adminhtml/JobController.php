@@ -94,7 +94,7 @@ class Aoe_Scheduler_Adminhtml_JobController extends Aoe_Scheduler_Controller_Abs
 
             $messages = $schedule->getMessages();
 
-            if ($schedule->getStatus() == Mage_Cron_Model_Schedule::STATUS_SUCCESS) {
+            if ($schedule->getStatus() == Aoe_Scheduler_Model_Schedule::STATUS_SUCCESS) {
                 $this->_getSession()->addSuccess($this->__('Ran "%s" (Duration: %s sec)', $key, intval($schedule->getDuration())));
                 if ($messages) {
                     $this->_getSession()->addSuccess($this->__('"%s" messages:<pre>%s</pre>', $key, $messages));

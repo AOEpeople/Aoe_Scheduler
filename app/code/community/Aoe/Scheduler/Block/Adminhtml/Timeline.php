@@ -191,7 +191,7 @@ class Aoe_Scheduler_Block_Adminhtml_Timeline extends Mage_Adminhtml_Block_Widget
     public function getGanttDivAttributes(Aoe_Scheduler_Model_Schedule $schedule)
     {
 
-        if ($schedule->getStatus() == Mage_Cron_Model_Schedule::STATUS_RUNNING) {
+        if ($schedule->getStatus() == Aoe_Scheduler_Model_Schedule::STATUS_RUNNING) {
             $duration = time() - strtotime($schedule->getStarttime());
         } else {
             $duration = $schedule->getDuration() ? $schedule->getDuration() : 0;
@@ -215,7 +215,7 @@ class Aoe_Scheduler_Block_Adminhtml_Timeline extends Mage_Adminhtml_Block_Widget
             $offset
         );
 
-        if ($schedule->getStatus() == Mage_Cron_Model_Schedule::STATUS_RUNNING) {
+        if ($schedule->getStatus() == Aoe_Scheduler_Model_Schedule::STATUS_RUNNING) {
             $offset += $duration;
 
             $duration = strtotime($schedule->getEta()) - time();

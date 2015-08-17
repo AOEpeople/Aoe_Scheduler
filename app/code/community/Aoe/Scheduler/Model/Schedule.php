@@ -108,7 +108,7 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
     {
         $this->setJobCode($job->getJobCode());
         $this->setCronExpr($job->getCronExpression());
-        $this->setStatus(Mage_Cron_Model_Schedule::STATUS_PENDING);
+        $this->setStatus(Aoe_Scheduler_Model_Schedule::STATUS_PENDING);
         return $this;
     }
 
@@ -135,8 +135,8 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
             return $this;
         }
 
-        // lock job requires the record to be saved and having status Mage_Cron_Model_Schedule::STATUS_PENDING
-        // workaround could be to do this: $this->setStatus(Mage_Cron_Model_Schedule::STATUS_PENDING)->save();
+        // lock job requires the record to be saved and having status Aoe_Scheduler_Model_Schedule::STATUS_PENDING
+        // workaround could be to do this: $this->setStatus(Aoe_Scheduler_Model_Schedule::STATUS_PENDING)->save();
         $this->jobWasLocked = false;
         if ($tryLockJob && !$this->tryLockJob()) {
             $this->setStatus(self::STATUS_SKIP_LOCKED);
@@ -157,7 +157,7 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
             $this
                 ->setExecutedAt(strftime('%Y-%m-%d %H:%M:%S', $startTime))
                 ->setLastSeen(strftime('%Y-%m-%d %H:%M:%S', $startTime))
-                ->setStatus(Mage_Cron_Model_Schedule::STATUS_RUNNING)
+                ->setStatus(Aoe_Scheduler_Model_Schedule::STATUS_RUNNING)
                 ->setHost(gethostname())
                 ->setPid(getmypid())
                 ->save();
@@ -203,8 +203,8 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
             }
 
             // schedules can report an error state by returning a string that starts with "ERROR:"
-            if ((is_string($messages) && strtoupper(substr($messages, 0, 6)) == 'ERROR:') || $this->getStatus() === Mage_Cron_Model_Schedule::STATUS_ERROR) {
-                $this->setStatus(Mage_Cron_Model_Schedule::STATUS_ERROR);
+            if ((is_string($messages) && strtoupper(substr($messages, 0, 6)) == 'ERROR:') || $this->getStatus() === Aoe_Scheduler_Model_Schedule::STATUS_ERROR) {
+                $this->setStatus(Aoe_Scheduler_Model_Schedule::STATUS_ERROR);
                 Mage::helper('aoe_scheduler')->sendErrorMail($this, $messages);
                 Mage::dispatchEvent('cron_' . $this->getJobCode() . '_after_error', array('schedule' => $this));
                 Mage::dispatchEvent('cron_after_error', array('schedule' => $this));
@@ -213,13 +213,13 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
                 Mage::dispatchEvent('cron_' . $this->getJobCode() . '_after_nothing', array('schedule' => $this));
                 Mage::dispatchEvent('cron_after_nothing', array('schedule' => $this));
             } else {
-                $this->setStatus(Mage_Cron_Model_Schedule::STATUS_SUCCESS);
+                $this->setStatus(Aoe_Scheduler_Model_Schedule::STATUS_SUCCESS);
                 Mage::dispatchEvent('cron_' . $this->getJobCode() . '_after_success', array('schedule' => $this));
                 Mage::dispatchEvent('cron_after_success', array('schedule' => $this));
             }
 
         } catch (Exception $e) {
-            $this->setStatus(Mage_Cron_Model_Schedule::STATUS_ERROR);
+            $this->setStatus(Aoe_Scheduler_Model_Schedule::STATUS_ERROR);
             $this->addMessages(PHP_EOL . '---EXCEPTION---' . PHP_EOL . $e->__toString());
             Mage::dispatchEvent('cron_' . $this->getJobCode() . '_exception', array('schedule' => $this, 'exception' => $e));
             Mage::dispatchEvent('cron_exception', array('schedule' => $this, 'exception' => $e));
@@ -271,7 +271,7 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
         if (is_null($time)) {
             $time = time();
         }
-        $this->setStatus(Mage_Cron_Model_Schedule::STATUS_PENDING)
+        $this->setStatus(Aoe_Scheduler_Model_Schedule::STATUS_PENDING)
             ->setCreatedAt(strftime('%Y-%m-%d %H:%M:%S', time()))
             ->setScheduledAt(strftime('%Y-%m-%d %H:%M:00', $time))
             ->save();
@@ -320,7 +320,7 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
         if ($this->getExecutedAt() && ($this->getExecutedAt() != '0000-00-00 00:00:00')) {
             if ($this->getFinishedAt() && ($this->getFinishedAt() != '0000-00-00 00:00:00')) {
                 $time = strtotime($this->getFinishedAt());
-            } elseif ($this->getStatus() == Mage_Cron_Model_Schedule::STATUS_RUNNING) {
+            } elseif ($this->getStatus() == Aoe_Scheduler_Model_Schedule::STATUS_RUNNING) {
                 $time = time();
             } else {
                 // Mage::throwException('No finish time found, but the job is not running');
@@ -342,7 +342,7 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
      */
     public function isAlive()
     {
-        if ($this->getStatus() == Mage_Cron_Model_Schedule::STATUS_RUNNING) {
+        if ($this->getStatus() == Aoe_Scheduler_Model_Schedule::STATUS_RUNNING) {
             if (time() - strtotime($this->getLastSeen()) < 2 * 60) { // TODO: make this configurable
                 return true;
             } elseif ($this->getHost() == gethostname()) {
@@ -510,7 +510,7 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
 
         $collection = Mage::getModel('cron/schedule')/* @var $collection Mage_Cron_Model_Resource_Schedule_Collection */
             ->getCollection()
-            ->addFieldToFilter('status', Mage_Cron_Model_Schedule::STATUS_PENDING)
+            ->addFieldToFilter('status', Aoe_Scheduler_Model_Schedule::STATUS_PENDING)
             ->addFieldToFilter('job_code', $this->getJobCode())
             ->addFieldToFilter('scheduled_at', $this->getScheduledAt());
         if ($this->getId() !== null) {
@@ -547,7 +547,7 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
         }
         $scheduleLifetime = Mage::getStoreConfig(Mage_Cron_Model_Observer::XML_PATH_SCHEDULE_LIFETIME) * 60;
         if ($time < $now - $scheduleLifetime) {
-            $this->setStatus(Mage_Cron_Model_Schedule::STATUS_MISSED);
+            $this->setStatus(Aoe_Scheduler_Model_Schedule::STATUS_MISSED);
             $this->save();
             if ($throwException) {
                 Mage::throwException(Mage::helper('cron')->__('Too late for the schedule.'));
