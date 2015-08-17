@@ -59,11 +59,20 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
     const REASON_DEPENDENCY_FAILURE = 'dependency_failure';
 
     /**
-     * Prefix of model events names
+     * Event name prefix for events that are dispatched by this class
      *
      * @var string
      */
     protected $_eventPrefix = 'aoe_scheduler_schedule';
+
+    /**
+     * Event parameter name that references this object in an event
+     *
+     * In an observer method you can use $observer->getData('schedule') or $observer->getData('data_object') to get this object
+     *
+     * @var string
+     */
+    protected $_eventObject = 'schedule';
 
     /**
      * @var Aoe_Scheduler_Model_Job
