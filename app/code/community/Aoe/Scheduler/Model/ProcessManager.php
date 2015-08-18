@@ -74,19 +74,17 @@ class Aoe_Scheduler_Model_ProcessManager
      */
     public function checkRunningJobs()
     {
-        $maxJobRuntime = Mage::getStoreConfig(self::XML_PATH_MAX_JOB_RUNTIME);
+        $maxJobRuntime = intval(Mage::getStoreConfig(self::XML_PATH_MAX_JOB_RUNTIME));
 
-        foreach ($this->getAllRunningSchedules(gethostname()) as $schedule) { /* @var $schedule Aoe_Scheduler_Model_Schedule */
-            // checks if process is still running and updates record
-            $isAlive = $schedule->isAlive();
-
-            // checking if the job isn't running too long
-            if ($isAlive && $maxJobRuntime) {
-                if ($schedule->getDuration() > $maxJobRuntime * 60) {
-                    $schedule->requestKill(null, 'Killed because job exceeded the max job runtime of ' . $maxJobRuntime . ' minutes.');
+        if ($maxJobRuntime) {
+            foreach ($this->getAllRunningSchedules(gethostname()) as $schedule) { /* @var $schedule Aoe_Scheduler_Model_Schedule */
+                // checking if the job isn't running too long
+                if ($schedule->isAlive()) {
+                    if ($schedule->getDuration() > $maxJobRuntime * 60) {
+                        $schedule->requestKill(null, 'Kill requested because job exceeded the max job runtime of ' . $maxJobRuntime . ' minutes.');
+                    }
                 }
             }
-
         }
 
         // fallback (where process cannot be checked or if one of the servers disappeared)
