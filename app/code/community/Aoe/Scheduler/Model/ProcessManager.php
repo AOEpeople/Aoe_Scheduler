@@ -37,7 +37,7 @@ class Aoe_Scheduler_Model_ProcessManager
     public function getAllKillRequests($host = null)
     {
         $collection = $this->getAllRunningSchedules($host);
-        $collection->addFieldToFilter('kill_request', array('lt' => strftime('%Y-%m-%d %H:%M:00', time())));
+        $collection->addFieldToFilter('kill_request', array('lt' => strftime('%Y-%m-%d %H:%M:00', time()+60)));
         return $collection;
     }
 
