@@ -5,7 +5,7 @@
 
 ### Version 1.2.1
 
-- **Fix**: Lock identifiers in scheduler_cron.php might be wrong (Thanks, @Caprico85)
+- **Fix**: Lock identifiers in scheduler_cron.php might be wrong (Thanks, @Caprico85 and @minimax59)
 
 ### Version 1.2.0
 
