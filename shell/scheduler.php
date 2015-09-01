@@ -18,6 +18,8 @@ class Aoe_Scheduler_Shell_Scheduler extends Mage_Shell_Abstract
             } else {
                 $actionMethodName = $action . 'Action';
                 if (method_exists($this, $actionMethodName)) {
+                    // emulate index.php entry point for correct URLs generation in API
+                    Mage::register('custom_entry_point', true);
                     // Disable use of SID in generated URLs - This is standard for cron job bootstrapping
                     Mage::app()->setUseSessionInUrl(false);
                     // Disable permissions masking by default - This is Magento standard, but not recommended for security reasons
