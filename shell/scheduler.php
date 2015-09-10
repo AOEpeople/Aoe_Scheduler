@@ -415,11 +415,11 @@ class Aoe_Scheduler_Shell_Scheduler extends Mage_Shell_Abstract
     }
 
     /**
-     * Run this job through the daemon
+     * Run a job specified by the ID
      *
      * @return void
      */
-    public function daemonRunAction()
+    public function runScheduleByIdAction()
     {
         $id = $this->getArg('id');
         if (!$id) {

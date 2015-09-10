@@ -110,14 +110,15 @@ if [ "${MODE}" = "daemonize" ]; then
                 NEXT_WITHOUT_ID=`echo $NEXT_JOB | sed -r 's/--id [0-9]+//g'`
                 # Only run this schedule now if a worker is not running a job with the same code
                 if ! ps auxwww | grep "${SCHEDULER} --action daemonRun ${NEXT_WITHOUT_ID}" | grep -v grep 1>/dev/null 2>/dev/null ; then
-                    "${PHP_BIN}" "${SCHEDULER}" --action daemonRun ${NEXT_JOB} &
+                    "${PHP_BIN}" "${SCHEDULER}" --action runScheduleById ${NEXT_JOB} &
                 else
                     # Otherwise mark it as missed
                     "${PHP_BIN}" "${SCHEDULER}" --action daemonMultiple ${NEXT_JOB} &
                 fi
             fi
+        else
+            sleep "${WAIT}"
         fi
-        sleep "${WAIT}"
     done
 fi
 
