@@ -1,48 +1,72 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <layout>
 
-	<adminhtml_timeline_index>
-		<reference name="head">
-			<action method="addCss"><stylesheet>aoe_scheduler/StyleSheet/timeline.css</stylesheet></action>
-			<action method="addCss"><stylesheet>aoe_scheduler/StyleSheet/bars.css</stylesheet></action>
+    <adminhtml_timeline_index>
+        <reference name="head">
+            <action method="addCss"><stylesheet>aoe_scheduler/StyleSheet/timeline.css</stylesheet></action>
+            <action method="addCss"><stylesheet>aoe_scheduler/StyleSheet/bars.css</stylesheet></action>
 
-			<action method="addItem"><type>skin_js</type><script>aoe_scheduler/JavaScript/jquery-1.6.2.min.js</script></action>
-			<action method="addItem"><type>skin_js</type><script>aoe_scheduler/JavaScript/tooltip.js</script></action>
-			<action method="addItem"><type>skin_js</type><script>aoe_scheduler/JavaScript/tooltip.dynamic.js</script></action>
-			<action method="addItem"><type>skin_js</type><script>aoe_scheduler/JavaScript/common.js</script></action>
-		</reference>
-		<reference name="content">
-			<block type="aoe_scheduler/adminhtml_timeline" name="aoe_scheduler.timeline" template="aoe_scheduler/timeline.phtml" />
-			<!--<block type="core/text" name="fix.console" as="fix.console">
-				<action method="setText">
-					<text><![CDATA[<script type="text/javascript">
-					iframe = document.createElement('iframe');
-					iframe.style = 'display:none';
-					document.getElementsByTagName('body')[0].appendChild(iframe);
-					window.console = iframe.contentWindow.console;
-					console.firebug = "faketrue";
-					</script>]]></text>
-				</action>
-			</block>
-		--></reference>
-	</adminhtml_timeline_index>
+            <action method="addItem"><type>skin_js</type><script>aoe_scheduler/JavaScript/jquery-1.6.2.min.js</script></action>
+            <action method="addItem"><type>skin_js</type><script>aoe_scheduler/JavaScript/tooltip.js</script></action>
+            <action method="addItem"><type>skin_js</type><script>aoe_scheduler/JavaScript/tooltip.dynamic.js</script></action>
+            <action method="addItem"><type>skin_js</type><script>aoe_scheduler/JavaScript/common.js</script></action>
+        </reference>
+        <reference name="content">
+            <block type="aoe_scheduler/adminhtml_timeline" name="aoe_scheduler.timeline" template="aoe_scheduler/timeline.phtml"/>
+            <!--<block type="core/text" name="fix.console" as="fix.console">
+                <action method="setText">
+                    <text><![CDATA[<script type="text/javascript">
+                    iframe = document.createElement('iframe');
+                    iframe.style = 'display:none';
+                    document.getElementsByTagName('body')[0].appendChild(iframe);
+                    window.console = iframe.contentWindow.console;
+                    console.firebug = "faketrue";
+                    </script>]]></text>
+                </action>
+            </block>
+        -->
+        </reference>
+    </adminhtml_timeline_index>
 
-	<adminhtml_scheduler_index>
-		<reference name="head">
-			<action method="addCss"><stylesheet>aoe_scheduler/StyleSheet/bars.css</stylesheet></action>
-		</reference>
-		<reference name="content">
-			<block type="aoe_scheduler/adminhtml_scheduler" name="aoe_scheduler.scheduler" />
-		</reference>
-	</adminhtml_scheduler_index>
+    <adminhtml_scheduler_index>
+        <reference name="head">
+            <action method="addCss"><stylesheet>aoe_scheduler/StyleSheet/bars.css</stylesheet></action>
+        </reference>
+        <reference name="content">
+            <block type="aoe_scheduler/adminhtml_scheduler" name="aoe_scheduler.scheduler"/>
+        </reference>
+    </adminhtml_scheduler_index>
 
-	<adminhtml_cron_index>
-		<reference name="head">
-			<action method="addCss"><stylesheet>aoe_scheduler/StyleSheet/bars.css</stylesheet></action>
-		</reference>
-		<reference name="content">
-			<block type="aoe_scheduler/adminhtml_cron" name="aoe_scheduler.cron" />
-		</reference>
-	</adminhtml_cron_index>
+    <adminhtml_job_index>
+        <reference name="head">
+            <action method="addCss"><stylesheet>aoe_scheduler/StyleSheet/bars.css</stylesheet></action>
+        </reference>
+        <reference name="content">
+            <block type="aoe_scheduler/adminhtml_job" name="aoe_scheduler.job"/>
+        </reference>
+    </adminhtml_job_index>
+
+    <adminhtml_job_edit>
+        <reference name="left">
+            <block type="aoe_scheduler/adminhtml_job_edit_tabs" name="aoe_scheduler_edit_tabs">
+                <block type="aoe_scheduler/adminhtml_job_edit_tab_form" name="aoe_scheduler_edit_tab_form"/>
+                <action method="addTab"><name>information_section</name><block>aoe_scheduler_edit_tab_form</block></action>
+            </block>
+        </reference>
+        <reference name="content">
+            <block type="aoe_scheduler/adminhtml_job_edit" name="aoe_scheduler_edit_information"/>
+        </reference>
+    </adminhtml_job_edit>
+
+    <adminhtml_instructions_index>
+        <reference name="head">
+            <action method="addCss"><stylesheet>aoe_scheduler/StyleSheet/instructions.css</stylesheet></action>
+            <action method="addItem"><type>skin_js</type><script>aoe_scheduler/JavaScript/jquery-1.6.2.min.js</script></action>
+            <action method="addItem"><type>skin_js</type><script>aoe_scheduler/JavaScript/instructions.js</script></action>
+        </reference>
+        <reference name="content">
+            <block type="aoe_scheduler/adminhtml_instructions" name="aoe_scheduler.instructions" template="aoe_scheduler/instructions.phtml"/>
+        </reference>
+    </adminhtml_instructions_index>
 
 </layout>

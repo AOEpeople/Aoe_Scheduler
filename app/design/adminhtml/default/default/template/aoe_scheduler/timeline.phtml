@@ -1,72 +1,75 @@
 <?php
 /* @var $this Aoe_Scheduler_Block_Adminhtml_Timeline */
-$_helper = $this->helper('aoe_scheduler/data'); /* @var $_helper Aoe_Scheduler_Helper_Data */
+$_helper = $this->helper('aoe_scheduler/data');
+/* @var $_helper Aoe_Scheduler_Helper_Data */
 $_jobCodes = $this->getAvailableJobCodes(); /* @var $_jobCodes array */
 ?>
 
 <div class="content-header">
-	<table cellspacing="0">
-		<tr>
-			<td style="<?php echo $this->getHeaderWidth() ?>"><?php echo $this->getHeaderHtml() ?></td>
-			<td class="form-buttons"><?php echo $this->getButtonsHtml() ?></td>
-		</tr>
-	</table>
+    <table cellspacing="0">
+        <tr>
+            <td style="<?php echo $this->getHeaderWidth() ?>"><?php echo $this->getHeaderHtml() ?></td>
+            <td class="form-buttons"><?php echo $this->getButtonsHtml() ?></td>
+        </tr>
+    </table>
 </div>
 
 <div id="maincontainer">
 
-	<?php if (count($_jobCodes) > 0): ?>
+    <?php if (count($_jobCodes) > 0): ?>
 
-		<div id="contentwrapper">
-			<div id="contentcolumn">
-				<div class="timeline-box">
-					<div class="timeline-panel" style="width: <?php echo $this->getTimelinePanelWidth(); ?>px;">
+        <div id="contentwrapper">
+            <div id="contentcolumn">
+                <div class="timeline-box">
+                    <div class="timeline-panel" style="width: <?php echo $this->getTimelinePanelWidth(); ?>px;">
 
-						<div id="now" style="left: <?php echo $this->getNowline(); ?>px"></div>
+                        <div id="now" style="left: <?php echo $this->getNowline(); ?>px"><div class="arrow"></div></div>
 
-						<div class="row hours">
-							<div class="timeline">
-								<?php for($i = $this->getStarttime(); $i < $this->getEndtime(); $i+=60*60): ?>
-									<div class="hour"><?php echo $_helper->decorateTime($i, false, 'Y-m-d H:i'); ?></div>
-								<?php endfor; ?>
-							</div>
-						</div>
+                        <div class="row hours">
+                            <div class="timeline">
+                                <?php for ($i = $this->getStarttime(); $i < $this->getEndtime(); $i += 60 * 60): ?>
+                                    <div class="hour"><span><?php echo $_helper->decorateTime($i, false, 'Y-m-d H:i'); ?></span></div>
+                                <?php endfor; ?>
+                            </div>
+                        </div>
 
-						<?php foreach ($_jobCodes as $jobCode): /* @var $jobCode string */ ?>
-							<?php $_schedules = $this->getSchedulesForCode($jobCode); ?>
-							<div class="row">
-								<div class="timeline timeline_<?php echo $jobCode; ?>">
-									<?php foreach ($_schedules as $_schedule): /* @var $_schedule Aoe_Scheduler_Model_Schedule */ ?>
-										<div <?php echo $this->getGanttDivAttributes($_schedule); ?>></div>
-										<?php echo $this->getLayout()->createBlock('aoe_scheduler/adminhtml_timelineDetail')->setSchedule($_schedule)->toHtml(); ?>
-									<?php endforeach; ?>
-								</div>
-							</div>
-						<?php endforeach; ?>
+                        <?php foreach ($_jobCodes as $jobCode): /* @var $jobCode string */ ?>
+                            <?php $_schedules = $this->getSchedulesForCode($jobCode); ?>
+                            <div class="row">
+                                <div class="timeline timeline_<?php echo $jobCode; ?>">
+                                    <?php foreach ($_schedules as $_schedule): /* @var $_schedule Aoe_Scheduler_Model_Schedule */ ?>
+                                        <?php echo $this->getGanttDivAttributes($_schedule); ?>
+                                        <?php echo $this->getLayout()->createBlock('aoe_scheduler/adminhtml_timelineDetail')->setSchedule($_schedule)->toHtml(); ?>
+                                    <?php endforeach; ?>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
 
-					</div>
-				</div>
-			</div><!-- id="contentcolumn" -->
-		</div><!-- id="contentwrapper" -->
+                    </div>
+                </div>
+            </div>
+            <!-- id="contentcolumn" -->
+        </div><!-- id="contentwrapper" -->
 
-		<div id="leftcolumn">
+        <div id="leftcolumn">
 
-			<div class="row hours">
-				<div class="caption"><?php echo $_helper->decorateTime($this->getStarttime(), true, 'Y-m-d H:i'); ?> - <?php echo $_helper->decorateTime($this->getEndtime(), true, 'Y-m-d H:i'); ?></div>
-			</div>
+            <div class="row hours">
+                <div class="caption"><?php echo $_helper->decorateTime($this->getStarttime(), true, 'Y-m-d H:i'); ?>
+                    - <?php echo $_helper->decorateTime($this->getEndtime(), true, 'Y-m-d H:i'); ?></div>
+            </div>
 
-			<?php foreach ($this->getAvailableJobCodes() as $jobCode): /* @var $jobCode string */ ?>
-				<div class="row">
-					<div class="configuration">
-						<?php echo $jobCode; ?>
-					</div>
-				</div>
-			<?php endforeach; ?>
+            <?php foreach ($_jobCodes as $jobCode): /* @var $jobCode string */ ?>
+                <div class="row">
+                    <div class="configuration">
+                        <?php echo $jobCode; ?>
+                    </div>
+                </div>
+            <?php endforeach; ?>
 
-		</div><!-- id="leftcolumn" -->
+        </div><!-- id="leftcolumn" -->
 
-	<?php else: ?>
-		<?php echo $this->__('No tasks found.'); ?>
-	<?php endif; ?>
+    <?php else: ?>
+        <?php echo $this->__('No tasks found.'); ?>
+    <?php endif; ?>
 
 </div><!-- id="maincontainer" -->

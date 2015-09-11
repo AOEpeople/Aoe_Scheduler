@@ -1,0 +1,146 @@
+<?xml version="1.0"?>
+<config>
+    <sections>
+        <system>
+            <groups>
+                <cron translate="label comment" module="cron">
+                    <fields>
+
+                        <enable translate="label">
+                            <label>Enable Scheduler</label>
+                            <sort_order>1</sort_order>
+                            <comment><![CDATA[If this is disabled no scheduled jobs will be executed]]></comment>
+                            <show_in_default>1</show_in_default>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </enable>
+
+                        <mark_as_error_after translate="label">
+                            <label>Mark job as failed after</label>
+                            <comment><![CDATA[A job will be marked es failed after it hasn't been seen for this many minutes (in cases where the process cannot be checked)]]></comment>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>110</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </mark_as_error_after>
+
+                        <max_job_runtime translate="label">
+                            <label>Maximum job runtime</label>
+                            <comment><![CDATA[If set a single job can't run longer than this time (in minutes). If the job is actually still running this process will be actively killed.]]></comment>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>111</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </max_job_runtime>
+
+                        <scheduler_cron_expr_heartbeat>
+                            <label>Heartbeat task schedule (cron syntax)</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>120</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </scheduler_cron_expr_heartbeat>
+
+                        <error_email translate="label">
+                            <label>Error Email Recipient</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>130</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </error_email>
+                        <error_email_identity translate="label">
+                            <label>Error Email Sender</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_email_identity</source_model>
+                            <sort_order>140</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </error_email_identity>
+                        <error_email_template translate="label">
+                            <label>Error Email Template</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_email_template</source_model>
+                            <sort_order>150</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>0</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </error_email_template>
+
+                        <logFile translate="label">
+                            <label>Log file</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>160</sort_order>
+                            <comment><![CDATA[Keep empty to disable logging]]></comment>
+                            <show_in_default>1</show_in_default>
+                        </logFile>
+
+                        <maxNoOfSuccessfulTasks translate="label">
+                            <label>Maximum number of successful schedules to keep</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>170</sort_order>
+                            <comment><![CDATA[Only keeps this number of entries for every schedule even if it is shorter than the configured success lifetime. Set to 0 to keep them all until they hit the lifetime.]]></comment>
+                            <show_in_default>1</show_in_default>
+                        </maxNoOfSuccessfulTasks>
+
+                        <enableRunNow translate="label">
+                            <label>Enable "run now"</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>180</sort_order>
+                            <comment><![CDATA[Cron tasks are usually designed to run in CLI context and not in the context of the webserver. Also they could run longer than the configured maximum execution time. This is why you should rather use "scheduleNow" instead of "runNow" and let the scheduler pick up the task on the next run. However, if you know what you're doing and/or if you don't want to wait while testing and developing a cron task you can enable this feature here.]]></comment>
+                            <show_in_default>1</show_in_default>
+                        </enableRunNow>
+
+                        <enableJobOutputBuffer translate="label">
+                            <label>Enable Job Output Buffering</label>
+                            <comment><![CDATA[If this is enabled jobs will capture normal output for storage in the schedule record messages field]]></comment>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>200</sort_order>
+                            <show_in_default>1</show_in_default>
+                        </enableJobOutputBuffer>
+
+                        <enableErrorLog translate="label">
+                            <label>Enable Error Log</label>
+                            <comment><![CDATA[If enabled AOE_Scheduler will bypass Magento's error handling and will capture the error log in a schedule specific file in var/log/cron/]]></comment>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>210</sort_order>
+                            <show_in_default>1</show_in_default>
+                        </enableErrorLog>
+
+                        <errorLevel translate="label">
+                            <label>Error Level</label>
+                            <comment><![CDATA[Error level accepted by 'error_reporting'. This needs to be the int value. Constants are not supported! Example: -1 or 32767 (E_ALL) to log everything.]]></comment>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>220</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <depends>
+                                <enableErrorLog>1</enableErrorLog>
+                            </depends>
+                        </errorLevel>
+
+                        <errorLogFilename translate="label">
+                            <label>Error log filename</label>
+                            <comment><![CDATA[###PID### will be replaced with the process id.<br />###ID### will be replaced with the job id.<br />###JOBCODE### will be replaced with the job code.]]></comment>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>230</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <depends>
+                                <enableErrorLog>1</enableErrorLog>
+                            </depends>
+                        </errorLogFilename>
+
+                    </fields>
+                </cron>
+            </groups>
+        </system>
+    </sections>
+</config>

@@ -1,134 +1,158 @@
 #contentwrapper {
-	float: left;
-	width: 100%;
+    float: left;
+    width: 100%;
 }
 
 #contentcolumn {
-	margin-left: 300px; /* Set left margin to LeftColumnWidth */
+    margin-left: 300px; /* Set left margin to LeftColumnWidth */
 }
 
 #leftcolumn {
-	float: left;
-	width: 300px; /* Width of left column */
-	margin-left: -100%;
+    float: left;
+    width: 300px; /* Width of left column */
+    margin-left: -100%;
 }
 
 .configuration {
-	padding: 5px;
+    padding: 5px;
 }
 
 #leftcolumn .row {
-	background-color: #F6F6F6;
-	border-right: 1px solid #DADFE0;
+    background-color: #F6F6F6;
+    border-right: 1px solid #DADFE0;
 }
 
 #leftcolumn .row.hours {
-	background-color: transparent;
-	text-align: right;
-	padding-right: 5px;
-	font-size: 10px;
+    background-color: transparent;
+    text-align: right;
+    padding-right: 5px;
+    font-size: 10px;
 }
 
 #now {
-	position: absolute;
-	width: 1px;
-	height: 100%;
-	background-color: red;
+    position: absolute;
+    width: 1px;
+    height: 100%;
+    background-color: red;
+}
+
+#now .arrow {
+    background-image: url(../Images/red.png);
+    width: 16px;
+    height: 16px;
+    position: absolute;
+    top: -3px;
+    left: -7.5px;
 }
 
 div.row {
-	border-bottom: 1px solid #DADFE0;
-	padding: 0;
-	margin: 0;
-	height: 40px;
+    border-bottom: 1px solid #DADFE0;
+    padding: 0;
+    margin: 0;
+    height: 40px;
 }
 
 div.timeline-box {
-	overflow: auto;
+    overflow: auto;
 }
 
 div.timeline-panel {
-	background-image: url(../Images/hour.gif);
-	border-right: 1px solid black;
-	position: relative;
+    background-image: url(../Images/hour.gif);
+    border-right: 1px solid black;
+    position: relative;
 }
 
 div.timeline {
-	position: relative;
+    position: relative;
 }
 
 div.hours {
-	height: 20px;
+    height: 20px;
 }
 
 .detailwrap {
-	width: 100%;
-	height: 100%;
+    width: 100%;
+    height: 100%;
 }
 
 .details {
-	display: none;
-	background-color: white;
-	border: 1px solid black;
-	z-index: 1000;
-	max-width: 400px;
+    display: none;
+    background-color: white;
+    border: 1px solid black;
+    z-index: 1000;
+    max-width: 400px;
 }
 
 .details pre {
-	background-color: white;
-	overflow: auto;
-	max-width: 385px;
-	font-size: 8pt;
-	line-height: 9pt;
+    background-color: white;
+    overflow: auto;
+    max-width: 385px;
+    font-size: 8pt;
+    line-height: 9pt;
 }
 
 .hour {
-	width: 240px;
-	float: left;
-	text-align: center;
+    width: 240px;
+    float: left;
+}
+
+.hour span {
+    margin-left: 5px;
+    font-weight: bold;
 }
 
 .details-headline {
-	width: 100%;
-	height: 28px;
+    width: 100%;
+    height: 24px;
+    background-position: top center;
 }
 
 .details-headline h3 {
-	padding: 5px;
-	color: white;
-	margin: 0;
+    padding: 2px 5px;
+    color: white;
+    margin: 0;
 }
 
 .details-content {
-	padding: 5px;
+    padding: 5px;
 }
 
 .details-content td.label {
-	font-weight: bold;
+    font-weight: bold;
 }
 
 .caption-container {
-	width: 500px;
-	overflow: hidden;
+    width: 500px;
+    overflow: hidden;
 }
 
-.task {
-	position: absolute;
-	height: 24px;
-	top: 8px;
-	cursor: default;
+.task, .estimation {
+    position: absolute;
+    height: 24px;
+    top: 8px;
+    cursor: default;
 }
 
 .status {
-	width: 100px;
+    width: 100px;
 }
 
 .details-headline, .task { background-image: url(../Images/gradient.png); }
 
+.details-headline.error, .task.error,
+.details-headline.killed, .task.killed,
+.details-headline.died, .task.died,
+.details-headline.gone, .task.gone { background-color: #E41300; }
+
 .details-headline.success, .task.success { background-color: #36B963; }
+.details-headline.nothing, .task.nothing { background-color: #92D6A9; }
 .details-headline.pending, .task.pending { background-color: #A9ABA8; }
-.details-headline.error, .task.error { background-color: #E41300; }
 .details-headline.missed, .task.missed { background-color: #F75300; }
-.details-headline.running, .task.running { background-color: #FE9D00; }
+.details-headline.running, .task.running { background-color: #FE9D00 !important; }
+.details-headline.running, .task.running { background-image: url(../Images/animation.gif); background-position: center; background-repeat: repeat-x; }
+
+.estimation { background-color: #B1C5D1; }
+.estimation { background-image: url(../Images/animation2.gif); background-position: center; background-repeat: repeat-x; }
+
 
 div.task.active, div.task:hover { background-color: #00A2FA; }
