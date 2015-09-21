@@ -80,7 +80,7 @@ class Aoe_Scheduler_Model_ProcessManager
             foreach ($this->getAllRunningSchedules(gethostname()) as $schedule) { /* @var $schedule Aoe_Scheduler_Model_Schedule */
                 // checking if the job isn't running too long
                 if ($schedule->isAlive()) {
-                    if ($schedule->getDuration() > $maxJobRuntime * 60) {
+                    if ($schedule->getDuration() > $maxJobRuntime * 60 && !$schedule->getKillRequest()) {
                         $schedule->requestKill(null, 'Kill requested because job exceeded the max job runtime of ' . $maxJobRuntime . ' minutes.');
                     }
                 }
