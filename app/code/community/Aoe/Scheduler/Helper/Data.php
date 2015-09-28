@@ -292,7 +292,7 @@ class Aoe_Scheduler_Helper_Data extends Mage_Core_Helper_Abstract
     public function getCallBack($runModel)
     {
         if (!preg_match(Mage_Cron_Model_Observer::REGEX_RUN_MODEL, (string) $runModel, $run)) {
-            Mage::throwException(Mage::helper('cron')->__('Invalid model/method definition, expecting "model/class::method".'));
+            Mage::throwException(Mage::helper('cron')->__('Invalid model/method definition, expecting "model/class::method", got "' . $runModel . '" instead.'));
         }
         if (!($model = Mage::getModel($run[1])) || !method_exists($model, $run[2])) {
             Mage::throwException(Mage::helper('cron')->__('Invalid callback: %s::%s does not exist', $run[1], $run[2]));
