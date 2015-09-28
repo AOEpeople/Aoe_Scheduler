@@ -12,6 +12,11 @@ class Aoe_Scheduler_Shell_Scheduler extends Mage_Shell_Abstract
     public function run()
     {
         try {
+            $helper = Mage::helper('aoe_scheduler/compatibility'); /* @var $helper Aoe_Scheduler_Helper_Compatibility */
+            if ($helper->oldConfigXmlExists()) {
+                echo 'Looks like you have an older version of Aoe_Scheduler installed that lived in the local code pool. Please delete everything under "' .$helper->getLocalCodeDir(). '"';
+                exit(1);
+            }
             $action = $this->getArg('action');
             if (empty($action)) {
                 echo $this->usageHelp();
