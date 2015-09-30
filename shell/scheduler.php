@@ -190,10 +190,13 @@ class Aoe_Scheduler_Shell_Scheduler extends Mage_Shell_Abstract
             exit(1);
         }
 
+        $forceRun = ($this->getArg('force'));
+        $tryLock = ($this->getArg('tryLock'));
+
         $schedule = Mage::getModel('cron/schedule'); /* @var $schedule Aoe_Scheduler_Model_Schedule */
         $schedule->setJobCode($code);
         $schedule->setScheduledReason(Aoe_Scheduler_Model_Schedule::REASON_RUNNOW_CLI);
-        $schedule->runNow(false);
+        $schedule->runNow($tryLock, $forceRun);
         if ($schedule->getJobWasLocked()) {
             echo "\nJob was not executed because it was locked!\n\n";
             exit(1);
@@ -211,7 +214,7 @@ class Aoe_Scheduler_Shell_Scheduler extends Mage_Shell_Abstract
      */
     public function runNowActionHelp()
     {
-        return "--code <code>	        Run a job directly";
+        return "--code <code> [--tryLock] [--force]	        Run a job directly";
     }
 
     /**

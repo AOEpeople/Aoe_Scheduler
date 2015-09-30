@@ -1,5 +1,8 @@
 ## Changelog
 
+- **Feature**: Added `--force` and `--tryLock` to runNow from cli. This allows you to bypass checking if another instance of that task is already running and start a new one. (Only do this if you know what you're doing...)
+
+### Version 1.2.2
 
 - **Fix**: Died jobs does not get cleaned (#146) 
 

@@ -126,22 +126,25 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
      * Run this task now
      *
      * @param bool $tryLockJob
+     * @param bool $forceRun
      * @return Aoe_Scheduler_Model_Schedule
      */
-    public function runNow($tryLockJob = true)
+    public function runNow($tryLockJob=true, $forceRun=false)
     {
         // if this schedule doesn't exist yet, create it
         if (!$this->getCreatedAt()) {
             $this->schedule();
         }
 
-        // lock job (see below) prevents the exact same schedule from being executed from more than one process (or server)
-        // the following check will prevent multiple schedules of the same type to be run in parallel
-        $processManager = Mage::getModel('aoe_scheduler/processManager'); /* @var $processManager Aoe_Scheduler_Model_ProcessManager */
-        if ($processManager->isJobCodeRunning($this->getJobCode(), $this->getId())) {
-            $this->setStatus(self::STATUS_SKIP_OTHERJOBRUNNING);
-            $this->log(sprintf('Job "%s" (id: %s) will not be executed because there is already another process with the same job code running. Skipping.', $this->getJobCode(), $this->getId()));
-            return $this;
+        if (!$forceRun) {
+            // lock job (see below) prevents the exact same schedule from being executed from more than one process (or server)
+            // the following check will prevent multiple schedules of the same type to be run in parallel
+            $processManager = Mage::getModel('aoe_scheduler/processManager'); /* @var $processManager Aoe_Scheduler_Model_ProcessManager */
+            if ($processManager->isJobCodeRunning($this->getJobCode(), $this->getId())) {
+                $this->setStatus(self::STATUS_SKIP_OTHERJOBRUNNING);
+                $this->log(sprintf('Job "%s" (id: %s) will not be executed because there is already another process with the same job code running. Skipping.', $this->getJobCode(), $this->getId()));
+                return $this;
+            }
         }
 
         // lock job requires the record to be saved and having status Aoe_Scheduler_Model_Schedule::STATUS_PENDING
