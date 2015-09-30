@@ -129,7 +129,7 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
      * @param bool $forceRun
      * @return Aoe_Scheduler_Model_Schedule
      */
-    public function runNow($tryLockJob=true, $forceRun=false)
+    public function runNow($tryLockJob = true, $forceRun = false)
     {
         // if this schedule doesn't exist yet, create it
         if (!$this->getCreatedAt()) {
