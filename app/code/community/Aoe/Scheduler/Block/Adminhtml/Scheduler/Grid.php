@@ -78,14 +78,18 @@ class Aoe_Scheduler_Block_Adminhtml_Scheduler_Grid extends Mage_Adminhtml_Block_
                 'index'  => 'schedule_id',
             )
         );
+        $config = array(
+            'header'  => $this->__('Job'),
+            'index'   => 'job_code',
+        );
+        switch (Mage::getStoreConfig('system/cron/listCodeFilterType')) {
+            case Aoe_Scheduler_Model_Adminhtml_System_Config_Source_List_Code_Filtertype::SELECT:
+                $config['type']    = 'options';
+                $config['options'] = Mage::getSingleton('aoe_scheduler/job')->getCollection()->toOptionHash('job_code', 'name');
+        }
         $this->addColumn(
             'job_code',
-            array(
-                'header'  => $this->__('Job'),
-                'index'   => 'job_code',
-                'type'    => 'options',
-                'options' => Mage::getSingleton('aoe_scheduler/job')->getCollection()->toOptionHash('job_code', 'name')
-            )
+            $config
         );
         $this->addColumn(
             'created_at',
