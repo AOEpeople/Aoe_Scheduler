@@ -92,7 +92,7 @@ class Aoe_Scheduler_Block_Adminhtml_Scheduler_Grid extends Mage_Adminhtml_Block_
             array(
                 'header'         => $this->__('Created'),
                 'index'          => 'created_at',
-                'frame_callback' => array($viewHelper, 'decorateTimeFrameCallBack')
+                'type'           => 'datetime'
             )
         );
         $this->addColumn(
@@ -100,7 +100,7 @@ class Aoe_Scheduler_Block_Adminhtml_Scheduler_Grid extends Mage_Adminhtml_Block_
             array(
                 'header'         => $this->__('Scheduled'),
                 'index'          => 'scheduled_at',
-                'frame_callback' => array($viewHelper, 'decorateTimeFrameCallBack')
+                'type'           => 'datetime'
             )
         );
         $this->addColumn(
@@ -108,7 +108,7 @@ class Aoe_Scheduler_Block_Adminhtml_Scheduler_Grid extends Mage_Adminhtml_Block_
             array(
                 'header'         => $this->__('Executed'),
                 'index'          => 'executed_at',
-                'frame_callback' => array($viewHelper, 'decorateTimeFrameCallBack')
+                'type'           => 'datetime'
             )
         );
         $this->addColumn(
@@ -116,7 +116,7 @@ class Aoe_Scheduler_Block_Adminhtml_Scheduler_Grid extends Mage_Adminhtml_Block_
             array(
                 'header'         => $this->__('Last seen'),
                 'index'          => 'last_seen',
-                'frame_callback' => array($viewHelper, 'decorateTimeFrameCallBack')
+                'type'           => 'datetime'
             )
         );
         $this->addColumn(
@@ -124,7 +124,7 @@ class Aoe_Scheduler_Block_Adminhtml_Scheduler_Grid extends Mage_Adminhtml_Block_
             array(
                 'header'         => $this->__('ETA'),
                 'index'          => 'eta',
-                'frame_callback' => array($viewHelper, 'decorateTimeFrameCallBack')
+                'type'           => 'datetime'
             )
         );
         $this->addColumn(
@@ -132,7 +132,7 @@ class Aoe_Scheduler_Block_Adminhtml_Scheduler_Grid extends Mage_Adminhtml_Block_
             array(
                 'header'         => $this->__('Finished'),
                 'index'          => 'finished_at',
-                'frame_callback' => array($viewHelper, 'decorateTimeFrameCallBack')
+                'type'           => 'datetime'
             )
         );
         $this->addColumn(
