@@ -86,6 +86,10 @@ class Aoe_Scheduler_Block_Adminhtml_Scheduler_Grid extends Mage_Adminhtml_Block_
             case Aoe_Scheduler_Model_Adminhtml_System_Config_Source_List_Code_Filtertype::SELECT:
                 $config['type']    = 'options';
                 $config['options'] = Mage::getSingleton('aoe_scheduler/job')->getCollection()->toOptionHash('job_code', 'name');
+                break;
+            case Aoe_Scheduler_Model_Adminhtml_System_Config_Source_List_Code_Filtertype::TEXT:
+            default:
+                $config['type'] = 'text';
         }
         $this->addColumn(
             'job_code',
