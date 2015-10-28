@@ -384,6 +384,69 @@ class Aoe_Scheduler_Shell_Scheduler extends Mage_Shell_Abstract
     }
 
     /**
+     * Get the next job to be processed by the daemon
+     *
+     * @return void
+     */
+    public function daemonNextAction()
+    {
+        Mage::getSingleton('aoe_scheduler/schedulemanager')->generateSchedules();
+        $next = Mage::getModel('cron/schedule')->getCollection()
+            ->addFieldToFilter('scheduled_at', array('lteq' => now()))
+            ->addFieldToFilter('status', Mage_Cron_Model_Schedule::STATUS_PENDING)
+            ->setOrder('scheduled_at', Zend_Db_Select::SQL_ASC)
+            ->getFirstItem();
+        if (!$next || !$next->getId()) {
+            return;
+        }
+        $dateNow = date_create(now());
+        $dateSchedule = date_create($next->getScheduledAt());
+        $diff = date_diff($dateNow, $dateSchedule);
+        if ($diff->format('%i') > Mage::getStoreConfig('system/cron/schedule_lifetime')) {
+            try {
+                $next->load()->setStatus(Mage_Cron_Model_Schedule::STATUS_MISSED)
+                    ->save();
+            } catch (Exception $e) {
+                Mage::logException($e->getMessage());
+            }
+            return;
+        }
+        echo '--code ' . $next->getJobCode() . ' ' . '--id ' . $next->getId();
+    }
+
+    /**
+     * Run a job specified by the ID
+     *
+     * @return void
+     */
+    public function runScheduleByIdAction()
+    {
+        $id = $this->getArg('id');
+        if (!$id) {
+            return;
+        }
+        Mage::getModel('cron/schedule')->load($id)->runNow();
+    }
+
+    /**
+     * Mark when multiple jobs with the same code try to run
+     *
+     * @return void
+     */
+    public function daemonMultipleAction()
+    {
+        $id = $this->getArg('id');
+        if (!$id) {
+            return;
+        }
+        Mage::getModel('cron/schedule')
+            ->load($id)
+            ->setMessages('Multiple tasks with the same job code were piling up. Skipping execution of duplicates.')
+            ->setStatus(Mage_Cron_Model_Schedule::STATUS_MISSED)
+            ->save();
+    }
+
+    /**
      * Display extra help
      *
      * @return string
