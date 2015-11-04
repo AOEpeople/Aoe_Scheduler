@@ -1,10 +1,66 @@
 #!/bin/bash
 
-# Exit when any command returns an error status
-set -o errexit
-
 # Generate an error if any variable doesn't exist
 set -o nounset
+
+delete_lock() {
+    LOCKDIR=$1
+    rm -rf "${LOCKDIR}"
+    if [ $? -ne 0 ]; then
+        echo "Could not remove lock dir '${LOCKDIR}'. (Check permissions...)"; >&2
+        exit 1;
+    fi
+}
+
+# Lock process to one run per set of options (This REQUIRES 'set -e' or 'set -o errexit')
+# This is to prevent multiple processes for the same cron parameters (And the only reason we don't call PHP directly)
+# @see http://wiki.bash-hackers.org/howto/mutex
+acquire_lock () {
+    LOCKDIR=$1
+    PIDFILE="${LOCKDIR}/PID"
+
+    #echo "Trying to acquire lock '${LOCKDIR}'."
+    if mkdir "${LOCKDIR}" &>/dev/null; then
+
+        #echo "Successfully created '${LOCKDIR}'. Lock acquired"
+
+        # lock succeeded
+        trap 'delete_lock "${LOCKDIR}"; exit $?' INT TERM EXIT
+        echo "$$" >"${PIDFILE}"
+    else
+        #echo "Failed creating ${LOCKDIR}."
+        if [ ! -f "${PIDFILE}" ]; then
+            #echo "No PID file found. Claiming lock now"
+            delete_lock "${LOCKDIR}"
+            # now try acquire new lock recursively...
+            #echo "Now acquiring new lock"
+            acquire_lock $LOCKDIR;
+            return
+        fi
+
+        # lock failed, check if the other PID is alive
+        OTHERPID="$(cat "${PIDFILE}")"
+        # if cat isn't able to read the file, another instance is probably about to remove the lock -- exit, we're *still* locked
+        if [ $? != 0 ]; then
+            #echo "lock failed, PID ${OTHERPID} is active" >&2
+            exit 1;
+        fi
+
+        # check is the other process is still alive
+        if ! kill -0 $OTHERPID &>/dev/null; then
+            # lock is stale, remove it and restart
+            #echo "removing stale lock of nonexistant PID ${OTHERPID}" >&2
+            delete_lock "${LOCKDIR}"
+            # now try acquire new lock recursively...
+            acquire_lock $LOCKDIR;
+        else
+            # lock is valid and OTHERPID is active - exit, we're locked!
+            #echo "Other process is alive. Still locked"
+            exit 1
+        fi
+    fi
+}
+
 
 # Location of the php binary
 PHP_BIN=$(which php || true)
@@ -84,14 +140,9 @@ fi
 # Unique identifier for this cron job run
 IDENTIFIER=$(echo -n "${DIR}|${MODE}|${INCLUDE_GROUPS}|${EXCLUDE_GROUPS}|${INCLUDE_JOBS}|${EXCLUDE_JOBS}" | "${MD5SUM_BIN}" - | cut -f1 -d' ')
 
-# Lock process to one run per set of options (This REQUIRES 'set -e' or 'set -o errexit')
-# This is to prevent multiple processes for the same cron parameters (And the only reason we don't call PHP directly)
-LOCK="/tmp/magento.aoe_scheduler.${IDENTIFIER}.lock"
-mkdir "${LOCK}" >/dev/null 2>&1
-# TODO: add pid writing and check
-trap 'rmdir "${LOCK}"; exit $?' INT TERM EXIT
+acquire_lock "/tmp/magento.aoe_scheduler.${IDENTIFIER}.lock";
 
-# Needed because PHP is braindead and resolves symlinks before setting __FILE__
+# Needed because PHP resolves symlinks before setting __FILE__
 cd "${DIR}"
 
 # Build the options
