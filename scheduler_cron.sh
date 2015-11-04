@@ -25,15 +25,30 @@ acquire_lock () {
         # lock succeeded
         trap 'delete_lock "${LOCKDIR}"; exit $?' INT TERM EXIT
         echo "$$" >"${PIDFILE}"
+
     else
         #echo "Failed creating ${LOCKDIR}."
         if [ ! -f "${PIDFILE}" ]; then
-            #echo "No PID file found. Claiming lock now"
-            delete_lock "${LOCKDIR}"
-            # now try acquire new lock recursively...
-            #echo "Now acquiring new lock"
-            acquire_lock $LOCKDIR;
-            return
+
+            # no PID file found. This could be
+            # a) because you just updated from a previous version that didn't write a PID file, but a process is legitimetly running
+            # b) because you just updated from a previous version that didn't write a PID file and there's an abandoned lock
+            # c) because you hit the exact time between another process creating the dir and writing the PID file
+
+            # let's wait for a while to acount for c) and see if the file shows up
+            # and this also solves the problem of any old abandoned lock in b)
+            # only problem here is that there's a minimal chance of having two concurrent processes right after updating in case
+            #   a new process expecting a PID file overlaps with an old process that didn't write a PID file
+            sleep 5
+            # if there's still no PID file we grab the process
+            if [ ! -f "${PIDFILE}" ]; then
+                #echo "No PID file found. Claiming lock now"
+                delete_lock "${LOCKDIR}"
+                # now try acquire new lock recursively...
+                #echo "Now acquiring new lock"
+                acquire_lock $LOCKDIR;
+                return
+            fi
         fi
 
         # lock failed, check if the other PID is alive
