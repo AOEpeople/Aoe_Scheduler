@@ -6,7 +6,7 @@
             <action method="addCss"><stylesheet>aoe_scheduler/StyleSheet/timeline.css</stylesheet></action>
             <action method="addCss"><stylesheet>aoe_scheduler/StyleSheet/bars.css</stylesheet></action>
 
-            <action method="addItem"><type>skin_js</type><script>aoe_scheduler/JavaScript/jquery-1.6.2.min.js</script></action>
+            <action method="addItem"><type>skin_js</type><script>aoe_scheduler/JavaScript/jquery-2.1.4.min.js</script></action>
             <action method="addItem"><type>skin_js</type><script>aoe_scheduler/JavaScript/tooltip.js</script></action>
             <action method="addItem"><type>skin_js</type><script>aoe_scheduler/JavaScript/tooltip.dynamic.js</script></action>
             <action method="addItem"><type>skin_js</type><script>aoe_scheduler/JavaScript/common.js</script></action>
