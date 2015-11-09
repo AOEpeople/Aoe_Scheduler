@@ -163,6 +163,7 @@
                 <enableErrorLog>0</enableErrorLog>
                 <errorLevel>-1</errorLevel>
                 <errorLogFilename>###JOBCODE###.log</errorLogFilename>
+                <listCodeFilterType>select</listCodeFilterType>
             </cron>
         </system>
     </default>
