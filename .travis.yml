@@ -15,11 +15,12 @@ env:
     - MAGENTO_DB_ALLOWSAME=1
     - SKIP_CLEANUP=1
   matrix:
-    - MAGENTO_VERSION=magento-ce-1.9.1.0
-    - MAGENTO_VERSION=magento-ce-1.9.0.1
-    - MAGENTO_VERSION=magento-ce-1.8.1.0
-    - MAGENTO_VERSION=magento-ce-1.8.0.0
-    - MAGENTO_VERSION=magento-ce-1.7.0.2
+    - MAGENTO_VERSION=magento-mirror-1.9.2.2
+    - MAGENTO_VERSION=magento-mirror-1.9.1.1
+    - MAGENTO_VERSION=magento-mirror-1.9.0.1
+    - MAGENTO_VERSION=magento-mirror-1.8.1.0
+    - MAGENTO_VERSION=magento-mirror-1.8.0.0
+    - MAGENTO_VERSION=magento-mirror-1.7.0.2
 before_script:
   - curl -OL https://squizlabs.github.io/PHP_CodeSniffer/phpcs.phar
 script:
