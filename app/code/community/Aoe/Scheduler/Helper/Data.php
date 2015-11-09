@@ -321,4 +321,28 @@ class Aoe_Scheduler_Helper_Data extends Mage_Core_Helper_Abstract
         }
         return true;
     }
+
+    /**
+     * Returns the last full hour
+     *
+     * @param int $timestamp
+     * @return int
+     */
+    public function hourFloor($timestamp)
+    {
+        return mktime(date('H', $timestamp), 0, 0, date('n', $timestamp), date('j', $timestamp), date('Y', $timestamp));
+    }
+
+
+    /**
+     * Returns the next full hour
+     *
+     * @param int $timestamp
+     * @return int
+     */
+    public function hourCeil($timestamp)
+    {
+        return mktime(date('H', $timestamp) + 1, 0, 0, date('n', $timestamp), date('j', $timestamp), date('Y', $timestamp));
+    }
+
 }

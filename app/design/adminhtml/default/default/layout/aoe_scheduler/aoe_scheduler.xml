@@ -7,9 +7,12 @@
             <action method="addCss"><stylesheet>aoe_scheduler/StyleSheet/bars.css</stylesheet></action>
 
             <action method="addItem"><type>skin_js</type><script>aoe_scheduler/JavaScript/jquery-2.1.4.min.js</script></action>
-            <action method="addItem"><type>skin_js</type><script>aoe_scheduler/JavaScript/tooltip.js</script></action>
-            <action method="addItem"><type>skin_js</type><script>aoe_scheduler/JavaScript/tooltip.dynamic.js</script></action>
-            <action method="addItem"><type>skin_js</type><script>aoe_scheduler/JavaScript/common.js</script></action>
+            <action method="addItem"><type>skin_js</type><script>aoe_scheduler/JavaScript/knockout-3.3.0.js</script></action>
+            <action method="addItem"><type>skin_js</type><script>aoe_scheduler/JavaScript/timeline.js</script></action>
+
+            <!--<action method="addItem"><type>skin_js</type><script>aoe_scheduler/JavaScript/tooltip.js</script></action>-->
+            <!--<action method="addItem"><type>skin_js</type><script>aoe_scheduler/JavaScript/tooltip.dynamic.js</script></action>-->
+            <!--<action method="addItem"><type>skin_js</type><script>aoe_scheduler/JavaScript/common.js</script></action>-->
         </reference>
         <reference name="content">
             <block type="aoe_scheduler/adminhtml_timeline" name="aoe_scheduler.timeline" template="aoe_scheduler/timeline.phtml"/>

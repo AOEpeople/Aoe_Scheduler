@@ -32,7 +32,6 @@ jQuery(function () {
     function collision(a, b) {
         var posA = getPositions(a);
         var posB = getPositions(b);
-
         return (posA[1][0] == posB[1][0]) && comparePositions(posA[0], posB[0]);
     }
 
