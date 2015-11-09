@@ -10,7 +10,7 @@
    <description>This extension allows you to manage and visualize cron scheduler tasks.</description>
    <license>GPL v3.0</license>
    <license_uri>http://www.gnu.org/licenses/gpl-3.0.html</license_uri>
-   <version>1.0.1</version>
+   <version>1.3.0</version>
    <stability>stable</stability>
    <notes>GIT Revision: 62e81fad14b8de9bb7cbc6d137fc4bcddf5f921d, Build Date: 2013-03-04 07:48:24</notes>
    <authors>
@@ -58,7 +58,7 @@
    </depends>
    <contents>
       <target>
-         <target>magelocal</target>
+         <target>magecommunity</target>
          <target>magecommunity</target>
          <target>mageetc</target>
          <target>mageweb</target>
@@ -84,7 +84,7 @@
          <path>/scheduler_cron.sh</path>
       </path>
       <type>
-         <type>file</type>
+         <type>dir</type>
          <type>dir</type>
          <type>file</type>
          <type>file</type>
