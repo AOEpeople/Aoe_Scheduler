@@ -11,23 +11,23 @@
  * @method string getScheduledAt()
  * @method string setJobCode($jobCode)
  * @method string getJobCode()
- * @method $this setMessages()
- * @method $this setExecutedAt()
- * @method $this setCreatedAt()
- * @method $this setScheduledAt()
- * @method $this setStatus()
- * @method $this setFinishedAt()
- * @method $this setParameters()
- * @method $this setEta()
+ * @method $this setMessages($param)
+ * @method $this setExecutedAt($param)
+ * @method $this setCreatedAt($param)
+ * @method $this setScheduledAt($param)
+ * @method $this setStatus($param)
+ * @method $this setFinishedAt($param)
+ * @method $this setParameters($param)
+ * @method $this setEta($param)
  * @method string getEta()
- * @method $this setHost()
+ * @method $this setHost($param)
  * @method string getHost()
- * @method $this setPid()
+ * @method $this setPid($param)
  * @method string getPid()
- * @method $this setProgressMessage()
+ * @method $this setProgressMessage($param)
  * @method string getProgressMessage()
  * @method string getLastSeen()
- * @method $this setLastSeen()
+ * @method $this setLastSeen($param)
  * @method string getScheduledBy()
  * @method $this setScheduledBy($scheduledBy)
  * @method string getScheduledReason()
@@ -666,7 +666,6 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
 
     /**
      * Redirect all output to the messages field of this Schedule.
-     *
      * We use ob_start with `_addBufferToMessages` to redirect the output.
      *
      * @return $this
@@ -689,11 +688,12 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
         );
 
         $this->_redirect = true;
+
+        return $this;
     }
 
     /**
      * Stop redirecting all output to the messages field of this Schedule.
-     *
      * We use ob_end_flush to stop redirecting the output.
      *
      * @return $this
@@ -712,6 +712,8 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
         $this->addMessages('---END---' . PHP_EOL);
 
         $this->_redirect = false;
+
+        return $this;
     }
 
     /**
@@ -758,8 +760,8 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
             return $this->save();
         }
 
-        $connection = Mage::getSingleton('core/resource')
-            ->getConnection('core_write');
+        $connection = Mage::getSingleton('core/resource')->getConnection('core_write');
+        /* @var $connection Varien_Db_Adapter_Interface */
 
         $count = $connection
             ->update(
@@ -793,13 +795,9 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
     protected function _getPdoWarning(PDO $pdo)
     {
         $originalErrorMode = $pdo->getAttribute(PDO::ATTR_ERRMODE);
-
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING);
-
         $stm = $pdo->query('SHOW WARNINGS');
-
         $pdo->setAttribute(PDO::ATTR_ERRMODE, $originalErrorMode);
-
         return $stm->fetchObject();
     }
 
