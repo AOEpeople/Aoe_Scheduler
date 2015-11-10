@@ -16,7 +16,7 @@
 .bar-gray span {
     display:block;
     height:16px;
-    background-image:url(../Images/bg_notifications.gif);
+    background-image:url(../img/bg_notifications.gif);
     background-repeat:no-repeat;
     font:bold 10px/16px Arial, Helvetica, sans-serif;
     text-transform:uppercase;

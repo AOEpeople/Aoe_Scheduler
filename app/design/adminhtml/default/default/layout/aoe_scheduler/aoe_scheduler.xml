@@ -3,17 +3,17 @@
 
     <adminhtml_timeline_index>
         <reference name="head">
-            <action method="addCss"><stylesheet>aoe_scheduler/StyleSheet/timeline.css</stylesheet></action>
-            <action method="addCss"><stylesheet>aoe_scheduler/StyleSheet/bars.css</stylesheet></action>
+            <action method="addCss"><stylesheet>aoe_scheduler/css/timeline.css</stylesheet></action>
+            <action method="addCss"><stylesheet>aoe_scheduler/css/bars.css</stylesheet></action>
 
-            <action method="addItem"><type>skin_js</type><script>aoe_scheduler/JavaScript/jquery-2.1.4.min.js</script></action>
-            <action method="addItem"><type>skin_js</type><script>aoe_scheduler/JavaScript/knockout-3.3.0.js</script></action>
-            <action method="addItem"><type>skin_js</type><script>aoe_scheduler/JavaScript/collision_detector.js</script></action>
-            <action method="addItem"><type>skin_js</type><script>aoe_scheduler/JavaScript/timeline.js</script></action>
+            <action method="addItem"><type>skin_js</type><script>aoe_scheduler/js/jquery-2.1.4.min.js</script></action>
+            <action method="addItem"><type>skin_js</type><script>aoe_scheduler/js/knockout-3.3.0.js</script></action>
+            <action method="addItem"><type>skin_js</type><script>aoe_scheduler/js/collision_detector.js</script></action>
+            <action method="addItem"><type>skin_js</type><script>aoe_scheduler/js/timeline.js</script></action>
 
-            <!--<action method="addItem"><type>skin_js</type><script>aoe_scheduler/JavaScript/tooltip.js</script></action>-->
-            <!--<action method="addItem"><type>skin_js</type><script>aoe_scheduler/JavaScript/tooltip.dynamic.js</script></action>-->
-            <!--<action method="addItem"><type>skin_js</type><script>aoe_scheduler/JavaScript/common.js</script></action>-->
+            <!--<action method="addItem"><type>skin_js</type><script>aoe_scheduler/js/tooltip.js</script></action>-->
+            <!--<action method="addItem"><type>skin_js</type><script>aoe_scheduler/js/tooltip.dynamic.js</script></action>-->
+            <!--<action method="addItem"><type>skin_js</type><script>aoe_scheduler/js/common.js</script></action>-->
         </reference>
         <reference name="content">
             <block type="aoe_scheduler/adminhtml_timeline" name="aoe_scheduler.timeline" template="aoe_scheduler/timeline.phtml"/>
@@ -34,7 +34,7 @@
 
     <adminhtml_scheduler_index>
         <reference name="head">
-            <action method="addCss"><stylesheet>aoe_scheduler/StyleSheet/bars.css</stylesheet></action>
+            <action method="addCss"><stylesheet>aoe_scheduler/css/bars.css</stylesheet></action>
         </reference>
         <reference name="content">
             <block type="aoe_scheduler/adminhtml_scheduler" name="aoe_scheduler.scheduler"/>
@@ -43,7 +43,7 @@
 
     <adminhtml_job_index>
         <reference name="head">
-            <action method="addCss"><stylesheet>aoe_scheduler/StyleSheet/bars.css</stylesheet></action>
+            <action method="addCss"><stylesheet>aoe_scheduler/css/bars.css</stylesheet></action>
         </reference>
         <reference name="content">
             <block type="aoe_scheduler/adminhtml_job" name="aoe_scheduler.job"/>
@@ -64,9 +64,9 @@
 
     <adminhtml_instructions_index>
         <reference name="head">
-            <action method="addCss"><stylesheet>aoe_scheduler/StyleSheet/instructions.css</stylesheet></action>
-            <action method="addItem"><type>skin_js</type><script>aoe_scheduler/JavaScript/jquery-1.6.2.min.js</script></action>
-            <action method="addItem"><type>skin_js</type><script>aoe_scheduler/JavaScript/instructions.js</script></action>
+            <action method="addCss"><stylesheet>aoe_scheduler/css/instructions.css</stylesheet></action>
+            <action method="addItem"><type>skin_js</type><script>aoe_scheduler/js/jquery-1.6.2.min.js</script></action>
+            <action method="addItem"><type>skin_js</type><script>aoe_scheduler/js/instructions.js</script></action>
         </reference>
         <reference name="content">
             <block type="aoe_scheduler/adminhtml_instructions" name="aoe_scheduler.instructions" template="aoe_scheduler/instructions.phtml"/>

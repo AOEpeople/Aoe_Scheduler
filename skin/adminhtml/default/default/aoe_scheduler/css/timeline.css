@@ -37,7 +37,7 @@
 }
 
 #now .arrow {
-    background-image: url(../Images/red.png);
+    background-image: url(../img/red.png);
     width: 16px;
     height: 16px;
     position: absolute;
@@ -57,7 +57,7 @@ div.timeline-box {
 }
 
 div.timeline-panel {
-    background-image: url(../Images/hour.gif);
+    background-image: url(../img/hour.gif);
     border-right: 1px solid black;
     position: relative;
 }
@@ -137,7 +137,7 @@ div.hours {
     width: 100px;
 }
 
-.details-headline, .task { background-image: url(../Images/gradient.png); }
+.details-headline, .task { background-image: url(../img/gradient.png); }
 
 .details-headline.error, .task.error,
 .details-headline.killed, .task.killed,
@@ -149,10 +149,10 @@ div.hours {
 .details-headline.pending, .task.pending { background-color: #A9ABA8; }
 .details-headline.missed, .task.missed { background-color: #F75300; }
 .details-headline.running, .task.running { background-color: #FE9D00 !important; }
-.details-headline.running, .task.running { background-image: url(../Images/animation.gif); background-position: center; background-repeat: repeat-x; }
+.details-headline.running, .task.running { background-image: url(../img/animation.gif); background-position: center; background-repeat: repeat-x; }
 
 .estimation { background-color: #B1C5D1; }
-.estimation { background-image: url(../Images/animation2.gif); background-position: center; background-repeat: repeat-x; }
+.estimation { background-image: url(../img/animation2.gif); background-position: center; background-repeat: repeat-x; }
 
 
 div.task.active, div.task:hover { background-color: #00A2FA; }
