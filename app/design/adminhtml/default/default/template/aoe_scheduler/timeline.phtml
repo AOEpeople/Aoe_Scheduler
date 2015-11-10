@@ -1,9 +1,6 @@
-<?php
-/* @var $this Aoe_Scheduler_Block_Adminhtml_Timeline */
-$_helper = $this->helper('aoe_scheduler/data'); /* @var $_helper Aoe_Scheduler_Helper_Data */
-?>
+<?php /* @var $this Aoe_Scheduler_Block_Adminhtml_Timeline */ ?>
 
-<script>
+<script type="text/javascript">
     var SCHEDULER_TIMELINE_DATA_URL = '<?php echo $this->getUrl('*/*/data'); ?>';
 </script>
 
@@ -16,7 +13,11 @@ $_helper = $this->helper('aoe_scheduler/data'); /* @var $_helper Aoe_Scheduler_H
     </table>
 </div>
 
-<div id="maincontainer">
+<div data-bind="visible: !showUI()">
+    <?php echo $this->__('Loading...'); ?>
+</div>
+
+<div id="maincontainer" data-bind="visible: showUI">
 
     <div id="contentwrapper">
         <div id="contentcolumn">
@@ -33,7 +34,7 @@ $_helper = $this->helper('aoe_scheduler/data'); /* @var $_helper Aoe_Scheduler_H
                         </div>
                     </div>
 
-                    <!-- ko foreach: jobs -->
+                    <!-- ko foreach: { data: jobs, afterRender: $root.collisionDetection } -->
                     <div class="row">
                         <div class="timeline" data-bind="css: 'timeline_'+code">
                             <!-- ko foreach: schedules -->

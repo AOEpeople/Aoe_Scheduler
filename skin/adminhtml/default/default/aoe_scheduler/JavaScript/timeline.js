@@ -1,95 +1,100 @@
 $.noConflict();
-jQuery(document).ready(function($) {
 
-    var milliSecondsPerPixel = 15000; // was "zoom"
-    var start_time;
+var Scheduler = Scheduler || {};
 
-    function pos(date) {
-        return width(date.getTime() - start_time.getTime(), 0);
-    }
+Scheduler.Schedule = function(data) {
+    var self = this;
+    self.schedule_id = data.schedule_id;
+    self.status = data.status;
+    self.start_time = new Date(data.start_time * 1000);
+    self.duration = data.duration * 1000;
+    self.style = {
+        left: Scheduler.Timeline.pos(self.start_time),
+        width: Scheduler.Timeline.width(self.duration, 3)
+    };
+};
+
+Scheduler.Job = function(data) {
+    var self = this;
+    self.code = data.code;
+    self.schedules = ko.observableArray();
+    jQuery.each(data.schedules, function(index, item) {
+        self.schedules.push(new Scheduler.Schedule(item));
+    });
+};
+
+Scheduler.Timeline = function () {
+    var self = this;
+
+    this.jobs = ko.observableArray();
+    this.hours = ko.observableArray();
+    this.nowLinePos = ko.observable('0px');
+    this.timelinePanelWidth = ko.observable('0px');
+    this.showUI = ko.observable(false);
+
+    this.start_time = null;
+
+    this.autoRefreshInterval = null;
+
+    this.collisionDetection = function (element) { collisionDetector.check(jQuery('.Timeline .task', element[1])); };
+
+    this.refresh = function(afterCallback) {
+        jQuery.getJSON(SCHEDULER_TIMELINE_DATA_URL, function (data) {
+            self.start_time = new Date(data.start_time * 1000);
+
+            self.jobs.removeAll();
+            jQuery.each(data.jobs, function (index, item) {
+                self.jobs.push(new Scheduler.Job(item));
+            });
+
+            self.hours(data.hours);
+            self.nowLinePos(pos(new Date(data.now * 1000)));
+            self.timelinePanelWidth(self.width(data.hours.length * 60 * 60 * 1000));
+            self.showUI(true);
+
+            if (afterCallback) {
+                afterCallback();
+            }
+        });
+    };
+
+    this.toggleAutoRefresh = function() {
+        var $button = jQuery('button.autorefresh');
+        if ($button.hasClass('disabled')) {
+            $button.removeClass('disabled').addClass('success');
+            self.refresh();
+            self.autoRefreshInterval = setInterval(self.refresh, 60 * 1000);
+        } else {
+            $button.removeClass('success').addClass('disabled');
+            clearInterval(self.autoRefreshInterval);
+        }
+    };
+
+    this.pos = function(date) {
+        return self.width(date.getTime() - self.start_time.getTime(), 0);
+    };
 
     /**
      * @param duration in milliseconds
+     * @param minWidth in pixels
      * @returns {string}
      */
-    function width(duration, minWidth) {
-        var width = Math.round(duration / milliSecondsPerPixel);
+    this.width = function(duration, minWidth) {
+        var width = Math.round(duration / 15000);
         if (minWidth) {
             width = Math.max(width, minWidth);
         }
         return width + 'px';
-    }
-
-    var Schedule = function(data) {
-        var self = this;
-        self.schedule_id = data.schedule_id;
-        self.status = data.status;
-        self.start_time = new Date(data.start_time * 1000);
-        self.duration = data.duration * 1000;
-        self.style = {
-            left: pos(self.start_time),
-            width: width(self.duration, 3)
-        };
-    };
-
-    var Job = function(data) {
-        var self = this;
-
-        self.code = data.code;
-        self.schedules = [];
-
-        jQuery.each(data.schedules, function(index, item) {
-            self.schedules.push(new Schedule(item));
-            console.log("adding schedule");
-        });
     };
 
 
-    $.getJSON(SCHEDULER_TIMELINE_DATA_URL, function(data) {
-        start_time = new Date(data.start_time * 1000);
-        var jobs = [];
-        jQuery.each(data.jobs, function(index, item) {
-            jobs.push(new Job(item));
-        });
+    return this;
+}();
 
-        ko.applyBindings({
-            jobs: jobs,
-            hours: data.hours,
-            timelinePanelWidth: width(data.hours.length * 60 * 60 * 1000),
-            nowLinePos: pos(new Date(data.now * 1000))
-        });
+jQuery(document).ready(function($) {
+    ko.applyBindings(Scheduler.Timeline);
+    Scheduler.Timeline.refresh(function() {
+        // scroll all the way to the right when this is loaded the first time
+        jQuery('.timeline-box').scrollLeft(jQuery('.timeline-panel').width());
     });
 });
-
-
-
-
-
-function formatDate(date) {
-    var normalizedDate = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0, 0); // normalized date
-    var day = new Date();
-    var today = new Date(day.getFullYear(), day.getMonth(), day.getDate(), 0, 0, 0, 0);
-    var tomorrow = new Date(day.getFullYear(), day.getMonth(), day.getDate()+1, 0, 0, 0, 0);
-    var yesterday = new Date(day.getFullYear(), day.getMonth(), day.getDate()-1, 0, 0, 0, 0);
-    var formattedDate = '';
-    if (today.getTime() == normalizedDate.getTime()) {
-    } else if (yesterday.getTime() == normalizedDate.getTime()) {
-        formattedDate = 'Yesterday, ';
-    } else if (tomorrow.getTime() == normalizedDate.getTime()) {
-        formattedDate = 'Tomorrow, ';
-    } else {
-        formattedDate = normalizedDate.getFullYear() + '-' + normalizedDate.getMonth() + "-" + normalizedDate.getDate() + ', ';
-    }
-    if (date.getHours() < 10) {
-        formattedDate = formattedDate + '0';
-    }
-    formattedDate = formattedDate + date.getHours() + ':';
-    if (date.getHours() < 10) {
-        formattedDate = formattedDate + '0';
-    }
-    if (date.getMinutes() < 10) {
-        formattedDate = formattedDate + '0';
-    }
-    formattedDate = formattedDate + date.getMinutes();
-    return formattedDate;
-}

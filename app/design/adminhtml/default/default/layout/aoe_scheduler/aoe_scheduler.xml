@@ -8,6 +8,7 @@
 
             <action method="addItem"><type>skin_js</type><script>aoe_scheduler/JavaScript/jquery-2.1.4.min.js</script></action>
             <action method="addItem"><type>skin_js</type><script>aoe_scheduler/JavaScript/knockout-3.3.0.js</script></action>
+            <action method="addItem"><type>skin_js</type><script>aoe_scheduler/JavaScript/collision_detector.js</script></action>
             <action method="addItem"><type>skin_js</type><script>aoe_scheduler/JavaScript/timeline.js</script></action>
 
             <!--<action method="addItem"><type>skin_js</type><script>aoe_scheduler/JavaScript/tooltip.js</script></action>-->
