@@ -44,6 +44,7 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
 
     const STATUS_SKIP_LOCKED = 'locked';
     const STATUS_SKIP_OTHERJOBRUNNING = 'other_job_running';
+    const STATUS_SKIP_WRONGUESR = 'wrong_user';
 
     const STATUS_DIED = 'died'; // note that died != killed
 
@@ -131,6 +132,12 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
      */
     public function runNow($tryLockJob = true, $forceRun = false)
     {
+        // Check the user running the cron is the one defined in config
+        if (!$this->checkRunningAsCorrectUser()) {
+            $this->setStatus(self::STATUS_SKIP_WRONGUESR);
+            return $this;
+        }
+
         // if this schedule doesn't exist yet, create it
         if (!$this->getCreatedAt()) {
             $this->schedule();
@@ -159,6 +166,9 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
         }
 
         try {
+            // Track the last user to run a job
+            $this->setLastRunUser();
+            
             $job = $this->getJob();
 
             if (!$job) {
@@ -841,5 +851,61 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
             $statusArray[$status] = $status;
         }
         return $statusArray;
+    }
+
+    /**
+     * Check if the user running the process matches the configured user. Message will capture
+     * cases where the user is not set too in its response message. Process may optionally be
+     * killed, or may be allowed to continue.
+     * @return bool
+     */
+    public function checkRunningAsCorrectUser()
+    {
+        if (Mage::helper('aoe_scheduler')->runningAsConfiguredUser()) {
+            return true;
+        }
+
+        // We may decide that these processes should be killed, or they may continue...
+        $kill = Mage::helper('aoe_scheduler')->getShouldKillOnWrongUser();
+        $optionalKillMessage = ($kill) ? ' Schedule will not run until this is addressed.' : '';
+
+        $this->log(
+            sprintf(
+                'Job "%s" (id: %s) is running as %s, but this doesn\'t match the configuration. You can disable this'
+                . ' message by setting the default user in configuration.' . $optionalKillMessage,
+                $this->getJobCode(),
+                $this->getId(),
+                Mage::helper('aoe_scheduler')->getRunningUser()
+            )
+        );
+
+        if ($kill) {
+            return false;
+        }
+
+        // Allow it to run anyway
+        return true;
+    }
+
+    /**
+     * Set the user who ran the last successfully started schedule into a core variable
+     * @param  string|null $user Optional: if specified, overrides the default
+     * @return self
+     */
+    public function setLastRunUser($user = null)
+    {
+        if (is_null($user)) {
+            $user = Mage::helper('aoe_scheduler')->getRunningUser();
+        }
+
+        // Log the current user running the schedule if it's executed
+        Mage::getModel('core/variable')
+            ->loadByCode(Aoe_Scheduler_Helper_Data::VAR_LAST_RUN_USER_CODE)
+            ->setCode(Aoe_Scheduler_Helper_Data::VAR_LAST_RUN_USER_CODE)
+            ->setName('Scheduler - User Last Run As')
+            ->setPlainValue((string) $user)
+            ->save();
+
+        return $this;
     }
 }
