@@ -164,6 +164,8 @@
                 <errorLevel>-1</errorLevel>
                 <errorLogFilename>###JOBCODE###.log</errorLogFilename>
                 <listCodeFilterType>select</listCodeFilterType>
+                <showCronUserMessage>1</showCronUserMessage>
+                <killOnIncorrectUser>0</killOnIncorrectUser>
             </cron>
         </system>
     </default>

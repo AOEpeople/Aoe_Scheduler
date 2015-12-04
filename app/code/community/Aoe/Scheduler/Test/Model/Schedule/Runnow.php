@@ -12,18 +12,6 @@ class Aoe_Scheduler_Test_Model_Schedule_Runnow extends EcomDev_PHPUnit_Test_Case
 
     /**
      * @test
-     * @return Aoe_Scheduler_Model_Schedule
-     */
-    public function checkClass()
-    {
-        /* @var Aoe_Scheduler_Model_Schedule $schedule */
-        $schedule = Mage::getModel('cron/schedule');
-        $this->assertInstanceOf('Aoe_Scheduler_Model_Schedule', $schedule);
-        return $schedule;
-    }
-
-    /**
-     * @test
      */
     public function runJob()
     {
@@ -173,5 +161,46 @@ class Aoe_Scheduler_Test_Model_Schedule_Runnow extends EcomDev_PHPUnit_Test_Case
                 'cron_' . $jobCode . '_before',
             )
         );
+    }
+
+    /**
+     * When the runningAsConfiguredUser returns false (which is when kill is enabled) the job should not run
+     * but return an instance of itself and set a status message
+     *
+     * @loadFixture killOnWrongUser
+     */
+    public function testShouldKillWithWrongUserAndKillSwitchSet()
+    {
+        $result = $this->_performConfiguredUserTest();
+        $this->assertSame(Aoe_Scheduler_Model_Schedule::STATUS_SKIP_WRONGUESR, $result->getStatus());
+    }
+
+    /**
+     * When "warn" is the chosen preference for what to do when the wrong user runs the cron,
+     * allow the job to complete
+     *
+     * @loadFixture warnOnWrongUser
+     */
+    public function testShouldNotKillWhenKillSwitchIsOffButUserIsWrong()
+    {
+        $result = $this->_performConfiguredUserTest();
+        $this->assertSame(Aoe_Scheduler_Model_Schedule::STATUS_SUCCESS, $result->getStatus());
+    }
+
+    /**
+     * Centralized logic for running unit test against multiple fixtures
+     * @return Aoe_Scheduler_Model_Schedule
+     */
+    protected function _performConfiguredUserTest()
+    {
+        $helperMock = $this->getHelperMock('aoe_scheduler', array('runningAsConfiguredUser'));
+        $helperMock->expects($this->once())->method('runningAsConfiguredUser')->will($this->returnValue(false));
+        $this->replaceByMock('helper', 'aoe_scheduler', $helperMock);
+
+        $schedule = Mage::getModel('cron/schedule');
+        $result = $schedule->setJobCode('aoescheduler_testtask')->runNow(false);
+
+        $this->assertInstanceOf('Aoe_Scheduler_Model_Schedule', $result);
+        return $result;
     }
 }

@@ -8,10 +8,15 @@
 class Aoe_Scheduler_Helper_Data extends Mage_Core_Helper_Abstract
 {
 
-    const XML_PATH_MAX_RUNNING_TIME = 'system/cron/max_running_time';
-    const XML_PATH_EMAIL_TEMPLATE = 'system/cron/error_email_template';
-    const XML_PATH_EMAIL_IDENTITY = 'system/cron/error_email_identity';
-    const XML_PATH_EMAIL_RECIPIENT = 'system/cron/error_email';
+    const XML_PATH_MAX_RUNNING_TIME    = 'system/cron/max_running_time';
+    const XML_PATH_EMAIL_TEMPLATE      = 'system/cron/error_email_template';
+    const XML_PATH_EMAIL_IDENTITY      = 'system/cron/error_email_identity';
+    const XML_PATH_EMAIL_RECIPIENT     = 'system/cron/error_email';
+    const XML_PATH_CRON_USER           = 'system/cron/cronUser';
+    const XML_PATH_KILL_ON_WRONG_USER  = 'system/cron/killOnIncorrectUser';
+    const XML_PATH_SHOW_WRONG_USER_MSG = 'system/cron/showCronUserMessage';
+
+    const VAR_LAST_RUN_USER_CODE       = 'aoescheduler_lastrunuser';
 
     protected $groupsToJobsMap = null;
 
@@ -320,5 +325,72 @@ class Aoe_Scheduler_Helper_Data extends Mage_Core_Helper_Abstract
             return false;
         }
         return true;
+    }
+
+    /**
+     * Return the current system user running this process
+     * @return string
+     */
+    public function getRunningUser()
+    {
+        return trim(shell_exec('whoami'));
+    }
+
+    /**
+     * Return the configured cron user
+     * @return string|null
+     */
+    public function getConfiguredUser()
+    {
+        return Mage::getStoreConfig(self::XML_PATH_CRON_USER);
+    }
+
+    /**
+     * Should processes not running the configured user be killed?
+     * @return bool
+     */
+    public function getShouldKillOnWrongUser()
+    {
+        return (bool) Mage::getStoreConfig(self::XML_PATH_KILL_ON_WRONG_USER);
+    }
+
+    /**
+     * Check the configuration value for which user the cron should be run as, and check if it matches the actual user.
+     * Skip if the warning should be ignored.
+     * @param  bool $useRunningUser If true, use the user running the web server, otherwise use the last run user from
+     *                              core_variable storage
+     * @return bool
+     */
+    public function runningAsConfiguredUser($useRunningUser = true)
+    {
+        if (!$this->getShowUserCronMessage()) {
+            return true;
+        }
+
+        $getUserMethod = ($useRunningUser) ? 'getRunningUser' : 'getLastRunUser';
+
+        return ($this->{$getUserMethod}() === $this->getConfiguredUser());
+    }
+
+    /**
+     * Should we warn the user if the schedule is being run as the wrong user?
+     * @return bool
+     */
+    public function getShowUserCronMessage()
+    {
+        return (bool) Mage::getStoreConfig(self::XML_PATH_SHOW_WRONG_USER_MSG);
+    }
+
+    /**
+     * Get the last user who ran a schedule from core variables
+     * @return string|null
+     */
+    public function getLastRunUser()
+    {
+        $var = Mage::getModel('core/variable')->loadByCode(self::VAR_LAST_RUN_USER_CODE);
+        if ($var) {
+            return $var->getPlainValue();
+        }
+        return null;
     }
 }
