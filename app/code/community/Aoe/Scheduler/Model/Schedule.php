@@ -44,7 +44,7 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
 
     const STATUS_SKIP_LOCKED = 'locked';
     const STATUS_SKIP_OTHERJOBRUNNING = 'other_job_running';
-    const STATUS_SKIP_WRONGUESR = 'wrong_user';
+    const STATUS_SKIP_WRONGUSER = 'wrong_user';
 
     const STATUS_DIED = 'died'; // note that died != killed
 
@@ -134,7 +134,7 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
     {
         // Check the user running the cron is the one defined in config
         if (!$this->checkRunningAsCorrectUser()) {
-            $this->setStatus(self::STATUS_SKIP_WRONGUESR);
+            $this->setStatus(self::STATUS_SKIP_WRONGUSER);
             return $this;
         }
 

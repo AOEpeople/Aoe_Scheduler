@@ -172,7 +172,7 @@ class Aoe_Scheduler_Test_Model_Schedule_Runnow extends EcomDev_PHPUnit_Test_Case
     public function testShouldKillWithWrongUserAndKillSwitchSet()
     {
         $result = $this->_performConfiguredUserTest();
-        $this->assertSame(Aoe_Scheduler_Model_Schedule::STATUS_SKIP_WRONGUESR, $result->getStatus());
+        $this->assertSame(Aoe_Scheduler_Model_Schedule::STATUS_SKIP_WRONGUSER, $result->getStatus());
     }
 
     /**
