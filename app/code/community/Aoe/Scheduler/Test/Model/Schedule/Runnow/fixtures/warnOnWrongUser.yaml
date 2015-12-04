@@ -1,0 +1,3 @@
+# User has specified that jobs running as the wrong user should be allowed but warned
+config:
+    default/system/cron/killOnIncorrectUser: 0

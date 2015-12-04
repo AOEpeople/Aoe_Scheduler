@@ -42,6 +42,9 @@ abstract class Aoe_Scheduler_Controller_AbstractController extends Mage_Adminhtm
             $this->_getSession()->addError($this->__('Configuration problem. "Generate Schedules Every" is higher than "Schedule Ahead for". Please check your <a href="%s">configuration settings</a>.', $this->getUrl('adminhtml/system_config/edit', array('section' => 'system')) . '#system_cron'));
         }
 
+        // Check the cron is being run as the configured user and whether or not to show the message
+        $this->_checkCronUser();
+
         $this->loadLayout();
 
         $this->_setActiveMenu('system');
@@ -85,6 +88,50 @@ abstract class Aoe_Scheduler_Controller_AbstractController extends Mage_Adminhtm
                     $this->_getSession()->addError($this->__('Last heartbeat is older than one hour. Please check your settings and your configuration!'));
                 }
             }
+        }
+    }
+
+    /**
+     * Check the user running the cron matches the configured user, and if not prevented, display a warning message with some CTAs
+     * @return void
+     */
+    protected function _checkCronUser()
+    {
+
+        $helper = Mage::helper('aoe_scheduler'); /* @var $helper Aoe_Scheduler_Helper_Data */
+
+        // If opted out of the message, don't show it
+        if (!$helper->getShowUserCronMessage()) {
+            return;
+        }
+
+        if (!$helper->runningAsConfiguredUser(false)) {
+            if (!empty($helper->getConfiguredUser())) {
+                // User is configured and doesn't match
+                $this->_getSession()->addError(
+                    $this->__(
+                        'Scheduler appears to be running as system user "%s". It should be running as "%s". <a href="%s">Use %s</a>.%s <a href="%s">Don\'t show this again.</a>',
+                        $helper->getLastRunUser(),
+                        $helper->getConfiguredUser(),
+                        $this->getUrl('adminhtml/scheduler/setConfiguredUser', array('user' => $helper->getLastRunUser())),
+                        $helper->getLastRunUser(),
+                        ($helper->getShouldKillOnWrongUser()) ? ' <b>Warning!</b> Jobs will not run until this is resolved!.' : '',
+                        $this->getUrl('adminhtml/scheduler/hideUserWarning')
+                    )
+                );
+            } else {
+                // User is not configured, suggest it be
+                $this->_getSession()->addNotice(
+                    $this->__(
+                        'No default user is configured for who should run the cron. <a href="%s">Click here</a> to define one. We suggest '
+                        . 'using "%s". <a href="%s">Don\'t show this again.</a>',
+                        $this->getUrl('adminhtml/system_config/edit', array('section' => 'system')) . '#system_cron',
+                        $helper->getRunningUser(), // suggest the user that runs the web server, makes sense
+                        $this->getUrl('adminhtml/scheduler/hideUserWarning')
+                    )
+                );
+            }
+            
         }
     }
 

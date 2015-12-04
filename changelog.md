@@ -1,5 +1,7 @@
 ## Changelog
 
+- **Feature**: #189: force user. (Thank you, @robbieaverill!)
+
 ### Version 1.3.1
 
 - **Fix**: #198: abstract.php not found
