@@ -97,22 +97,25 @@ abstract class Aoe_Scheduler_Controller_AbstractController extends Mage_Adminhtm
      */
     protected function _checkCronUser()
     {
+
+        $helper = Mage::helper('aoe_scheduler'); /* @var $helper Aoe_Scheduler_Helper_Data */
+
         // If opted out of the message, don't show it
-        if (!Mage::helper('aoe_scheduler')->getShowUserCronMessage()) {
+        if (!$helper->getShowUserCronMessage()) {
             return;
         }
 
-        if (!Mage::helper('aoe_scheduler')->runningAsConfiguredUser(false)) {
-            if (!empty(Mage::helper('aoe_scheduler')->getConfiguredUser())) {
+        if (!$helper->runningAsConfiguredUser(false)) {
+            if (!empty($helper->getConfiguredUser())) {
                 // User is configured and doesn't match
                 $this->_getSession()->addError(
                     $this->__(
                         'Scheduler appears to be running as system user "%s". It should be running as "%s". <a href="%s">Use %s</a>.%s <a href="%s">Don\'t show this again.</a>',
-                        Mage::helper('aoe_scheduler')->getLastRunUser(),
-                        Mage::helper('aoe_scheduler')->getConfiguredUser(),
-                        $this->getUrl('adminhtml/scheduler/setConfiguredUser', array('user' => Mage::helper('aoe_scheduler')->getLastRunUser())),
-                        Mage::helper('aoe_scheduler')->getLastRunUser(),
-                        (Mage::helper('aoe_scheduler')->getShouldKillOnWrongUser()) ? ' <b>Warning!</b> Jobs will not run until this is resolved!.' : '',
+                        $helper->getLastRunUser(),
+                        $helper->getConfiguredUser(),
+                        $this->getUrl('adminhtml/scheduler/setConfiguredUser', array('user' => $helper->getLastRunUser())),
+                        $helper->getLastRunUser(),
+                        ($helper->getShouldKillOnWrongUser()) ? ' <b>Warning!</b> Jobs will not run until this is resolved!.' : '',
                         $this->getUrl('adminhtml/scheduler/hideUserWarning')
                     )
                 );
@@ -123,7 +126,7 @@ abstract class Aoe_Scheduler_Controller_AbstractController extends Mage_Adminhtm
                         'No default user is configured for who should run the cron. <a href="%s">Click here</a> to define one. We suggest '
                         . 'using "%s". <a href="%s">Don\'t show this again.</a>',
                         $this->getUrl('adminhtml/system_config/edit', array('section' => 'system')) . '#system_cron',
-                        Mage::helper('aoe_scheduler')->getRunningUser(), // suggest the user that runs the web server, makes sense
+                        $helper->getRunningUser(), // suggest the user that runs the web server, makes sense
                         $this->getUrl('adminhtml/scheduler/hideUserWarning')
                     )
                 );
