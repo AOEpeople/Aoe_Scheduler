@@ -840,4 +840,14 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
         }
         return $statusArray;
     }
+
+    /**
+     * Get fresh version of this object
+     *
+     * @return $this
+     */
+    public function refresh()
+    {
+        return $this->load($this->getId());
+    }
 }

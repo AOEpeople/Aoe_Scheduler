@@ -365,4 +365,5 @@ class Aoe_Scheduler_Model_Resource_Job_Collection extends Varien_Data_Collection
         }
         return $res;
     }
+
 }
