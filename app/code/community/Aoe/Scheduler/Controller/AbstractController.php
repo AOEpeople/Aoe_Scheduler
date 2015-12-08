@@ -24,13 +24,12 @@ abstract class Aoe_Scheduler_Controller_AbstractController extends Mage_Adminhtm
     }
 
     /**
-     * Index action
+     * Preparing layout for output
      *
-     * @return void
+     * @return Aoe_Scheduler_Controller_AbstractController
      */
-    public function indexAction()
+    protected function _initAction()
     {
-
         if (!Mage::getStoreConfigFlag('system/cron/enable')) {
             $this->_getSession()->addNotice($this->__('Scheduler is disabled in configuration (system/cron/enable). No schedules will be executed.'));
         } else {
@@ -45,10 +44,12 @@ abstract class Aoe_Scheduler_Controller_AbstractController extends Mage_Adminhtm
         // Check the cron is being run as the configured user and whether or not to show the message
         $this->_checkCronUser();
 
-        $this->loadLayout();
-
-        $this->_setActiveMenu('system');
-        $this->renderLayout();
+        return $this->loadLayout()
+            ->_setActiveMenu('system')
+            ->_addBreadcrumb($this->__('System'), $this->__('System'))
+            ->_addBreadcrumb($this->__('Scheduler'), $this->__('Scheduler'))
+            ->_title($this->__('System'))
+            ->_title($this->__('Scheduler'));
     }
 
     /**

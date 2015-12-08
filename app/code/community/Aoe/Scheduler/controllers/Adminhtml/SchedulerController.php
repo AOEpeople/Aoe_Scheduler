@@ -6,6 +6,18 @@
  */
 class Aoe_Scheduler_Adminhtml_SchedulerController extends Aoe_Scheduler_Controller_AbstractController
 {
+    /**
+     * Index action
+     *
+     * @return void
+     */
+    public function indexAction()
+    {
+        $this->_initAction()
+            ->_addBreadcrumb($this->__('List View'), $this->__('List View'))
+            ->_title($this->__('List View'))
+            ->renderLayout();
+    }
 
     /**
      * Mass action: delete
