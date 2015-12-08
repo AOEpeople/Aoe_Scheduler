@@ -71,6 +71,7 @@ class Aoe_Scheduler_Helper_Data extends Mage_Core_Helper_Abstract
             case Aoe_Scheduler_Model_Schedule::STATUS_SKIP_OTHERJOBRUNNING:
             case Aoe_Scheduler_Model_Schedule::STATUS_SKIP_LOCKED:
             case Aoe_Scheduler_Model_Schedule::STATUS_MISSED:
+            case Aoe_Scheduler_Model_Schedule::STATUS_SKIP_PILINGUP:
                 $result = '<span class="bar-orange"><span>' . $status . '</span></span>';
                 break;
             case Aoe_Scheduler_Model_Schedule::STATUS_ERROR:
