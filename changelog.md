@@ -1,5 +1,6 @@
 ## Changelog
 
+- **Fix**: #214: Cannot filter List View by "running"
 - **Feature**: #189: force user. (Thank you, @robbieaverill!)
 
 ### Version 1.3.1
