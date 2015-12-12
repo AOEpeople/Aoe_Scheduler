@@ -31,7 +31,7 @@ class Aoe_Scheduler_Model_Observer /* extends Mage_Cron_Model_Observer */
         $excludeJobs = $helper->addGroupJobs((array) $observer->getExcludeJobs(), (array) $observer->getExcludeGroups());
 
         // Coalesce all jobs that should have run before now, by job code, by marking the oldest entries as missed.
-        $scheduleManager->cleanMissedSchedules();
+        $scheduleManager->skipMissedSchedules();
 
         // Iterate over all pending jobs
         foreach ($scheduleManager->getPendingSchedules($includeJobs, $excludeJobs) as $schedule) {
