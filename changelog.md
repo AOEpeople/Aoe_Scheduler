@@ -1,5 +1,6 @@
 ## Changelog
 
+- **Fix**: #117/#199 Fixed duplicate schedules at the time of schedule generation (Thank you, @dorrogeray/@nemphys) 
 - **Feature**: #210: Make a difference between missed and skipped jobs (Thank you, @ajpevers) 
 - **Feature**: #211: Add relevant titles to scheduler admin pages (Thank you, @steverobbins)
 - **Fix**: #213: Fatal Error: Can't use method return value in write context
