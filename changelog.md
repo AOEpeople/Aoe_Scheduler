@@ -1,5 +1,6 @@
 ## Changelog
 
+- **Feature**: #211: Add relevant titles to scheduler admin pages (Thank you, @steverobbins)
 - **Fix**: #213: Fatal Error: Can't use method return value in write context
 - **Fix**: #214: Cannot filter List View by "running"
 - **Feature**: #189: force user. (Thank you, @robbieaverill!)
