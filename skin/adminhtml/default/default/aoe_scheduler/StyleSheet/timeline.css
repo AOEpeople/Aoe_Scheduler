@@ -148,6 +148,7 @@ div.hours {
 .details-headline.nothing, .task.nothing { background-color: #92D6A9; }
 .details-headline.pending, .task.pending { background-color: #A9ABA8; }
 .details-headline.missed, .task.missed { background-color: #F75300; }
+.details-headline.skipped, .task.skipped { background-color: #F75300; }
 .details-headline.running, .task.running { background-color: #FE9D00 !important; }
 .details-headline.running, .task.running { background-image: url(../Images/animation.gif); background-position: center; background-repeat: repeat-x; }
 
