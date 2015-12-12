@@ -853,6 +853,19 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
         return $statusArray;
     }
 
+    public function getAllStatuses()
+    {
+        $reflect = new ReflectionClass(get_class($this));
+        $constants = $reflect->getConstants();
+        $statuses = array();
+        foreach ($constants as $key => $value) {
+            if (strpos($key, 'STATUS_') === 0) {
+                $statuses[$value] = $value;
+            }
+        }
+        return $statuses;
+    }
+
     /**
      * Check if the user running the process matches the configured user. Message will capture
      * cases where the user is not set too in its response message. Process may optionally be
@@ -908,4 +921,5 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
 
         return $this;
     }
+
 }
