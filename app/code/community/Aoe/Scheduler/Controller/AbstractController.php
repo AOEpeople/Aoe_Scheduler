@@ -106,13 +106,14 @@ abstract class Aoe_Scheduler_Controller_AbstractController extends Mage_Adminhtm
         }
 
         if (!$helper->runningAsConfiguredUser(false)) {
-            if (!empty($helper->getConfiguredUser())) {
+            $configuredUser = $helper->getConfiguredUser();
+            if (!empty($configuredUser)) {
                 // User is configured and doesn't match
                 $this->_getSession()->addError(
                     $this->__(
                         'Scheduler appears to be running as system user "%s". It should be running as "%s". <a href="%s">Use %s</a>.%s <a href="%s">Don\'t show this again.</a>',
                         $helper->getLastRunUser(),
-                        $helper->getConfiguredUser(),
+                        $configuredUser,
                         $this->getUrl('adminhtml/scheduler/setConfiguredUser', array('user' => $helper->getLastRunUser())),
                         $helper->getLastRunUser(),
                         ($helper->getShouldKillOnWrongUser()) ? ' <b>Warning!</b> Jobs will not run until this is resolved!.' : '',
