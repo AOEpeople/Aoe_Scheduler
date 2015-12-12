@@ -45,6 +45,7 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
     const STATUS_SKIP_LOCKED = 'locked';
     const STATUS_SKIP_OTHERJOBRUNNING = 'other_job_running';
     const STATUS_SKIP_WRONGUSER = 'wrong_user';
+    const STATUS_SKIP_PILINGUP = 'skipped';
 
     const STATUS_DIED = 'died'; // note that died != killed
 
@@ -168,7 +169,7 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
         try {
             // Track the last user to run a job
             $this->setLastRunUser();
-            
+
             $job = $this->getJob();
 
             if (!$job) {
