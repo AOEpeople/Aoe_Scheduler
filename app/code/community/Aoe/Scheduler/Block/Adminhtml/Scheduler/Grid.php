@@ -173,7 +173,7 @@ class Aoe_Scheduler_Block_Adminhtml_Scheduler_Grid extends Mage_Adminhtml_Block_
                 'index'          => 'status',
                 'frame_callback' => array($viewHelper, 'decorateStatus'),
                 'type'           => 'options',
-                'options'        => Mage::getSingleton('cron/schedule')->getStatuses()
+                'options'        => Mage::getSingleton('cron/schedule')->getAllStatuses()
             )
         );
 
