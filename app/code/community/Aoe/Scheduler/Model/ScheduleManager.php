@@ -236,7 +236,7 @@ class Aoe_Scheduler_Model_ScheduleManager
         $schedule->initializeFromJob($job);
         $schedule->setScheduledReason(Aoe_Scheduler_Model_Schedule::REASON_GENERATESCHEDULES);
 
-        for ($time = $now + 30; $time < $timeAhead; $time += 60) {
+        for ($time = $now + 60; $time < $timeAhead; $time += 60) {
             $ts = strftime('%Y-%m-%d %H:%M:00', $time);
             if (!empty($exists[$job->getJobCode().'/'.$ts])) {
                 // already scheduled
