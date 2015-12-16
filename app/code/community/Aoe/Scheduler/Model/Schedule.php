@@ -3,37 +3,37 @@
 /**
  * Schedule
  *
- * @method string getExecutedAt()
- * @method string getFinishedAt()
- * @method string getStatus()
- * @method string getMessages()
- * @method string getCreatedAt()
- * @method string getScheduledAt()
  * @method string setJobCode($jobCode)
  * @method string getJobCode()
- * @method $this setMessages($param)
- * @method $this setExecutedAt($param)
- * @method $this setCreatedAt($param)
- * @method $this setScheduledAt($param)
- * @method $this setStatus($param)
- * @method $this setFinishedAt($param)
- * @method $this setParameters($param)
- * @method $this setEta($param)
+ * @method $this setMessages($messages)
+ * @method string getMessages()
+ * @method $this setExecutedAt($executedAt)
+ * @method string getExecutedAt()
+ * @method $this setCreatedAt($createdAt)
+ * @method string getCreatedAt()
+ * @method $this setScheduledAt($scheduledAt)
+ * @method string getScheduledAt()
+ * @method $this setStatus($status)
+ * @method string getStatus()
+ * @method $this setFinishedAt($finishedAt)
+ * @method string getFinishedAt()
+ * @method $this setParameters($parameters)
+ * @method $this setEta($eta)
  * @method string getEta()
- * @method $this setHost($param)
+ * @method $this setHost($host)
  * @method string getHost()
- * @method $this setPid($param)
+ * @method $this setPid($pid)
  * @method string getPid()
- * @method $this setProgressMessage($param)
+ * @method $this setProgressMessage($progressMessage)
  * @method string getProgressMessage()
+ * @method $this setLastSeen($lastSeen)
  * @method string getLastSeen()
- * @method $this setLastSeen($param)
- * @method string getScheduledBy()
  * @method $this setScheduledBy($scheduledBy)
- * @method string getScheduledReason()
+ * @method string getScheduledBy()
  * @method $this setScheduledReason($scheduledReason)
- * @method string getKillRequest()
+ * @method string getScheduledReason()
  * @method $this setKillRequest($killRequest)
+ * @method string getKillRequest()
  */
 class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
 {
@@ -44,6 +44,8 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
 
     const STATUS_SKIP_LOCKED = 'locked';
     const STATUS_SKIP_OTHERJOBRUNNING = 'other_job_running';
+    const STATUS_SKIP_WRONGUSER = 'wrong_user';
+    const STATUS_SKIP_PILINGUP = 'skipped';
 
     const STATUS_DIED = 'died'; // note that died != killed
 
@@ -131,6 +133,12 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
      */
     public function runNow($tryLockJob = true, $forceRun = false)
     {
+        // Check the user running the cron is the one defined in config
+        if (!$this->checkRunningAsCorrectUser()) {
+            $this->setStatus(self::STATUS_SKIP_WRONGUSER);
+            return $this;
+        }
+
         // if this schedule doesn't exist yet, create it
         if (!$this->getCreatedAt()) {
             $this->schedule();
@@ -159,6 +167,9 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
         }
 
         try {
+            // Track the last user to run a job
+            $this->setLastRunUser();
+
             $job = $this->getJob();
 
             if (!$job) {
@@ -850,4 +861,74 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
     {
         return $this->load($this->getId());
     }
+
+    public function getAllStatuses()
+    {
+        $reflect = new ReflectionClass(get_class($this));
+        $constants = $reflect->getConstants();
+        $statuses = array();
+        foreach ($constants as $key => $value) {
+            if (strpos($key, 'STATUS_') === 0) {
+                $statuses[$value] = $value;
+            }
+        }
+        return $statuses;
+    }
+
+    /**
+     * Check if the user running the process matches the configured user. Message will capture
+     * cases where the user is not set too in its response message. Process may optionally be
+     * killed, or may be allowed to continue.
+     * @return bool
+     */
+    public function checkRunningAsCorrectUser()
+    {
+        if (Mage::helper('aoe_scheduler')->runningAsConfiguredUser()) {
+            return true;
+        }
+
+        // We may decide that these processes should be killed, or they may continue...
+        $kill = Mage::helper('aoe_scheduler')->getShouldKillOnWrongUser();
+        $optionalKillMessage = ($kill) ? ' Schedule will not run until this is addressed.' : '';
+
+        $this->log(
+            sprintf(
+                'Job "%s" (id: %s) is running as %s, but this doesn\'t match the configuration. You can disable this'
+                . ' message by setting the default user in configuration.' . $optionalKillMessage,
+                $this->getJobCode(),
+                $this->getId(),
+                Mage::helper('aoe_scheduler')->getRunningUser()
+            )
+        );
+
+        if ($kill) {
+            return false;
+        }
+
+        // Allow it to run anyway
+        return true;
+    }
+
+    /**
+     * Set the user who ran the last successfully started schedule into a core variable
+     * @param  string|null $user Optional: if specified, overrides the default
+     * @return self
+     */
+    public function setLastRunUser($user = null)
+    {
+        if (is_null($user)) {
+            $user = Mage::helper('aoe_scheduler')->getRunningUser();
+        }
+
+        // Log the current user running the schedule if it's executed
+        Mage::getModel('core/variable')
+            ->loadByCode(Aoe_Scheduler_Helper_Data::VAR_LAST_RUN_USER_CODE)
+            ->setCode(Aoe_Scheduler_Helper_Data::VAR_LAST_RUN_USER_CODE)
+            ->setName('Scheduler - User Last Run As')
+            ->setPlainValue((string) $user)
+            ->save();
+
+        return $this;
+    }
+
 }

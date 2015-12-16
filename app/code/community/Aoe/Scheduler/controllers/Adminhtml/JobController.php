@@ -7,6 +7,19 @@
 class Aoe_Scheduler_Adminhtml_JobController extends Aoe_Scheduler_Controller_AbstractController
 {
     /**
+     * Index action
+     *
+     * @return void
+     */
+    public function indexAction()
+    {
+        $this->_initAction()
+            ->_addBreadcrumb($this->__('Job Configuration'), $this->__('Job Configuration'))
+            ->_title($this->__('Job Configuration'))
+            ->renderLayout();
+    }
+
+    /**
      * Mass action: disable
      *
      * @return void
@@ -147,7 +160,10 @@ class Aoe_Scheduler_Adminhtml_JobController extends Aoe_Scheduler_Controller_Abs
     public function editAction()
     {
         $this->_initJob();
-        $this->loadLayout();
+        $this->_initAction()
+            ->_addBreadcrumb($this->__('Edit Job'), $this->__('Edit Job'))
+            ->_title($this->__('Edit Job'))
+            ->renderLayout();
         $this->renderLayout();
     }
 

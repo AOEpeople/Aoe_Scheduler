@@ -1,0 +1,10 @@
+# Provide the method that should be caled and either true or false for whether 
+# to use the current running user (or get from last run)
+-
+    - getRunningUser
+    - aoe-web
+    - true # also expected result
+-
+    - getLastRunUser
+    - root
+    - false

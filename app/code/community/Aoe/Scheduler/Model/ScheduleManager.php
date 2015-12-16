@@ -16,7 +16,7 @@ class Aoe_Scheduler_Model_ScheduleManager
      *
      * @return $this
      */
-    public function cleanMissedSchedules()
+    public function skipMissedSchedules()
     {
         $schedules = Mage::getModel('cron/schedule')->getCollection()
             ->addFieldToFilter('status', Aoe_Scheduler_Model_Schedule::STATUS_PENDING)
@@ -29,7 +29,7 @@ class Aoe_Scheduler_Model_ScheduleManager
             if (isset($seenJobs[$schedule->getJobCode()])) {
                 $schedule
                     ->setMessages('Multiple tasks with the same job code were piling up. Skipping execution of duplicates.')
-                    ->setStatus(Aoe_Scheduler_Model_Schedule::STATUS_MISSED)
+                    ->setStatus(Aoe_Scheduler_Model_Schedule::STATUS_SKIP_PILINGUP)
                     ->save();
             } else {
                 $seenJobs[$schedule->getJobCode()] = 1;
@@ -237,7 +237,7 @@ class Aoe_Scheduler_Model_ScheduleManager
         $schedule->initializeFromJob($job);
         $schedule->setScheduledReason(Aoe_Scheduler_Model_Schedule::REASON_GENERATESCHEDULES);
 
-        for ($time = $now; $time < $timeAhead; $time += 60) {
+        for ($time = $now + 30; $time < $timeAhead; $time += 60) {
             $ts = strftime('%Y-%m-%d %H:%M:00', $time);
             if (!empty($exists[$job->getJobCode().'/'.$ts])) {
                 // already scheduled
@@ -282,6 +282,7 @@ class Aoe_Scheduler_Model_ScheduleManager
             Aoe_Scheduler_Model_Schedule::STATUS_DIDNTDOANYTHING => Mage::getStoreConfig(Mage_Cron_Model_Observer::XML_PATH_HISTORY_SUCCESS)*60,
             Aoe_Scheduler_Model_Schedule::STATUS_SUCCESS =>         Mage::getStoreConfig(Mage_Cron_Model_Observer::XML_PATH_HISTORY_SUCCESS)*60,
             Aoe_Scheduler_Model_Schedule::STATUS_MISSED =>          Mage::getStoreConfig(Mage_Cron_Model_Observer::XML_PATH_HISTORY_FAILURE)*60,
+            Aoe_Scheduler_Model_Schedule::STATUS_SKIP_PILINGUP =>   Mage::getStoreConfig(Mage_Cron_Model_Observer::XML_PATH_HISTORY_FAILURE)*60,
             Aoe_Scheduler_Model_Schedule::STATUS_ERROR =>           Mage::getStoreConfig(Mage_Cron_Model_Observer::XML_PATH_HISTORY_FAILURE)*60,
             Aoe_Scheduler_Model_Schedule::STATUS_DIED =>            Mage::getStoreConfig(Mage_Cron_Model_Observer::XML_PATH_HISTORY_FAILURE)*60,
             Aoe_Scheduler_Model_Schedule::STATUS_SKIP_LOCKED =>     Mage::getStoreConfig(Mage_Cron_Model_Observer::XML_PATH_HISTORY_FAILURE)*60,

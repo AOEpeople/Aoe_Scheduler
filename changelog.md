@@ -1,5 +1,18 @@
 ## Changelog
 
+- **Fix**: #117/#199 Fixed duplicate schedules at the time of schedule generation (Thank you, @dorrogeray/@nemphys) 
+- **Feature**: #210: Make a difference between missed and skipped jobs (Thank you, @ajpevers) 
+- **Feature**: #211: Add relevant titles to scheduler admin pages (Thank you, @steverobbins)
+- **Fix**: #213: Fatal Error: Can't use method return value in write context
+- **Fix**: #214: Cannot filter List View by "running"
+- **Feature**: #189: force user. (Thank you, @robbieaverill)
+
+### Version 1.3.1
+
+- **Fix**: #198: abstract.php not found
+
+### Version 1.3.0
+
 - **Feature**: Added `--force` and `--tryLock` to runNow from cli. This allows you to bypass checking if another instance of that task is already running and start a new one. (Only do this if you know what you're doing...)
 
 ### Version 1.2.2
