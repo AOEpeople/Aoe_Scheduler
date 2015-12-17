@@ -677,7 +677,6 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
 
     /**
      * Redirect all output to the messages field of this Schedule.
-     *
      * We use ob_start with `_addBufferToMessages` to redirect the output.
      *
      * @return $this
@@ -700,11 +699,12 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
         );
 
         $this->_redirect = true;
+
+        return $this;
     }
 
     /**
      * Stop redirecting all output to the messages field of this Schedule.
-     *
      * We use ob_end_flush to stop redirecting the output.
      *
      * @return $this
@@ -723,6 +723,8 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
         $this->addMessages('---END---' . PHP_EOL);
 
         $this->_redirect = false;
+
+        return $this;
     }
 
     /**
@@ -769,8 +771,8 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
             return $this->save();
         }
 
-        $connection = Mage::getSingleton('core/resource')
-            ->getConnection('core_write');
+        $connection = Mage::getSingleton('core/resource')->getConnection('core_write');
+        /* @var $connection Varien_Db_Adapter_Interface */
 
         $count = $connection
             ->update(
@@ -804,13 +806,9 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
     protected function _getPdoWarning(PDO $pdo)
     {
         $originalErrorMode = $pdo->getAttribute(PDO::ATTR_ERRMODE);
-
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING);
-
         $stm = $pdo->query('SHOW WARNINGS');
-
         $pdo->setAttribute(PDO::ATTR_ERRMODE, $originalErrorMode);
-
         return $stm->fetchObject();
     }
 
@@ -852,6 +850,16 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
             $statusArray[$status] = $status;
         }
         return $statusArray;
+    }
+
+    /**
+     * Get fresh version of this object
+     *
+     * @return $this
+     */
+    public function refresh()
+    {
+        return $this->load($this->getId());
     }
 
     public function getAllStatuses()

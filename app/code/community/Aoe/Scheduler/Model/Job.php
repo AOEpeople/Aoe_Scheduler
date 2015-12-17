@@ -17,7 +17,7 @@
  * @method Aoe_Scheduler_Model_Job setParameters($parameters)
  * @method string getParameters()
  * @method Aoe_Scheduler_Model_Job setGroups($groups)
- * @method array getGroups()
+ * @method string getGroups()
  * @method Aoe_Scheduler_Model_Job load($jobCode)
  * @method Aoe_Scheduler_Model_Resource_Job getResource()
  * @method Aoe_Scheduler_Model_Resource_Job_Collection getCollection()
