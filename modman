@@ -8,3 +8,4 @@ app/design/adminhtml/default/default/template/aoe_scheduler/	app/design/adminhtm
 app/design/adminhtml/default/default/layout/aoe_scheduler/		app/design/adminhtml/default/default/layout/aoe_scheduler/
 skin/adminhtml/default/default/aoe_scheduler/					skin/adminhtml/default/default/aoe_scheduler/
 scheduler_cron.sh scheduler_cron.sh
+dev/tests/aoe_scheduler dev/tests/aoe_scheduler
