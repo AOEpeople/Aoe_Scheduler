@@ -325,6 +325,28 @@ class Aoe_Scheduler_Shell_Scheduler extends Mage_Shell_Abstract
     }
 
     /**
+     * Print all running schedules
+     *
+     * @return void
+     */
+    public function listGroupsAction()
+    {
+        $helper = Mage::helper('aoe_scheduler'); /* @var $helper Aoe_Scheduler_Helper_Data */
+        echo sprintf(
+            "%-30s %s\n",
+            'Group',
+            'Jobs'
+        );
+        foreach ($helper->getGroupsToJobsMap() as $group => $jobs) {
+            echo sprintf(
+                "%-30s %s\n",
+                $group,
+                implode(', ', $jobs)
+            );
+        }
+    }
+
+    /**
      * Kill all
      *
      * @return void
