@@ -75,7 +75,7 @@ class CronGroups_WhiteListTest extends PHPUnit_Framework_TestCase
 
         foreach ($this->schedules as $schedule) { /* @var $schedule Aoe_Scheduler_Model_Schedule */
             $this->assertEquals(Aoe_Scheduler_Model_Schedule::STATUS_PENDING, $schedule->refresh()->getStatus());
-            echo "Job code: {$schedule->getJobCode()}, Id: {$schedule->getId()}, Groups: " . $schedule->getJob()->getGroups() . "\n";
+            // echo "Job code: {$schedule->getJobCode()}, Id: {$schedule->getId()}, Groups: " . $schedule->getJob()->getGroups() . "\n";
         }
 
         // check if the new jobs show up in the "groups to jobs map"
@@ -121,7 +121,7 @@ class CronGroups_WhiteListTest extends PHPUnit_Framework_TestCase
         $output = null;
         $returnValue = null;
         exec($command, $output, $returnValue);
-        var_dump($output, $returnValue);
+        // var_dump($output, $returnValue);
         $duration = microtime(true) - $startTime;
     }
 }

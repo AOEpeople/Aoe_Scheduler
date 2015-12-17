@@ -36,7 +36,6 @@ class Aoe_Scheduler_Model_Observer /* extends Mage_Cron_Model_Observer */
         // Iterate over all pending jobs
         foreach ($scheduleManager->getPendingSchedules($includeJobs, $excludeJobs) as $schedule) {
             /* @var Aoe_Scheduler_Model_Schedule $schedule */
-            echo "ID: " . $schedule->getId() . "\n";
             $schedule->process();
         }
 
