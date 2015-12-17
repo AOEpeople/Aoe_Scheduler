@@ -14,6 +14,7 @@ env:
   global:
     - MAGENTO_DB_ALLOWSAME=1
     - SKIP_CLEANUP=1
+    - TEST_BASEDIR=.modman/aoe_scheduler/dev/tests/aoe_scheduler
   matrix:
     - MAGENTO_VERSION=magento-mirror-1.9.2.2
     - MAGENTO_VERSION=magento-mirror-1.9.1.1
@@ -21,13 +22,8 @@ env:
     - MAGENTO_VERSION=magento-mirror-1.8.1.0
     - MAGENTO_VERSION=magento-mirror-1.8.0.0
     - MAGENTO_VERSION=magento-mirror-1.7.0.2
-before_script:
-  - curl -OL https://squizlabs.github.io/PHP_CodeSniffer/phpcs.phar
 script:
-  # Code Style
-  - php phpcs.phar --standard=./phpcs.xml --encoding=utf-8 --report-width=180 ./app ./shell
-  # Unit Tests
-  - curl -sSL https://raw.githubusercontent.com/AOEpeople/MageTestStand/master/setup.sh | bash
+  - curl -sSL https://raw.githubusercontent.com/AOEpeople/MageTestStand/plain_phpunit/setup.sh | bash
 notifications:
   email:
     recipients:
