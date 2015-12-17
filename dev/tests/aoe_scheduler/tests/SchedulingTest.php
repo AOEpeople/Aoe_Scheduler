@@ -1,6 +1,6 @@
 <?php
 
-class Scheduling_SchedulingTest extends PHPUnit_Framework_TestCase
+class SchedulingTest extends AbstractTest
 {
 
     /**

@@ -1,6 +1,6 @@
 <?php
 
-class CronGroups_WhiteListTest extends AbstractTest
+class CronGroupsWhiteListTest extends AbstractTest
 {
 
     protected $groups = array();
