@@ -82,7 +82,12 @@ class Aoe_Scheduler_Shell_Scheduler extends Mage_Shell_Abstract
         $jobs = Mage::getSingleton('aoe_scheduler/job')->getCollection();
         foreach ($jobs as $job) {
             /* @var $job Aoe_Scheduler_Model_Job */
-            echo sprintf("%-50s %-20s %s\n", $job->getJobCode(), $job->getCronExpression(), $job->getIsActive() ? 'Enabled' : 'Disabled');
+            echo sprintf("%-50s %-20s %-13s %-20s\n",
+                $job->getJobCode(),
+                $job->getCronExpression(),
+                $job->getIsActive() ? 'Enabled' : 'Disabled',
+                $job->getGroups()
+            );
         }
     }
 
