@@ -5,7 +5,7 @@ class CronGroupsWhiteListTest extends AbstractTest
 
     protected $groups = array();
 
-    public function setUp()
+    protected function setUp()
     {
         parent::setUp();
 

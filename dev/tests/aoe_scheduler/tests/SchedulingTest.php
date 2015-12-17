@@ -25,7 +25,7 @@ class SchedulingTest extends AbstractTest
 
     /**
      * @param $runCronCallBack callable
-     * @dataProvider runCronProvider
+     * @dataProvider runCronDefaultProvider
      * @test
      */
     public function scheduleJobAndRunCron($runCronCallBack)
@@ -58,45 +58,5 @@ class SchedulingTest extends AbstractTest
         $loadedSchedule = Mage::getModel('cron/schedule')->load($scheduleId); /* @var Aoe_Scheduler_Model_Schedule $loadedSchedule */
         $this->assertEquals($scheduleId, $loadedSchedule->getId());
         $this->assertEquals(Aoe_Scheduler_Model_Schedule::STATUS_SUCCESS, $loadedSchedule->getStatus());
-    }
-
-    /**
-     * Provider for a callback that executed a cron run
-     *
-     * @return array
-     */
-    public function runCronProvider()
-    {
-        return array(
-            array(function () {
-                // trigger dispatch
-                $observer = Mage::getModel('aoe_scheduler/observer'); /* @var $observers Aoe_Scheduler_Model_Observer */
-                $observer->dispatch(new Varien_Event_Observer());
-            }),
-            array(function () {
-                shell_exec('/usr/bin/php ' . Mage::getBaseDir() . '/cron.php');
-                shell_exec('cd ' . Mage::getBaseDir() . '/shell && /usr/bin/php scheduler.php --action wait');
-            }),
-            array(function () {
-                shell_exec('/bin/sh ' . Mage::getBaseDir() . '/cron.sh');
-                shell_exec('cd ' . Mage::getBaseDir() . '/shell && /usr/bin/php scheduler.php --action wait');
-            }),
-            array(function () {
-                shell_exec('/bin/sh ' . Mage::getBaseDir() . '/cron.sh cron.php -mdefault 1');
-                shell_exec('cd ' . Mage::getBaseDir() . '/shell && /usr/bin/php scheduler.php --action wait');
-            }),
-            array(function () {
-                shell_exec('cd ' . Mage::getBaseDir() . '/shell && /usr/bin/php scheduler.php --action cron --mode default');
-                shell_exec('cd ' . Mage::getBaseDir() . '/shell && /usr/bin/php scheduler.php --action wait');
-            }),
-            array(function () {
-                shell_exec('/bin/bash ' . Mage::getBaseDir() . '/scheduler_cron.sh');
-                shell_exec('cd ' . Mage::getBaseDir() . '/shell && /usr/bin/php scheduler.php --action wait');
-            }),
-            array(function () {
-                shell_exec('/bin/bash ' . Mage::getBaseDir() . '/scheduler_cron.sh --mode default');
-                shell_exec('cd ' . Mage::getBaseDir() . '/shell && /usr/bin/php scheduler.php --action wait');
-            })
-        );
     }
 }
