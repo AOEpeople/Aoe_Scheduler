@@ -56,7 +56,6 @@ class Aoe_Scheduler_Model_ScheduleManager
 
         $whitelist = array_filter(array_map('trim', $whitelist));
         if (!empty($whitelist)) {
-            var_dump($whitelist);
             $pendingSchedules->addFieldToFilter('job_code', array('in' => $whitelist));
         }
 
