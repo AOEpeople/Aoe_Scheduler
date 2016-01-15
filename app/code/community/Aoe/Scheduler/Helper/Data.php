@@ -273,18 +273,22 @@ class Aoe_Scheduler_Helper_Data extends Mage_Core_Helper_Abstract
             return;
         }
 
+        $recipients = $this->trimExplode(',', Mage::getStoreConfig(self::XML_PATH_EMAIL_RECIPIENT), true);
+
         $translate = Mage::getSingleton('core/translate'); /* @var $translate Mage_Core_Model_Translate */
         $translate->setTranslateInline(false);
 
-        $emailTemplate = Mage::getModel('core/email_template'); /* @var $emailTemplate Mage_Core_Model_Email_Template */
-        $emailTemplate->setDesignConfig(array('area' => 'backend'));
-        $emailTemplate->sendTransactional(
-            Mage::getStoreConfig(self::XML_PATH_EMAIL_TEMPLATE),
-            Mage::getStoreConfig(self::XML_PATH_EMAIL_IDENTITY),
-            Mage::getStoreConfig(self::XML_PATH_EMAIL_RECIPIENT),
-            null,
-            array('error' => $error, 'schedule' => $schedule)
-        );
+        foreach ($recipients as $recipient) {
+            $emailTemplate = Mage::getModel('core/email_template'); /* @var $emailTemplate Mage_Core_Model_Email_Template */
+            $emailTemplate->setDesignConfig(array('area' => 'backend'));
+            $emailTemplate->sendTransactional(
+                Mage::getStoreConfig(self::XML_PATH_EMAIL_TEMPLATE),
+                Mage::getStoreConfig(self::XML_PATH_EMAIL_IDENTITY),
+                $recipient,
+                null,
+                array('error' => $error, 'schedule' => $schedule)
+            );
+        }
 
         $translate->setTranslateInline(true);
     }
