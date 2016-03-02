@@ -163,8 +163,7 @@ class Aoe_Scheduler_Adminhtml_JobController extends Aoe_Scheduler_Controller_Abs
         $this->_initAction()
             ->_addBreadcrumb($this->__('Edit Job'), $this->__('Edit Job'))
             ->_title($this->__('Edit Job'))
-            ->renderLayout();
-        $this->renderLayout();
+            ->renderLayout();        
     }
 
     protected function _filterPostData($data)
