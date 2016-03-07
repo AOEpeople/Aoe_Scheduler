@@ -8,19 +8,19 @@ Aoe Scheduler comes with whitelist/blacklist feature enabling you to do so.
     ```
     <crontab>
         <jobs>
-            <job_name>
+            <job_code>
                 <run>
                 ....
                 </run>
                 <groups>reporting,other_group_name</groups>
-            </job_name>
+            </job_code>
         </jobs>
     </crontab>
     ```
     Aoe_Scheduler will merge xml configuration with the one from db.
 
 2. Configure your crontab entry using `--includeGroups` and `--excludeGroups`
-You can find examples in `System > Scheduler > Instructions`. See more about [Instructions here](doc/instructions.md)
+You can find examples in `System > Scheduler > Instructions`. See more about [Instructions here](instructions.md)
 
 
 
