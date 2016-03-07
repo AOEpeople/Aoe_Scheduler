@@ -51,7 +51,7 @@ Magento (since CE 1.8 and EE 1.13) supports two ways of setting when the job sho
 - a keyword `always` (run when scheduler_cron.sh is executed with `--mode always`  )
 - or a cron expression like `*/10 * * * *` (run when scheduler_cron.sh is executed with `--mode default` parameter)
 
-Setting it to `always` means that a job will be execyted every time cron is triggered.
+Setting it to `always` means that a job will be executed every time cron is triggered.
 Read more about how [always mode can help you declutter the timeline here.](declutter-timeline.md)
 
 When configuring operating system's cron for Aoe_Scheduler you always need to have two entries, one for running jobs configured with `always` and a second one to run jobs configured with cron expression, e.g.
