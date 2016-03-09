@@ -34,9 +34,13 @@
  * @method string getScheduledReason()
  * @method $this setKillRequest($killRequest)
  * @method string getKillRequest()
+ * @method $this setRepetition($repetition)
+ * @method string getRepetition()
  */
 class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
 {
+    // if a job returns 'repeat' it will be re-executed right away
+    const STATUS_REPEAT = 'repeat';
 
     const STATUS_KILLED = 'killed';
     const STATUS_DISAPPEARED = 'gone';
@@ -59,6 +63,8 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
     const REASON_DEPENDENCY_ALL = 'dependency_all';
     const REASON_DEPENDENCY_SUCCESS = 'dependency_success';
     const REASON_DEPENDENCY_FAILURE = 'dependency_failure';
+    const REASON_ALWAYS = 'always';
+    const REASON_REPEAT = 'repeat';
 
     /**
      * Event name prefix for events that are dispatched by this class
@@ -225,7 +231,8 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
                 $this->addMessages(PHP_EOL . '---RETURN_VALUE---' . PHP_EOL . $messages);
             }
 
-            // schedules can report an error state by returning a string that starts with "ERROR:"
+            // schedules can report an error state by returning a string that starts with "ERROR:", "NOTHING", or "REPEAT"
+            // or they can set set the status directly to the schedule object that's passed as a parameter
             if ((is_string($messages) && strtoupper(substr($messages, 0, 6)) == 'ERROR:') || $this->getStatus() === Aoe_Scheduler_Model_Schedule::STATUS_ERROR) {
                 $this->setStatus(Aoe_Scheduler_Model_Schedule::STATUS_ERROR);
                 Mage::helper('aoe_scheduler')->sendErrorMail($this, $messages);
@@ -235,6 +242,10 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
                 $this->setStatus(Aoe_Scheduler_Model_Schedule::STATUS_DIDNTDOANYTHING);
                 Mage::dispatchEvent('cron_' . $this->getJobCode() . '_after_nothing', array('schedule' => $this));
                 Mage::dispatchEvent('cron_after_nothing', array('schedule' => $this));
+            } elseif ((is_string($messages) && strtoupper(substr($messages, 0, 6)) == 'REPEAT') || $this->getStatus() === Aoe_Scheduler_Model_Schedule::STATUS_REPEAT) {
+                $this->setStatus(Aoe_Scheduler_Model_Schedule::STATUS_REPEAT);
+                Mage::dispatchEvent('cron_' . $this->getJobCode() . '_after_repeat', array('schedule' => $this));
+                Mage::dispatchEvent('cron_after_repeat', array('schedule' => $this));
             } else {
                 $this->setStatus(Aoe_Scheduler_Model_Schedule::STATUS_SUCCESS);
                 Mage::dispatchEvent('cron_' . $this->getJobCode() . '_after_success', array('schedule' => $this));

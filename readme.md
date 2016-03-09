@@ -110,7 +110,8 @@ Please get in touch with us via the [issue tracker on GitHub](https://github.com
     1. [Watchdog](doc/watchdog.md)
     1. [Cron groups](doc/cron-groups.md)
     1. [Process Management](doc/process-management.md)
-    1. [Output buffering](doc/output-buffering.md) 
+    1. [Output buffering](doc/output-buffering.md)
+    1. [Bumper to Bumper (REPEAT)](doc/bumper-to-bumper.md) 
 1. Cookbook
 	1. [How to declutter your timeline](doc/declutter-timeline.md)
 	1. [How to integrate into deployments](doc/deployment-integration.md) 

@@ -1,5 +1,8 @@
 ## Changelog
 
+### Version 1.4.0
+
+- **Feature**: Added bumper-to-bumper feature (status: "repeat") for always tasks
 - **Fix**: #117/#199 Fixed duplicate schedules at the time of schedule generation (Thank you, @dorrogeray/@nemphys) 
 - **Feature**: #210: Make a difference between missed and skipped jobs (Thank you, @ajpevers) 
 - **Feature**: #211: Add relevant titles to scheduler admin pages (Thank you, @steverobbins)

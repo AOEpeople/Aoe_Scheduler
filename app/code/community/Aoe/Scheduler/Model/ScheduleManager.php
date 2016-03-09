@@ -75,12 +75,14 @@ class Aoe_Scheduler_Model_ScheduleManager
      * @param $jobCode
      * @return Aoe_Scheduler_Model_Schedule|false
      */
-    public function getScheduleForAlwaysJob($jobCode)
+    public function getScheduleForAlwaysJob($jobCode, $reason=null)
     {
         $processManager = Mage::getModel('aoe_scheduler/processManager'); /* @var $processManager Aoe_Scheduler_Model_ProcessManager */
         if (!$processManager->isJobCodeRunning($jobCode)) {
             $ts = strftime('%Y-%m-%d %H:%M:00', time());
-            $schedule = Mage::getModel('cron/schedule') /* @var $schedule Aoe_Scheduler_Model_Schedule */
+            $schedule = Mage::getModel('cron/schedule'); /* @var $schedule Aoe_Scheduler_Model_Schedule */
+            $schedule
+                ->setScheduledReason($reason ? $reason : Aoe_Scheduler_Model_Schedule::REASON_ALWAYS)
                 ->setJobCode($jobCode)
                 ->setStatus(Aoe_Scheduler_Model_Schedule::STATUS_RUNNING)
                 ->setCreatedAt($ts)
@@ -280,6 +282,7 @@ class Aoe_Scheduler_Model_ScheduleManager
             Aoe_Scheduler_Model_Schedule::STATUS_DISAPPEARED =>     Mage::getStoreConfig(Mage_Cron_Model_Observer::XML_PATH_HISTORY_FAILURE)*60,
             Aoe_Scheduler_Model_Schedule::STATUS_DIDNTDOANYTHING => Mage::getStoreConfig(Mage_Cron_Model_Observer::XML_PATH_HISTORY_SUCCESS)*60,
             Aoe_Scheduler_Model_Schedule::STATUS_SUCCESS =>         Mage::getStoreConfig(Mage_Cron_Model_Observer::XML_PATH_HISTORY_SUCCESS)*60,
+            Aoe_Scheduler_Model_Schedule::STATUS_REPEAT =>          Mage::getStoreConfig(Mage_Cron_Model_Observer::XML_PATH_HISTORY_SUCCESS)*60,
             Aoe_Scheduler_Model_Schedule::STATUS_MISSED =>          Mage::getStoreConfig(Mage_Cron_Model_Observer::XML_PATH_HISTORY_FAILURE)*60,
             Aoe_Scheduler_Model_Schedule::STATUS_SKIP_PILINGUP =>   Mage::getStoreConfig(Mage_Cron_Model_Observer::XML_PATH_HISTORY_FAILURE)*60,
             Aoe_Scheduler_Model_Schedule::STATUS_ERROR =>           Mage::getStoreConfig(Mage_Cron_Model_Observer::XML_PATH_HISTORY_FAILURE)*60,
@@ -305,7 +308,13 @@ class Aoe_Scheduler_Model_ScheduleManager
         $maxNo = Mage::getStoreConfig(self::XML_PATH_HISTORY_MAXNO);
         if ($maxNo) {
             $history = Mage::getModel('cron/schedule')->getCollection()
-                ->addFieldToFilter('status', Aoe_Scheduler_Model_Schedule::STATUS_SUCCESS)
+                ->addFieldToFilter(
+                    array('status'),
+                    array(
+                        array('eq' => Aoe_Scheduler_Model_Schedule::STATUS_SUCCESS),
+                        array('eq' => Aoe_Scheduler_Model_Schedule::STATUS_REPEAT)
+                    )
+                )
                 ->setOrder('finished_at', 'desc')
                 ->load();
             $counter = array();

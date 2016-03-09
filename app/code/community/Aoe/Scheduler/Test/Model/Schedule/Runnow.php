@@ -58,7 +58,7 @@ class Aoe_Scheduler_Test_Model_Schedule_Runnow extends EcomDev_PHPUnit_Test_Case
         $parameter = array('outcome' => 'error');
 
         $schedule->setJobCode($jobCode);
-        $schedule->setParameters(serialize($parameter));
+        $schedule->setParameters(json_encode($parameter));
         $schedule->runNow(false);
 
         $scheduleId = $schedule->getId();
@@ -97,7 +97,7 @@ class Aoe_Scheduler_Test_Model_Schedule_Runnow extends EcomDev_PHPUnit_Test_Case
         $parameter = array('outcome' => 'nothing');
 
         $schedule->setJobCode($jobCode);
-        $schedule->setParameters(serialize($parameter));
+        $schedule->setParameters(json_encode($parameter));
         $schedule->runNow(false);
 
         $scheduleId = $schedule->getId();
@@ -136,7 +136,7 @@ class Aoe_Scheduler_Test_Model_Schedule_Runnow extends EcomDev_PHPUnit_Test_Case
         $parameter = array('outcome' => 'exception');
 
         $schedule->setJobCode($jobCode);
-        $schedule->setParameters(serialize($parameter));
+        $schedule->setParameters(json_encode($parameter));
         $schedule->runNow(false);
 
         $scheduleId = $schedule->getId();

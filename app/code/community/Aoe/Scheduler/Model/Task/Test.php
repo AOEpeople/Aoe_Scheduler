@@ -19,10 +19,9 @@ class Aoe_Scheduler_Model_Task_Test
      */
     public function run(Aoe_Scheduler_Model_Schedule $schedule)
     {
-
         $parameters = $schedule->getParameters();
         if ($parameters) {
-            $parameters = unserialize($parameters);
+            $parameters = json_decode($parameters, true);
         }
 
         // fake duration
@@ -44,6 +43,10 @@ class Aoe_Scheduler_Model_Task_Test
 
         if ($parameters && $parameters['outcome'] == 'nothing') {
             return 'NOTHING: Did not do anything';
+        }
+
+        if ($parameters && $parameters['outcome'] == 'repeat') {
+            return 'REPEAT';
         }
 
         if ($parameters && $parameters['outcome'] == 'exception') {

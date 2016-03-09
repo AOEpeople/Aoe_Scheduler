@@ -59,6 +59,7 @@ class Aoe_Scheduler_Helper_Data extends Mage_Core_Helper_Abstract
     {
         switch ($status) {
             case Aoe_Scheduler_Model_Schedule::STATUS_SUCCESS:
+            case Aoe_Scheduler_Model_Schedule::STATUS_REPEAT:
             case Aoe_Scheduler_Model_Schedule::STATUS_DIDNTDOANYTHING:
                 $result = '<span class="bar-green"><span>' . $status . '</span></span>';
                 break;
@@ -143,7 +144,14 @@ class Aoe_Scheduler_Helper_Data extends Mage_Core_Helper_Abstract
         }
         $schedules = Mage::getModel('cron/schedule')->getCollection(); /* @var $schedules Mage_Cron_Model_Mysql4_Schedule_Collection */
         $schedules->getSelect()->limit(1)->order('executed_at DESC');
-        $schedules->addFieldToFilter('status', Aoe_Scheduler_Model_Schedule::STATUS_SUCCESS);
+        $schedules->addFieldToFilter(
+            array('status'),
+            array(
+                array('eq' => Aoe_Scheduler_Model_Schedule::STATUS_SUCCESS),
+                array('eq' => Aoe_Scheduler_Model_Schedule::STATUS_REPEAT)
+            )
+        );
+
         $schedules->addFieldToFilter('job_code', $jobCode);
         $schedules->load();
         if (count($schedules) == 0) {

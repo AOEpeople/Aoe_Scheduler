@@ -74,10 +74,16 @@ class Aoe_Scheduler_Model_Observer /* extends Mage_Cron_Model_Observer */
         foreach ($jobs as $job) {
             /* @var Aoe_Scheduler_Model_Job $job */
             if ($job->isAlwaysTask() && $job->getRunModel()) {
-                $schedule = $scheduleManager->getScheduleForAlwaysJob($job->getJobCode());
-                if ($schedule !== false) {
-                    $schedule->process();
-                }
+                $repetition = 0;
+                do {
+                    $reason = ($repetition == 0) ? Aoe_Scheduler_Model_Schedule::REASON_ALWAYS : Aoe_Scheduler_Model_Schedule::REASON_REPEAT;
+                    $schedule = $scheduleManager->getScheduleForAlwaysJob($job->getJobCode(), $reason);
+                    $schedule->setRepetition($repetition); // this is not persisted, but can be access from within the callback
+                    if ($schedule !== false) {
+                        $schedule->process();
+                    }
+                    $repetition++;
+                } while ($repetition < 10 && $schedule->getStatus() == Aoe_Scheduler_Model_Schedule::STATUS_REPEAT);
             }
         }
     }
