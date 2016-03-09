@@ -10,4 +10,4 @@ coordinating running the processes for you.
  
 ### Example code
 
-See [app/code/community/Aoe/Scheduler/Model/Task/QueueProcessorExample.php](app/code/community/Aoe/Scheduler/Model/Task/QueueProcessorExample.php)
+See [../app/code/community/Aoe/Scheduler/Model/Task/QueueProcessorExample.php](app/code/community/Aoe/Scheduler/Model/Task/QueueProcessorExample.php)
