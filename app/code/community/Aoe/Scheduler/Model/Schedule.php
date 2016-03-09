@@ -413,7 +413,7 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
             ->setFinishedAt($this->getLastSeen())
             ->save();
 
-        $this->log(sprintf('Job "%s" (id: %s) disappeared. Message: ', $this->getJobCode(), $this->getId(), $message));
+        $this->log(sprintf('Job "%s" (id: %s) disappeared. Message: %s', $this->getJobCode(), $this->getId(), $message));
     }
 
     /**
