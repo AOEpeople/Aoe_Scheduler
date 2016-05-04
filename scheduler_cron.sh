@@ -76,7 +76,7 @@ acquire_lock () {
 
 
 # Location of the php binary
-PHP_BIN=$(which php || true)
+PHP_BIN=$(which php-cli || which php || true)
 if [ -z "${PHP_BIN}" ]; then
     echo "Could not find a binary for php" 1>&2
     exit 1
