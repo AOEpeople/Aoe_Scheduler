@@ -276,7 +276,7 @@ class Aoe_Scheduler_Shell_Scheduler extends Mage_Shell_Abstract
      */
     public function waitActionHelp()
     {
-        return "[--timout <timeout=60>]	        Active wait until no schedules are running.";
+        return "[--timeout <timeout=60>]	        Active wait until no schedules are running.";
     }
 
     /**
