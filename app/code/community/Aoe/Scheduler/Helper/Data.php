@@ -342,11 +342,15 @@ class Aoe_Scheduler_Helper_Data extends Mage_Core_Helper_Abstract
 
     /**
      * Return the current system user running this process
-     * @return string
+     * @return string|null
      */
     public function getRunningUser()
     {
-        return trim(shell_exec('whoami'));
+        $userInfo = posix_getpwuid(posix_geteuid());
+        if (isset($userInfo['name'])) {
+            return trim($userInfo['name']);
+        }
+        return null;
     }
 
     /**
