@@ -78,8 +78,8 @@ class Aoe_Scheduler_Model_Observer /* extends Mage_Cron_Model_Observer */
                 do {
                     $reason = ($repetition == 0) ? Aoe_Scheduler_Model_Schedule::REASON_ALWAYS : Aoe_Scheduler_Model_Schedule::REASON_REPEAT;
                     $schedule = $scheduleManager->getScheduleForAlwaysJob($job->getJobCode(), $reason);
-                    $schedule->setRepetition($repetition); // this is not persisted, but can be access from within the callback
                     if ($schedule !== false) {
+                        $schedule->setRepetition($repetition); // this is not persisted, but can be access from within the callback
                         $schedule->process();
                     }
                     $repetition++;
