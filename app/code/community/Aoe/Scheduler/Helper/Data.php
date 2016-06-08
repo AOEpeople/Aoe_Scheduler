@@ -15,6 +15,7 @@ class Aoe_Scheduler_Helper_Data extends Mage_Core_Helper_Abstract
     const XML_PATH_CRON_USER           = 'system/cron/cronUser';
     const XML_PATH_KILL_ON_WRONG_USER  = 'system/cron/killOnIncorrectUser';
     const XML_PATH_SHOW_WRONG_USER_MSG = 'system/cron/showCronUserMessage';
+    const XML_PATH_RUN_ONLY_IF_CACHE_PREFIX_ID_MATCHES = 'system/cron/runOnlyIfCachePrefixIdMatches';
 
     const VAR_LAST_RUN_USER_CODE       = 'aoescheduler_lastrunuser';
 
@@ -405,5 +406,25 @@ class Aoe_Scheduler_Helper_Data extends Mage_Core_Helper_Abstract
             return $var->getPlainValue();
         }
         return null;
+    }
+
+    /**
+     * Check if the cache prefix from the database matches the cache prefix from the local.xml file
+     *
+     * @return bool
+     */
+    public function checkCachePrefix()
+    {
+        $dbCachePrefix = $this->getDbCachePrefix();
+        if (empty($dbCachePrefix)) {
+            return true;
+        }
+        $localXmlCachePrefix = Mage::app()->getCache()->getOption('cache_id_prefix');
+        return ($localXmlCachePrefix == $dbCachePrefix);
+    }
+
+    public function getDbCachePrefix()
+    {
+        return Mage::getStoreConfig(self::XML_PATH_RUN_ONLY_IF_CACHE_PREFIX_ID_MATCHES);
     }
 }

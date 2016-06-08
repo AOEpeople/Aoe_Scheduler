@@ -171,6 +171,23 @@
                             <sort_order>270</sort_order>
                             <show_in_default>1</show_in_default>
                         </killOnIncorrectUser>
+
+                        <runOnlyIfCachePrefixIdMatches translate="label">
+                            <label>Run only if cache prefix id matches</label>
+                            <comment><![CDATA[The cache prefix is configured in you app/etc/local.xml file in /config/global/cache/id_prefix.
+                            It's a good best practice to update this with the current build number you're deploying so that every deployment
+                            gets its own cache namespace without having to flush caches.
+                            Now if you're deploying immutable Magento instances there will be a (short) timeframe where the server from the old
+                            deployment is still processing cron and the server from the new server already started to process them aswell.
+                            By adding the same prefix id you configured in the local.xml file to this field (which is stored in the database) you
+                            can achive a clean cut where there's only one instance processing cron at a time (since the old instances local.xml file
+                            will continue to point to the old cache prefix.
+                            ]]></comment>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>280</sort_order>
+                            <show_in_default>1</show_in_default>
+                        </runOnlyIfCachePrefixIdMatches>
+
                     </fields>
                 </cron>
             </groups>
