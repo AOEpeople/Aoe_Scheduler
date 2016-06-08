@@ -228,6 +228,108 @@ class Aoe_Scheduler_Shell_Scheduler extends Mage_Shell_Abstract
         return "--code <code> [--tryLock] [--force]	        Run a job directly";
     }
 
+
+    /**
+     * Disable job
+     *
+     * @return void
+     */
+    public function disableJobAction()
+    {
+        $code = $this->getArg('code');
+        if (empty($code)) {
+            echo "\nNo code found!\n\n";
+            echo $this->usageHelp();
+            exit(1);
+        }
+
+        $allowedCodes = Mage::getSingleton('aoe_scheduler/job')->getResource()->getJobCodes();
+        if (!in_array($code, $allowedCodes)) {
+            echo "\nNo valid job found!\n\n";
+            echo $this->usageHelp();
+            exit(1);
+        }
+
+        $job = Mage::getModel('aoe_scheduler/job')->load($code); /* @var Aoe_Scheduler_Model_Job $job */
+        if (!$job->getJobCode()) {
+            echo "Job '$code' not found\n";
+            exit(1);
+        }
+
+        if (!$job->getIsActive()) {
+            echo "Job '$code' is already disabled. Skipping.'";
+            return;
+        }
+
+        $job->setIsActive(false)->save();
+
+        $scheduleManager = Mage::getModel('aoe_scheduler/scheduleManager'); /* @var Aoe_Scheduler_Model_ScheduleManager $scheduleManager */
+        $scheduleManager->flushSchedules($job->getJobCode());
+
+        echo "Disabled job $code and flushed all its schedules\n";
+    }
+
+    /**
+     * Display extra help
+     *
+     * @return string
+     */
+    public function disableJobActionHelp()
+    {
+        return "--code <code> 	        Disable job";
+    }
+
+
+    /**
+     * Enable job
+     *
+     * @return void
+     */
+    public function enableJobAction()
+    {
+        $code = $this->getArg('code');
+        if (empty($code)) {
+            echo "\nNo code found!\n\n";
+            echo $this->usageHelp();
+            exit(1);
+        }
+
+        $allowedCodes = Mage::getSingleton('aoe_scheduler/job')->getResource()->getJobCodes();
+        if (!in_array($code, $allowedCodes)) {
+            echo "\nNo valid job found!\n\n";
+            echo $this->usageHelp();
+            exit(1);
+        }
+
+        $job = Mage::getModel('aoe_scheduler/job')->load($code); /* @var Aoe_Scheduler_Model_Job $job */
+        if (!$job->getJobCode()) {
+            echo "Job '$code' not found\n";
+            exit(1);
+        }
+
+        if ($job->getIsActive()) {
+            echo "Job '$code' is already active. Skipping.'";
+            return;
+        }
+
+        $job->setIsActive(true)->save();
+
+        $scheduleManager = Mage::getModel('aoe_scheduler/scheduleManager'); /* @var Aoe_Scheduler_Model_ScheduleManager $scheduleManager */
+        $scheduleManager->generateSchedulesForJob($job);
+
+        echo "Enabled job $code and generated schedules\n";
+    }
+
+    /**
+     * Display extra help
+     *
+     * @return string
+     */
+    public function enableJobActionHelp()
+    {
+        return "--code <code> 	        Enable job";
+    }
+
     /**
      * Active wait until no schedules are running
      */
