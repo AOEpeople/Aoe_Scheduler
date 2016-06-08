@@ -496,6 +496,13 @@ class Aoe_Scheduler_Shell_Scheduler extends Mage_Shell_Abstract
      */
     public function cronAction()
     {
+
+        $helper = Mage::helper('aoe_scheduler'); /* @var $helper Aoe_Scheduler_Helper_Data */
+        if (!$helper->checkCachePrefix()) {
+            echo "Cache prefix in db doesn't match the one in local.xml\n";
+            return;
+        }
+
         $mode = $this->getArg('mode');
         switch ($mode) {
             case 'always':
