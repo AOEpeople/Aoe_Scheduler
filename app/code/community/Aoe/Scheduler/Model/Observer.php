@@ -83,7 +83,7 @@ class Aoe_Scheduler_Model_Observer /* extends Mage_Cron_Model_Observer */
                         $schedule->process();
                     }
                     $repetition++;
-                } while ($repetition < 10 && $schedule->getStatus() == Aoe_Scheduler_Model_Schedule::STATUS_REPEAT);
+                } while ($repetition < 10 && $schedule && ($schedule->getStatus() == Aoe_Scheduler_Model_Schedule::STATUS_REPEAT));
             }
         }
     }
