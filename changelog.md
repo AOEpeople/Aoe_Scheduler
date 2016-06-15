@@ -1,5 +1,12 @@
 ## Changelog
 
+### Version 1.5.0
+
+- **Feature**: #273: Add memory usage column to scheduler list (Thanks, @steverobbins!)
+- **Feature**: Added new shell commands `--enableJob` and `--disableJob`
+- **Feature**: Added cache prefix check (see [description here](https://github.com/AOEpeople/Aoe_Scheduler/blob/017490e64f40f13e334112307f807d18b773618a/app/code/community/Aoe/Scheduler/etc/system.xml#L177-L185))
+- and some other minor bugfixes,...
+
 ### Version 1.4.0
 
 - **Feature**: Added bumper-to-bumper feature (status: "repeat") for always tasks
