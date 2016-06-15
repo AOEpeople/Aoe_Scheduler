@@ -152,6 +152,15 @@ class Aoe_Scheduler_Block_Adminhtml_Scheduler_Grid extends Mage_Adminhtml_Block_
             )
         );
         $this->addColumn(
+            'memory_usage',
+            array(
+                'header'         => $this->__('Memory Usage'),
+                'index'          => 'memory_usage',
+                'type'           => 'number',
+                'renderer'       => 'aoe_scheduler/adminhtml_scheduler_renderer_memory',
+            )
+        );
+        $this->addColumn(
             'host',
             array(
                 'header' => $this->__('Host'),

@@ -261,6 +261,7 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
         }
 
         $this->setFinishedAt(strftime('%Y-%m-%d %H:%M:%S', time()));
+        $this->setMemoryUsage(memory_get_usage() / pow(1024, 2));  // convert bytes to megabytes
         Mage::dispatchEvent('cron_' . $this->getJobCode() . '_after', array('schedule' => $this));
         Mage::dispatchEvent('cron_after', array('schedule' => $this));
 
