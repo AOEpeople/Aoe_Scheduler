@@ -545,20 +545,23 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
             $this->setScheduledBy(Mage::getSingleton('admin/session')->getUser()->getId());
         }
 
-        $collection = Mage::getModel('cron/schedule')/* @var $collection Mage_Cron_Model_Resource_Schedule_Collection */
+        if ($this->getStatus() === self::STATUS_PENDING) {
+            $collection = Mage::getModel('cron/schedule')/* @var $collection Mage_Cron_Model_Resource_Schedule_Collection */
             ->getCollection()
-            ->addFieldToFilter('status', Aoe_Scheduler_Model_Schedule::STATUS_PENDING)
-            ->addFieldToFilter('job_code', $this->getJobCode())
-            ->addFieldToFilter('scheduled_at', $this->getScheduledAt());
-        if ($this->getId() !== null) {
-            $collection->addFieldToFilter('schedule_id', array('neq' => $this->getId()));
-        }
-        $count = $collection->count();
-        if ($count > 0) {
-            $this->_dataSaveAllowed = false; // prevents this object from being stored to database
-            $this->log(sprintf('Pending schedule for "%s" at "%s" already exists %s times. Skipping.', $this->getJobCode(), $this->getScheduledAt(), $count));
-        } else {
-            $this->_dataSaveAllowed = true; // allow the next object to save (because it's not reset automatically)
+                ->addFieldToFilter('status', self::STATUS_PENDING)
+                ->addFieldToFilter('job_code', $this->getJobCode())
+                ->addFieldToFilter('scheduled_at', $this->getScheduledAt());
+            if ($this->getId() !== null) {
+                $collection->addFieldToFilter('schedule_id', array('neq' => $this->getId()));
+            }
+            $count = $collection->count();
+            if ($count > 0) {
+                $this->_dataSaveAllowed = false; // prevents this object from being stored to database
+                $this->log(sprintf('Pending schedule for "%s" at "%s" already exists %s times. Skipping.',
+                    $this->getJobCode(), $this->getScheduledAt(), $count));
+            } else {
+                $this->_dataSaveAllowed = true; // allow the next object to save (because it's not reset automatically)
+            }
         }
         return parent::_beforeSave();
     }
