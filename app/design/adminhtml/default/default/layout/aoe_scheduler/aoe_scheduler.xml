@@ -40,6 +40,10 @@
     <adminhtml_job_index>
         <reference name="head">
             <action method="addCss"><stylesheet>aoe_scheduler/StyleSheet/bars.css</stylesheet></action>
+            <action method="addItem"><type>skin_js</type><file>aoe_scheduler/JavaScript/memory_limit.js</file></action>
+        </reference>
+        <reference name="js">
+            <block type="core/template" name="javascript_url" template="aoe_scheduler/javascript_url.phtml"/>
         </reference>
         <reference name="content">
             <block type="aoe_scheduler/adminhtml_job" name="aoe_scheduler.job"/>
