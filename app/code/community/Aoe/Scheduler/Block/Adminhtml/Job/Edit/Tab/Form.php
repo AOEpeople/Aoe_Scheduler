@@ -155,6 +155,20 @@ class Aoe_Scheduler_Block_Adminhtml_Job_Edit_Tab_Form extends Mage_Adminhtml_Blo
         );
 
         $fieldset->addField(
+            'memory_limit',
+            'select',
+            array(
+                'name'               => 'memory_limit',
+                'label'              => $this->__('Memory limit'),
+                'title'              => $this->__('Memory limit'),
+                'class'              => '',
+                'required'           => false,
+                'options'            => Mage::getSingleton('aoe_scheduler/adminhtml_source_memorylimit')->toArray(),
+                'after_element_html' => $this->getOriginalValueSnippet($job, 'memory_limit'),
+            )
+        );
+
+        $fieldset->addField(
             'is_active',
             'select',
             array(
