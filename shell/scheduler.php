@@ -1,6 +1,11 @@
 <?php
 
-require_once 'abstract.php';
+$dir = dirname(__FILE__);
+if (isset($_SERVER['SCRIPT_FILENAME']))
+{
+    $dir = dirname($_SERVER['SCRIPT_FILENAME']);
+}
+require_once $dir.DIRECTORY_SEPARATOR.'abstract.php';
 
 class Aoe_Scheduler_Shell_Scheduler extends Mage_Shell_Abstract
 {
