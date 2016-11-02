@@ -36,6 +36,8 @@
  * @method string getKillRequest()
  * @method $this setRepetition($repetition)
  * @method string getRepetition()
+ * @method Aoe_Scheduler_Model_Resource_Schedule getResource()
+ * @method Aoe_Scheduler_Model_Resource_Schedule _getResource()
  */
 class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
 {

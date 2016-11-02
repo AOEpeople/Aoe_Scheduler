@@ -15,6 +15,7 @@ class Aoe_Scheduler_Model_ScheduleManager
      * Mark missed schedule records by changing status
      *
      * @return $this
+     * @throws Exception
      */
     public function skipMissedSchedules()
     {
@@ -23,17 +24,31 @@ class Aoe_Scheduler_Model_ScheduleManager
             ->addFieldToFilter('scheduled_at', array('lt' => strftime('%Y-%m-%d %H:%M:%S', time())))
             ->addOrder('scheduled_at', 'DESC');
 
-        $seenJobs = array();
-        foreach ($schedules as $key => $schedule) {
-            /* @var Aoe_Scheduler_Model_Schedule $schedule */
-            if (isset($seenJobs[$schedule->getJobCode()])) {
-                $schedule
-                    ->setMessages('Multiple tasks with the same job code were piling up. Skipping execution of duplicates.')
-                    ->setStatus(Aoe_Scheduler_Model_Schedule::STATUS_SKIP_PILINGUP)
-                    ->save();
-            } else {
-                $seenJobs[$schedule->getJobCode()] = 1;
+        Mage::getSingleton('cron/schedule')->getResource()->beginTransaction(TRUE);
+        try {
+            $seenJobs = array();
+            foreach ($schedules as $key => $schedule) {
+                /* @var Aoe_Scheduler_Model_Schedule $schedule */
+                if (isset($seenJobs[$schedule->getJobCode()])) {
+                    $schedule
+                        ->setMessages('Multiple tasks with the same job code were piling up. Skipping execution of duplicates.')
+                        ->setStatus(Aoe_Scheduler_Model_Schedule::STATUS_SKIP_PILINGUP);
+                    $updated = $schedule->getResource()->trySetJobStatusAtomic(
+                        $schedule->getId(),
+                        $schedule->getStatus(),
+                        Aoe_Scheduler_Model_Schedule::STATUS_PENDING
+                    );
+                    if ($updated) {
+                        $schedule->save();
+                    }
+                } else {
+                    $seenJobs[$schedule->getJobCode()] = 1;
+                }
             }
+            Mage::getSingleton('cron/schedule')->getResource()->commit();
+        } catch (Exception $e) {
+            Mage::getSingleton('cron/schedule')->getResource()->rollBack();
+            throw $e;
         }
 
         return $this;
