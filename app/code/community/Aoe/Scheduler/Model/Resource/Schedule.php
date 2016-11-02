@@ -9,7 +9,7 @@ class Aoe_Scheduler_Model_Resource_Schedule extends Mage_Cron_Model_Resource_Sch
      */
     public function beginTransaction($readCommitted = FALSE)
     {
-        if ($readCommitted) {
+        if ($readCommitted && $this->_getWriteAdapter()->getTransactionLevel() === 0) {
             $this->_getWriteAdapter()->query('SET TRANSACTION ISOLATION LEVEL READ COMMITTED');
         }
         return parent::beginTransaction();
