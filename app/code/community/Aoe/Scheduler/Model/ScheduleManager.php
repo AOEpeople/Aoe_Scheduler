@@ -22,7 +22,8 @@ class Aoe_Scheduler_Model_ScheduleManager
         $schedules = Mage::getModel('cron/schedule')->getCollection()
             ->addFieldToFilter('status', Aoe_Scheduler_Model_Schedule::STATUS_PENDING)
             ->addFieldToFilter('scheduled_at', array('lt' => strftime('%Y-%m-%d %H:%M:%S', time())))
-            ->addOrder('scheduled_at', 'DESC');
+            ->addOrder('scheduled_at', 'DESC')
+            ->load();
 
         Mage::getSingleton('cron/schedule')->getResource()->beginTransaction(TRUE);
         try {
