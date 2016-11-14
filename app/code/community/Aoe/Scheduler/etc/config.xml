@@ -37,6 +37,7 @@
             </cron>
             <cron_resource>
                 <rewrite>
+                    <schedule>Aoe_Scheduler_Model_Resource_Schedule</schedule>
                     <schedule_collection>Aoe_Scheduler_Model_Resource_Schedule_Collection</schedule_collection>
                 </rewrite>
             </cron_resource>
