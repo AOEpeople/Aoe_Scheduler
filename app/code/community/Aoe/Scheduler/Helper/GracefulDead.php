@@ -49,7 +49,14 @@ class Aoe_Scheduler_Helper_GracefulDead
      */
     public static function beforeDyingShutdown()
     {
-        self::beforeDying('TRIGGER: shutdown function', false);
+        // Try to find out where (and why) the job died.
+        $e = new Exception();
+
+        $message = 'TRIGGER: shutdown function' . PHP_EOL .
+            'Last error: ' . PHP_EOL . print_r(error_get_last(), true) . PHP_EOL .
+            'Backlog: ' . PHP_EOL . $e;
+
+        self::beforeDying($message, false);
     }
 
     /**
