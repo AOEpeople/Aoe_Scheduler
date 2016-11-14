@@ -10,7 +10,7 @@ cd $rootDir && n98-magerun.phar config:set system/cron/enable 0
 cd $rootDir/shell && php scheduler.php --action flushSchedules --mode future
 
 # Actively wait until current schedules finish for up to 1 minute (or longer if required):
-cd $rootDir/shell && php scheduler.php --action wait --timout 60
+cd $rootDir/shell && php scheduler.php --action wait --timeout 60
 
 # Kill all tasks that might still be running
 cd $rootDir/shell && php scheduler.php --action killAll
