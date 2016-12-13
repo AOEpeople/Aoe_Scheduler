@@ -233,6 +233,36 @@ class Aoe_Scheduler_Block_Adminhtml_Job_Edit_Tab_Form extends Mage_Adminhtml_Blo
             )
         );
 
+        $fieldset = $form->addFieldset('dependency_fieldset', array('legend' => $this->__('Dependencies')));
+        $this->_addElementTypes($fieldset);
+
+        $fieldset->addField(
+            'job_codes_after',
+            'textarea',
+            array(
+                'name'               => 'job_codes_after',
+                'label'              => $this->__('Job Codes'),
+                'title'              => $this->__('Job Codes'),
+                'class'              => 'textarea',
+                'required'           => false,
+                'note'               => $this->__('These cron job codes will be scheduled after the current cron job is processed.'),
+                'after_element_html' => $this->getOriginalValueSnippet($job, 'job_codes_after'),
+            )
+        );
+
+        $fieldset->addField(
+            'schedule_time',
+            'text',
+            array(
+                'name'               => 'schedule_time',
+                'label'              => $this->__('Schedule Time'),
+                'title'              => $this->__('Schedule Time'),
+                'required'           => false,
+                'note'               => $this->__('Time in minutes. Will be used to schedule the job codes above.'),
+                'after_element_html' => $this->getOriginalValueSnippet($job, 'schedule_time'),
+            )
+        );
+
         $this->setForm($form);
 
         return parent::_prepareForm();

@@ -329,6 +329,8 @@ class Aoe_Scheduler_Model_Resource_Job extends Mage_Core_Model_Resource_Db_Abstr
             'parameters'           => $job->getParameters(),
             'groups'               => $job->getGroups(),
             'is_active'            => ($job->getIsActive() ? '1' : '0'),
+            'job_codes_after'      => $job->getJobCodesAfter(),
+            'schedule_time'        => $job->getScheduleTime(),
         );
 
         // Strip out the auto-generated name
@@ -353,6 +355,8 @@ class Aoe_Scheduler_Model_Resource_Job extends Mage_Core_Model_Resource_Db_Abstr
         $job->setParameters(isset($data['parameters']) ? $data['parameters'] : '');
         $job->setGroups(isset($data['groups']) ? $data['groups'] : '');
         $job->setIsActive(isset($data['is_active']) ? $data['is_active'] : '');
+        $job->setJobCodesAfter(isset($data['job_codes_after']) ? $data['job_codes_after'] : '');
+        $job->setScheduleTime(isset($data['schedule_time']) ? $data['schedule_time'] : '');
         return $job;
     }
 }

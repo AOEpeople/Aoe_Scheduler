@@ -112,6 +112,28 @@ class Aoe_Scheduler_Adminhtml_JobController extends Aoe_Scheduler_Controller_Abs
                 if ($messages) {
                     $this->_getSession()->addSuccess($this->__('"%s" messages:<pre>%s</pre>', $key, $messages));
                 }
+
+                /** @var Aoe_Scheduler_Model_Job $job */
+                $job = $schedule->getJob();
+                $jobDependencies = $job->getJobCodesAfter();
+
+                if ($jobDependencies) {
+                    $jobDependencies = preg_split('/\s+/', $jobDependencies);
+                    $scheduleTime = ($job->getScheduleTime()) ?: 5;
+
+                    foreach ($jobDependencies as $jobDependency) {
+                        $timeCreated   = strftime('%Y-%m-%d %H:%M:%S', mktime(date('H'), date('i'), date('s'), date('m'), date('d'), date('Y')));
+                        $timeScheduled = strftime('%Y-%m-%d %H:%M:%S', mktime(date('H'), date('i') + $scheduleTime, date('s'), date('m'), date('d'), date('Y')));
+
+                        /** @var Mage_Cron_Model_Schedule $schedule */
+                        $schedule = Mage::getModel('cron/schedule');
+                        $schedule->setJobCode($jobDependency)
+                            ->setCreatedAt($timeCreated)
+                            ->setScheduledAt($timeScheduled)
+                            ->setStatus(Mage_Cron_Model_Schedule::STATUS_PENDING)
+                            ->save();
+                    }
+                }
             } else {
                 $this->_getSession()->addError($this->__('Error while running "%s"', $key));
                 if ($messages) {
@@ -163,7 +185,7 @@ class Aoe_Scheduler_Adminhtml_JobController extends Aoe_Scheduler_Controller_Abs
         $this->_initAction()
             ->_addBreadcrumb($this->__('Edit Job'), $this->__('Edit Job'))
             ->_title($this->__('Edit Job'))
-            ->renderLayout();        
+            ->renderLayout();
     }
 
     protected function _filterPostData($data)
