@@ -21,7 +21,7 @@ env:
     - MAGENTO_VERSION=magento-mirror-1.9.0.1
     - MAGENTO_VERSION=magento-mirror-1.8.1.0
     - MAGENTO_VERSION=magento-mirror-1.8.0.0
-    - MAGENTO_VERSION=magento-mirror-1.7.0.2
+    # - MAGENTO_VERSION=magento-mirror-1.7.0.2
 script:
   - curl -sSL https://raw.githubusercontent.com/AOEpeople/MageTestStand/plain_phpunit/setup.sh | bash
 notifications:
