@@ -36,6 +36,8 @@
  * @method string getKillRequest()
  * @method $this setRepetition($repetition)
  * @method string getRepetition()
+ * @method Aoe_Scheduler_Model_Resource_Schedule getResource()
+ * @method Aoe_Scheduler_Model_Resource_Schedule _getResource()
  */
 class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
 {
@@ -46,7 +48,6 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
     const STATUS_DISAPPEARED = 'gone';
     const STATUS_DIDNTDOANYTHING = 'nothing';
 
-    const STATUS_SKIP_LOCKED = 'locked';
     const STATUS_SKIP_OTHERJOBRUNNING = 'other_job_running';
     const STATUS_SKIP_WRONGUSER = 'wrong_user';
     const STATUS_SKIP_PILINGUP = 'skipped';
@@ -141,7 +142,7 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
     {
         // Check the user running the cron is the one defined in config
         if (!$this->checkRunningAsCorrectUser()) {
-            $this->setStatus(self::STATUS_SKIP_WRONGUSER);
+            $this->setStatus(self::STATUS_SKIP_WRONGUSER)->save();
             return $this;
         }
 
@@ -155,7 +156,11 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
             // the following check will prevent multiple schedules of the same type to be run in parallel
             $processManager = Mage::getModel('aoe_scheduler/processManager'); /* @var $processManager Aoe_Scheduler_Model_ProcessManager */
             if ($processManager->isJobCodeRunning($this->getJobCode(), $this->getId())) {
-                $this->setStatus(self::STATUS_SKIP_OTHERJOBRUNNING);
+                $this->getResource()->trySetJobStatusAtomic(
+                    $this->getId(),
+                    Aoe_Scheduler_Model_Schedule::STATUS_SKIP_OTHERJOBRUNNING,
+                    Aoe_Scheduler_Model_Schedule::STATUS_PENDING
+                );
                 $this->log(sprintf('Job "%s" (id: %s) will not be executed because there is already another process with the same job code running. Skipping.', $this->getJobCode(), $this->getId()));
                 return $this;
             }
@@ -165,7 +170,6 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
         // workaround could be to do this: $this->setStatus(Aoe_Scheduler_Model_Schedule::STATUS_PENDING)->save();
         $this->jobWasLocked = false;
         if ($tryLockJob && !$this->tryLockJob()) {
-            $this->setStatus(self::STATUS_SKIP_LOCKED);
             // another cron started this job intermittently, so skip it
             $this->jobWasLocked = true;
             $this->log(sprintf('Job "%s" (id: %s) is locked. Skipping.', $this->getJobCode(), $this->getId()));
@@ -261,7 +265,7 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
         }
 
         $this->setFinishedAt(strftime('%Y-%m-%d %H:%M:%S', time()));
-        $this->setMemoryUsage(memory_get_usage() / pow(1024, 2));  // convert bytes to megabytes
+        $this->setMemoryUsage(memory_get_peak_usage(true) / pow(1024, 2));  // convert bytes to megabytes
         Mage::dispatchEvent('cron_' . $this->getJobCode() . '_after', array('schedule' => $this));
         Mage::dispatchEvent('cron_after', array('schedule' => $this));
 

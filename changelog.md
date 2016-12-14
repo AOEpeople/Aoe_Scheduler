@@ -1,5 +1,10 @@
 ## Changelog
 
+### Version 1.5.1
+
+- **Fix**: #305 Reduce lock waiting/deadlock potential by using `READ COMMITTED` transaction isolation level.
+- **Fix**: #305 Use atomic status updates where appropriate and save `STATUS_SKIP_*` status after setting. Removed `STATUS_SKIP_LOCKED`.
+
 ### Version 1.5.0
 
 - **Feature**: #273: Add memory usage column to scheduler list (Thanks, @steverobbins!)
