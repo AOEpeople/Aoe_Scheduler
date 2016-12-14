@@ -2,6 +2,7 @@
 
 ### Version 1.5.1
 
+- **Feature**: Added "on_success" csl of job codes that will be scheduled after the job completed successfully.
 - **Fix**: #305 Reduce lock waiting/deadlock potential by using `READ COMMITTED` transaction isolation level.
 - **Fix**: #305 Use atomic status updates where appropriate and save `STATUS_SKIP_*` status after setting. Removed `STATUS_SKIP_LOCKED`.
 

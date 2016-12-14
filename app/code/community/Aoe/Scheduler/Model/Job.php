@@ -18,6 +18,8 @@
  * @method string getParameters()
  * @method Aoe_Scheduler_Model_Job setGroups($groups)
  * @method string getGroups()
+ * @method Aoe_Scheduler_Model_Job setOnSuccess($onSuccess)
+ * @method string getOnSuccess()
  * @method Aoe_Scheduler_Model_Job load($jobCode)
  * @method Aoe_Scheduler_Model_Resource_Job getResource()
  * @method Aoe_Scheduler_Model_Resource_Job_Collection getCollection()

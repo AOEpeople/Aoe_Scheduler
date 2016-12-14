@@ -281,6 +281,11 @@ class Aoe_Scheduler_Model_Resource_Job extends Mage_Core_Model_Resource_Db_Abstr
         } elseif ($default !== null) {
             $values['is_active'] = $default;
         }
+        if (isset($config['on_success'])) {
+            $values['on_success'] = $config['on_success'];
+        } elseif ($default !== null) {
+            $values['on_success'] = $default;
+        }
 
         // Clean up each entry to being a trimmed string
         $values = array_map('trim', $values);
@@ -329,6 +334,7 @@ class Aoe_Scheduler_Model_Resource_Job extends Mage_Core_Model_Resource_Db_Abstr
             'parameters'           => $job->getParameters(),
             'groups'               => $job->getGroups(),
             'is_active'            => ($job->getIsActive() ? '1' : '0'),
+            'on_success'           => $job->getOnSuccess()
         );
 
         // Strip out the auto-generated name
@@ -353,6 +359,7 @@ class Aoe_Scheduler_Model_Resource_Job extends Mage_Core_Model_Resource_Db_Abstr
         $job->setParameters(isset($data['parameters']) ? $data['parameters'] : '');
         $job->setGroups(isset($data['groups']) ? $data['groups'] : '');
         $job->setIsActive(isset($data['is_active']) ? $data['is_active'] : '');
+        $job->setOnSuccess(isset($data['on_success']) ? $data['on_success'] : '');
         return $job;
     }
 }

@@ -233,6 +233,22 @@ class Aoe_Scheduler_Block_Adminhtml_Job_Edit_Tab_Form extends Mage_Adminhtml_Blo
             )
         );
 
+        $fieldset = $form->addFieldset('dependency_fieldset', array('legend' => $this->__('Dependencies')));
+        $this->_addElementTypes($fieldset);
+
+        $fieldset->addField(
+            'on_success',
+            'textarea',
+            array(
+                'name'               => 'on_success',
+                'label'              => $this->__('Run jobs on success'),
+                'title'              => $this->__('Run jobs on success'),
+                'class'              => 'textarea',
+                'required'           => false,
+                'note'               => $this->__('Comma-separated list of job codes that will be scheduled after the current cron job has completed successfully.')
+            )
+        );
+
         $this->setForm($form);
 
         return parent::_prepareForm();

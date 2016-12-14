@@ -254,6 +254,8 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
                 $this->setStatus(Aoe_Scheduler_Model_Schedule::STATUS_SUCCESS);
                 Mage::dispatchEvent('cron_' . $this->getJobCode() . '_after_success', array('schedule' => $this));
                 Mage::dispatchEvent('cron_after_success', array('schedule' => $this));
+
+                $this->scheduleOnSuccessDependencies();
             }
 
         } catch (Exception $e) {
@@ -273,6 +275,18 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
         Mage::unregister('currently_running_schedule');
 
         return $this;
+    }
+
+    protected function scheduleOnSuccessDependencies()
+    {
+        $onSuccess = $this->getJob()->getOnSuccess();
+        foreach(Mage::helper('aoe_scheduler')->trimExplode(',', $onSuccess, true) as $jobCode) {
+            $schedule = Mage::getModel('cron/schedule')
+                ->setJobCode($jobCode)
+                ->setScheduledReason(Aoe_Scheduler_Model_Schedule::REASON_DEPENDENCY_SUCCESS)
+                ->schedule()
+                ->save();
+        }
     }
 
 
