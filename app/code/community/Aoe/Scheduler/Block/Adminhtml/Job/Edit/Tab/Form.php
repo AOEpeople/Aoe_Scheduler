@@ -237,29 +237,15 @@ class Aoe_Scheduler_Block_Adminhtml_Job_Edit_Tab_Form extends Mage_Adminhtml_Blo
         $this->_addElementTypes($fieldset);
 
         $fieldset->addField(
-            'job_codes_after',
+            'on_success',
             'textarea',
             array(
-                'name'               => 'job_codes_after',
-                'label'              => $this->__('Job Codes'),
-                'title'              => $this->__('Job Codes'),
+                'name'               => 'on_success',
+                'label'              => $this->__('Run jobs on success'),
+                'title'              => $this->__('Run jobs on success'),
                 'class'              => 'textarea',
                 'required'           => false,
-                'note'               => $this->__('These cron job codes will be scheduled after the current cron job is processed.'),
-                'after_element_html' => $this->getOriginalValueSnippet($job, 'job_codes_after'),
-            )
-        );
-
-        $fieldset->addField(
-            'schedule_time',
-            'text',
-            array(
-                'name'               => 'schedule_time',
-                'label'              => $this->__('Schedule Time'),
-                'title'              => $this->__('Schedule Time'),
-                'required'           => false,
-                'note'               => $this->__('Time in minutes. Will be used to schedule the job codes above.'),
-                'after_element_html' => $this->getOriginalValueSnippet($job, 'schedule_time'),
+                'note'               => $this->__('Comma-separated list of job codes that will be scheduled after the current cron job has completed successfully.')
             )
         );
 

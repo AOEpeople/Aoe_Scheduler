@@ -87,4 +87,5 @@ class Aoe_Scheduler_Model_Observer /* extends Mage_Cron_Model_Observer */
             }
         }
     }
+
 }
