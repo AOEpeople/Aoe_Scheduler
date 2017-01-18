@@ -25,6 +25,13 @@ class Aoe_Scheduler_Shell_Scheduler extends Mage_Shell_Abstract
                 if (method_exists($this, $actionMethodName)) {
                     // emulate index.php entry point for correct URLs generation in scheduled cronjobs
                     Mage::register('custom_entry_point', true);
+
+                    // Magneto CE older than 1.9 does not have 'custom_entry_point' feature.
+                    if (Mage::getEdition() == Mage::EDITION_COMMUNITY && version_compare(Mage::getVersion(), '1.9.0.0', '<')) {
+                        $_SERVER['SCRIPT_NAME'] = str_replace(basename(__FILE__), 'index.php', $_SERVER['SCRIPT_NAME']);
+                        $_SERVER['SCRIPT_FILENAME'] = str_replace(basename(__FILE__), 'index.php', $_SERVER['SCRIPT_FILENAME']);
+                    }
+
                     // Disable use of SID in generated URLs - This is standard for cron job bootstrapping
                     Mage::app()->setUseSessionInUrl(false);
                     // Disable permissions masking by default - This is Magento standard, but not recommended for security reasons
