@@ -27,7 +27,7 @@ class Aoe_Scheduler_Shell_Scheduler extends Mage_Shell_Abstract
                     Mage::register('custom_entry_point', true);
 
                     // Magneto CE older than 1.9 does not have 'custom_entry_point' feature.
-                    if (Mage::getEdition() == Mage::EDITION_COMMUNITY && version_compare(Mage::getVersion(), '1.9.0.0', '<')) {
+                    if (version_compare(Mage::getVersion(), '1.9.0.0', '<')) {
                         $_SERVER['SCRIPT_NAME'] = str_replace(basename(__FILE__), 'index.php', $_SERVER['SCRIPT_NAME']);
                         $_SERVER['SCRIPT_FILENAME'] = str_replace(basename(__FILE__), 'index.php', $_SERVER['SCRIPT_FILENAME']);
                     }
