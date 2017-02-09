@@ -107,6 +107,15 @@ class Aoe_Scheduler_Model_Job extends Mage_Core_Model_Abstract
      */
     public function getDbJobData()
     {
+        if (!$this->hasData('db_job_data')
+            && $this->getJobCode()
+        ) {
+            $this->setDbJobData(
+                $this->getResource()
+                    ->getJobDataFromDb($this->getJobCode())
+            );
+        }
+
         $jobData = $this->getData('db_job_data');
         return (is_array($jobData) ? $jobData : array());
     }
