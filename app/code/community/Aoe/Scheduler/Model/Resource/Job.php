@@ -67,13 +67,11 @@ class Aoe_Scheduler_Model_Resource_Job extends Mage_Core_Model_Resource_Db_Abstr
         }
 
         $xmlJobData = $this->getJobDataFromXml($value);
-        $dbJobData = $this->getJobDataFromDb($value);
-        $jobData = array_merge($xmlJobData, $this->getJobDataFromConfig($value, true), $dbJobData);
+        $jobData = array_merge($xmlJobData, $this->getJobDataFromConfig($value, true));
 
         $this->setModelFromJobData($object, $jobData);
         $object->setJobCode($value);
         $object->setXmlJobData($xmlJobData);
-        $object->setDbJobData($dbJobData);
 
         $this->unserializeFields($object);
         $this->_afterLoad($object);
