@@ -4,6 +4,14 @@ class Aoe_Scheduler_Model_Resource_Schedule extends Mage_Cron_Model_Resource_Sch
 {
 
     /**
+     * @return bool
+     */
+    public function isInTransaction()
+    {
+        return $this->_getWriteAdapter()->getTransactionLevel() > 0;
+    }
+
+    /**
      * @param bool $readCommitted
      * @return Mage_Core_Model_Resource_Abstract
      */

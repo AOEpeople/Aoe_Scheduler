@@ -272,6 +272,11 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
         $this->save();
         Mage::unregister('currently_running_schedule');
 
+        // Log when transaction is still in progress after a task is run as this is a bug.
+        if ($this->getResource()->isInTransaction()) {
+            Mage::log(sprintf('Transaction still in progress after cron job task: %s (%s)', $this->getJobCode(), $this->getId()));
+        }
+
         return $this;
     }
 
