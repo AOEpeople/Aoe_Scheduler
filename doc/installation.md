@@ -2,7 +2,7 @@
 
 **NOTE:** Running Aoe_Scheduler requires you to also setup Magento's cron. If you haven't already done this please also check out [this section on how to configure cron](cron-configuration.md)
 
-For general information on how to install a Magento module using composer/modman, by copying it of via Magento connect please read this post: 
+For general information on how to install a Magento module using composer/modman, by copying it via Magento connect please read this post: 
 [http://fbrnc.net/blog/2014/11/how-to-install-a-magento-module](http://fbrnc.net/blog/2014/11/how-to-install-a-magento-module)
 
 ### Composer
@@ -34,5 +34,5 @@ If you want to use the AOEPeople Composer installer instead (and manually run mo
 
 ### Download and extract
 
-Of course you can also [download the zip or tar.gz file](https://github.com/AOEpeople/Aoe_Scheduler/releases) and extract it into your project webroot. While this is **not recommended (especially not on a production environment!)** this might be the easiest way to test Aoe_Scheduler if your not familiar with Composer and modman and don't feel like exploring it (you should! :) 
+Of course you can also [download the zip or tar.gz file](https://github.com/AOEpeople/Aoe_Scheduler/releases) and extract it into your project webroot. While this is **not recommended (especially not on a production environment!)** this might be the easiest way to test Aoe_Scheduler if you're not familiar with Composer and modman and don't feel like exploring it (you should! :) 
 
