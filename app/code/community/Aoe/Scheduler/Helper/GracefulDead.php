@@ -38,6 +38,7 @@ class Aoe_Scheduler_Helper_GracefulDead
                 ->setFinishedAt(strftime('%Y-%m-%d %H:%M:%S', time()))
                 ->save();
             Mage::unregister('currently_running_schedule');
+            Mage::app()->dispatchEvent('cron_job_died', array('job' => $schedule->getJob(), 'message' => $message));
         }
         if ($exit) {
             exit;
