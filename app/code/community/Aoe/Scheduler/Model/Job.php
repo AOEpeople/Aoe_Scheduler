@@ -17,9 +17,7 @@
  * @method Aoe_Scheduler_Model_Job setParameters($parameters)
  * @method string getParameters()
  * @method Aoe_Scheduler_Model_Job setGroups($groups)
- * @method string getGroups()
- * @method Aoe_Scheduler_Model_Job setOnSuccess($onSuccess)
- * @method string getOnSuccess()
+ * @method array getGroups()
  * @method Aoe_Scheduler_Model_Job load($jobCode)
  * @method Aoe_Scheduler_Model_Resource_Job getResource()
  * @method Aoe_Scheduler_Model_Resource_Job_Collection getCollection()
@@ -53,6 +51,15 @@ class Aoe_Scheduler_Model_Job extends Mage_Core_Model_Abstract
             $name = $this->getJobCode();
         }
         return $name;
+    }
+
+     public function getGroups()
+    {
+        $groups = $this->getData('groups');
+        if (empty($groups)) {
+            $groups = $this->getJobCode();
+        }
+        return $groups;
     }
 
     /**

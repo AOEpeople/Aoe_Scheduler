@@ -13,19 +13,18 @@
     margin-left: -100%;
 }
 
-.configuration {
-    padding: 5px;
-}
-
 #leftcolumn .row {
     background-color: #F6F6F6;
     border-right: 1px solid #DADFE0;
+    height: 40px;
+    padding: 5px;
 }
 
 #leftcolumn .row.hours {
     background-color: transparent;
+    height: 20px;
     text-align: right;
-    padding-right: 5px;
+    padding: 0 5px;
     font-size: 10px;
 }
 
@@ -49,7 +48,7 @@ div.row {
     border-bottom: 1px solid #DADFE0;
     padding: 0;
     margin: 0;
-    height: 40px;
+    height: 50px;
 }
 
 div.timeline-box {
@@ -64,6 +63,11 @@ div.timeline-panel {
 
 div.timeline {
     position: relative;
+}
+
+.timeline-row-info {
+    font-size: 10px;
+    line-height: 12px;
 }
 
 div.hours {
@@ -128,7 +132,7 @@ div.hours {
 
 .task, .estimation {
     position: absolute;
-    height: 24px;
+    height: 34px;
     top: 8px;
     cursor: default;
 }
@@ -141,15 +145,12 @@ div.hours {
 
 .details-headline.error, .task.error,
 .details-headline.killed, .task.killed,
-.details-headline.died, .task.died,
 .details-headline.gone, .task.gone { background-color: #E41300; }
 
-.details-headline.success, .task.success,
-.details-headline.repeat, .task.repeat { background-color: #36B963; }
+.details-headline.success, .task.success { background-color: #36B963; }
 .details-headline.nothing, .task.nothing { background-color: #92D6A9; }
 .details-headline.pending, .task.pending { background-color: #A9ABA8; }
 .details-headline.missed, .task.missed { background-color: #F75300; }
-.details-headline.skipped, .task.skipped { background-color: #F75300; }
 .details-headline.running, .task.running { background-color: #FE9D00 !important; }
 .details-headline.running, .task.running { background-image: url(../Images/animation.gif); background-position: center; background-repeat: repeat-x; }
 
