@@ -61,8 +61,8 @@ $_jobs = $this->getAvailableJobs(); /* @var $_jobs array */
                 <div class="row">
                     <div class="timeline-row-info">
                         <?php
-                        $_schedule = reset($_schedules); /* @var $_schedule Aoe_Scheduler_Model_Schedule */
-                        $_name = $_schedule->getJob()->getName(); /* @var $_name string */
+                        $_schedule = reset($_schedules);
+                        $_name = $_schedule->getJob()->getName(); 
                         $_groups = $_schedule->getJob()->getGroups();
                             if ($_name !== $_jobCode):
                                 echo $this->__('<b>Name:</b> ') .  $_name . "<br>";
