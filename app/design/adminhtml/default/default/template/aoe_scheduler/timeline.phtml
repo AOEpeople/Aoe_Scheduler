@@ -65,11 +65,11 @@ $_jobs = $this->getAvailableJobs(); /* @var $_jobs array */
                         $_name = $_schedule->getJob()->getName(); /* @var $_name string */
                         $_groups = $_schedule->getJob()->getGroups();
                             if ($_name !== $_jobCode):
-                                echo "<b>Name:</b> " . $_name . "<br>";
+                                echo $this->__('<b>Name:</b> ') .  $_name . "<br>";
                             endif;
-                            echo "<b>Job Code:</b> " . $_jobCode. "<br>";
+                            echo $this->__('<b>Job Code:</b> ') .  $_jobCode . "<br>";
                             if ($_groups !== $_jobCode):
-                                echo "<b>Crongroups:</b> " . $_groups;
+                                echo $this->__('<b>Crongroups:</b> ') . $_groups;
                             endif;
                         ?>
                     </div>
