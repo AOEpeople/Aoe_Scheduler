@@ -31,8 +31,8 @@ In your modules config.xml file (e.g. `app/code/local/My/Module/etc/config.xml`)
         <jobs>
             <mymodule_helloworld>
                 <schedule>
-					<cron_expr>*/5 * * * *</cron_expr>
-				</schedule>
+		    <cron_expr>*/5 * * * *</cron_expr>
+		</schedule>
                 <run>
                     <model>my_module/job_hello::run</model>
                 </run>
