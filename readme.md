@@ -1,3 +1,11 @@
+#Forked
+
+Add the Name and the Crongroup Name in the Timelineview. Better overview, if you have many jobs and groups.
+
+![Groups and Names in Timeline](doc/images/groups-and-names-in-timeline.png)
+
+###
+
 <img align="right" style="float: right; height: 200px;" src="doc/images/Aoe_Scheduler_Icon.png">
 
 # AOE Scheduler for Magento
