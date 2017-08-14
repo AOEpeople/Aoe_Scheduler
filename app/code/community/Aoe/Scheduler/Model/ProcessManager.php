@@ -90,7 +90,7 @@ class Aoe_Scheduler_Model_ProcessManager
         // fallback (where process cannot be checked or if one of the servers disappeared)
         // if a task wasn't seen for some time it will be marked as error
         $markAsErrorAfter = intval(Mage::getStoreConfig(self::XML_PATH_MARK_AS_ERROR));
-        $maxAge = time() - min($markAsErrorAfter, 5) * 60;
+        $maxAge = time() - max($markAsErrorAfter, 5) * 60;
         if ($markAsErrorAfter) {
             $schedules = Mage::getModel('cron/schedule')->getCollection()/* @var $schedules Mage_Cron_Model_Resource_Schedule_Collection */
             ->addFieldToFilter('status', Aoe_Scheduler_Model_Schedule::STATUS_RUNNING)
