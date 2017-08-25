@@ -5,7 +5,7 @@ app/locale/sv_SE/Aoe_Scheduler.csv                              app/locale/sv_SE
 app/locale/de_DE/Aoe_Scheduler.csv                              app/locale/de_DE/Aoe_Scheduler.csv
 app/locale/pt_BR/Aoe_Scheduler.csv                              app/locale/pt_BR/Aoe_Scheduler.csv
 app/locale/en_US/template/email/aoe_scheduler/                  app/locale/en_US/template/email/aoe_scheduler
-app/locale/pt_BR/template/email/aoe_scheduler/                  app/locale/pt_BR/template/email/aoe_scheduler
+app/locale/pt_BR/email/aoe_scheduler/                           app/locale/pt_BR/template/email/aoe_scheduler
 app/design/adminhtml/default/default/template/aoe_scheduler/    app/design/adminhtml/default/default/template/aoe_scheduler/
 app/design/adminhtml/default/default/layout/aoe_scheduler/      app/design/adminhtml/default/default/layout/aoe_scheduler/
 skin/adminhtml/default/default/aoe_scheduler/                   skin/adminhtml/default/default/aoe_scheduler/
