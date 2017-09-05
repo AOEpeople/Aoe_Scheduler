@@ -5,10 +5,14 @@ set -o nounset
 
 delete_lock() {
     LOCKDIR=$1
-    rm -rf "${LOCKDIR}"
-    if [ $? -ne 0 ]; then
-        echo "Could not remove lock dir '${LOCKDIR}'. (Check permissions...)"; >&2
-        exit 1;
+
+    if [ -d "${LOCKDIR}" ] || [ -f "${LOCKDIR}" ]; then
+        rm -rf "${LOCKDIR}"
+
+        if [ $? -ne 0 ]; then
+            echo "Could not remove lock dir '${LOCKDIR}'. (Check permissions...)"; >&2
+            exit 1;
+        fi
     fi
 }
 
