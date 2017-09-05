@@ -5,10 +5,14 @@ set -o nounset
 
 delete_lock() {
     LOCKDIR=$1
-    rm -rf "${LOCKDIR}"
-    if [ $? -ne 0 ]; then
-        echo "Could not remove lock dir '${LOCKDIR}'. (Check permissions...)"; >&2
-        exit 1;
+
+    if [ -d "${LOCKDIR}" ] || [ -f "${LOCKDIR}" ]; then
+        rm -rf "${LOCKDIR}"
+
+        if [ $? -ne 0 ]; then
+            echo "Could not remove lock dir '${LOCKDIR}'. (Check permissions...)"; >&2
+            exit 1;
+        fi
     fi
 }
 
@@ -156,6 +160,22 @@ fi
 # Unique identifier for this cron job run
 IDENTIFIER=$(echo -n "${DIR}|${MODE}|${INCLUDE_GROUPS}|${EXCLUDE_GROUPS}|${INCLUDE_JOBS}|${EXCLUDE_JOBS}" | "${MD5SUM_BIN}" - | cut -f1 -d' ')
 acquire_lock "/tmp/magento.aoe_scheduler.${IDENTIFIER}.lock";
+
+# If multiple instances are running the scheduler_cron.sh file
+#
+# And you are getting this message: Multiple tasks with the same job code were piling up. Skipping execution of duplicates
+#
+# You must use a directory shared for the lock to have visibility between all instances
+#
+# Change the line below:
+#
+# From:
+#
+# acquire_lock "/tmp/magento.aoe_scheduler.${IDENTIFIER}.lock";
+#
+# To:
+#
+# acquire_lock "/SHARED_DIRECTORY/tmp/magento.aoe_scheduler.${IDENTIFIER}.lock";
 
 # Needed because PHP resolves symlinks before setting __FILE__
 cd "${DIR}"
