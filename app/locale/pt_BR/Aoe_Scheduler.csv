@@ -23,7 +23,7 @@
 "Type","Tipo"
 "Status","Status"
 "Job","Job"
-"General",""
+"General","Geral"
 "e.g. ""aoe_scheduler/task_heartbeat::run""","Ex. ""aoe_scheduler/task_heartbeat::run"""
 "Scheduling","Agendando"
 "Cron configuration path","Caminho da Configuração da Cron"
