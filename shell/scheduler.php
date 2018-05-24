@@ -510,6 +510,10 @@ class Aoe_Scheduler_Shell_Scheduler extends Mage_Shell_Abstract
             return;
         }
 
+        if ($limit = $this->getArg('memoryLimit')) {
+            ini_set('memory_limit', $limit);
+        }
+
         $mode = $this->getArg('mode');
         switch ($mode) {
             case 'always':
@@ -539,7 +543,14 @@ class Aoe_Scheduler_Shell_Scheduler extends Mage_Shell_Abstract
      */
     public function cronActionHelp()
     {
-        return "--mode (always|default) [--includeJobs <comma separated list of jobs>] [--excludeJobs <comma separated list of jobs>] [--includeGroups <comma separated list of groups>] [--excludeGroups <comma separated list of groups>]";
+        return "Arguments:
+    --mode (always|default)
+    [--includeJobs <comma separated list of jobs>]
+    [--excludeJobs <comma separated list of jobs>]
+    [--includeGroups <comma separated list of groups>]
+    [--excludeGroups <comma separated list of groups>]
+    [--memoryLimit <limit>]
+";
     }
 
     protected function _applyPhpVariables()
