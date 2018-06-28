@@ -74,13 +74,8 @@ acquire_lock () {
     fi
 }
 
-
-# Location of the php binary
+# Default Location of the php binary (if --php /path/to/custom/php/bin is not set)
 PHP_BIN=$(which php || true)
-if [ -z "${PHP_BIN}" ]; then
-    echo "Could not find a binary for php" 1>&2
-    exit 1
-fi
 
 # Location of the md5sum binary
 MD5SUM_BIN=$(which md5sum || true)
@@ -133,6 +128,10 @@ while [ $# -gt 0 ]; do
             EXCLUDE_JOBS=$2
             shift 2
         ;;
+        --php)
+            PHP_BIN=$2
+            shift 2
+        ;;
         --)
             shift
             break
@@ -143,6 +142,12 @@ while [ $# -gt 0 ]; do
         ;;
     esac
 done
+
+# Verify PHP binary:
+if [ -z "${PHP_BIN}" ]; then
+    echo "Could not find a binary for php" 1>&2
+    exit 1
+fi
 
 # Verify we have a MODE parameter
 if [ -z "${MODE}" ]; then
