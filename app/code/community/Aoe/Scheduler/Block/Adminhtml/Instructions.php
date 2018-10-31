@@ -10,7 +10,7 @@ class Aoe_Scheduler_Block_Adminhtml_Instructions extends Mage_Adminhtml_Block_Te
 
     public function getCurrentUser()
     {
-        return trim(shell_exec('whoami'));
+        return Mage::helper('aoe_scheduler')->getRunningUser();
     }
 
     public function getMagentoRootpath()
