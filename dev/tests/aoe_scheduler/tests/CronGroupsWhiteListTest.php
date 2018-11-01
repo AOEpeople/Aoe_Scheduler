@@ -88,10 +88,10 @@ class CronGroupsWhiteListTest extends AbstractTest
             $observer = new Aoe_Scheduler_Model_Observer();
             $observer->dispatch($event);
         } else {
-            $this->exec('cd ' . Mage::getBaseDir() . '/shell && /usr/bin/php scheduler.php --action cron --mode default --includeGroups ' . $this->groups['groupA']);
+            $this->exec('cd ' . Mage::getBaseDir() . '/shell && php scheduler.php --action cron --mode default --includeGroups ' . $this->groups['groupA']);
         }
 
-        //$this->exec('cd ' . Mage::getBaseDir() . '/shell && /usr/bin/php scheduler.php --action wait');
+        //$this->exec('cd ' . Mage::getBaseDir() . '/shell && php scheduler.php --action wait');
 
         $this->assertEquals(Aoe_Scheduler_Model_Schedule::STATUS_SUCCESS, $this->schedules['jobWithGroupA']->refresh()->getStatus());
         $this->assertEquals(Aoe_Scheduler_Model_Schedule::STATUS_PENDING, $this->schedules['jobWithGroupB']->refresh()->getStatus());
