@@ -56,7 +56,7 @@ class CronGroupsWhiteListAlwaysTest extends AbstractTest
             $observer = new Aoe_Scheduler_Model_Observer();
             $observer->dispatch($event);
         } else {
-            $this->exec('cd ' . Mage::getBaseDir() . '/shell && /usr/bin/php scheduler.php --action cron --mode always --includeGroups ' . $this->groups['groupA']);
+            $this->exec('cd ' . Mage::getBaseDir() . '/shell && php scheduler.php --action cron --mode always --includeGroups ' . $this->groups['groupA']);
         }
 
         $schedulesJobWithGroupA = Mage::getModel('cron/schedule')->getCollection()->addFieldToFilter('job_code', $this->jobs['jobWithGroupA']->getJobCode());
