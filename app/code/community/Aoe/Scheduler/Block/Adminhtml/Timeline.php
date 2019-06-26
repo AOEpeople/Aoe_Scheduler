@@ -85,6 +85,13 @@ class Aoe_Scheduler_Block_Adminhtml_Timeline extends Mage_Adminhtml_Block_Widget
         return mktime(date('H', $timestamp) + 1, 0, 0, date('n', $timestamp), date('j', $timestamp), date('Y', $timestamp));
     }
 
+    /**
+     * @return Mage_Cron_Model_Resource_Schedule_Collection
+    */
+    protected function getSchedulesCollection()
+    {
+        return Mage::getModel('cron/schedule')->getCollection();
+    }
 
     /**
      * Load schedules
@@ -94,7 +101,7 @@ class Aoe_Scheduler_Block_Adminhtml_Timeline extends Mage_Adminhtml_Block_Widget
     protected function loadSchedules()
     {
         /* @var Mage_Cron_Model_Resource_Schedule_Collection $collection */
-        $collection = Mage::getModel('cron/schedule')->getCollection();
+        $collection = $this->getSchedulesCollection();
 
         $minDate = null;
         $maxDate = null;
