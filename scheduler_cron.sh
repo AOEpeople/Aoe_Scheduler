@@ -1,15 +1,14 @@
-#!/bin/bash
+#!/bin/sh
 
 # Generate an error if any variable doesn't exist
 set -o nounset
 
+die() { echo "$@" 1>&2; exit 1; }
+
 delete_lock() {
     LOCKDIR=$1
     rm -rf "${LOCKDIR}"
-    if [ $? -ne 0 ]; then
-        echo "Could not remove lock dir '${LOCKDIR}'. (Check permissions...)"; >&2
-        exit 1;
-    fi
+    [ $? -ne 0 ] && die "Could not remove lock dir '${LOCKDIR}'. (Check permissions...)"
 }
 
 # @see http://wiki.bash-hackers.org/howto/mutex
@@ -18,7 +17,7 @@ acquire_lock () {
     PIDFILE="${LOCKDIR}/PID"
 
     #echo "Trying to acquire lock '${LOCKDIR}'."
-    if mkdir "${LOCKDIR}" &>/dev/null; then
+    if mkdir "${LOCKDIR}" >/dev/null 2>&1; then
 
         #echo "Successfully created '${LOCKDIR}'. Lock acquired"
 
@@ -46,7 +45,7 @@ acquire_lock () {
                 delete_lock "${LOCKDIR}"
                 # now try acquire new lock recursively...
                 #echo "Now acquiring new lock"
-                acquire_lock $LOCKDIR;
+                acquire_lock "${LOCKDIR}";
                 return
             fi
         fi
@@ -60,12 +59,12 @@ acquire_lock () {
         fi
 
         # check is the other process is still alive
-        if ! kill -0 $OTHERPID &>/dev/null; then
+        if ! kill -0 "${OTHERPID}" >/dev/null 2>&1; then
             # lock is stale, remove it and restart
             #echo "removing stale lock of nonexistant PID ${OTHERPID}" >&2
             delete_lock "${LOCKDIR}"
             # now try acquire new lock recursively...
-            acquire_lock $LOCKDIR;
+            acquire_lock "${LOCKDIR}";
         else
             # lock is valid and OTHERPID is active - exit, we're locked!
             #echo "Other process is alive. Still locked"
@@ -75,25 +74,34 @@ acquire_lock () {
 }
 
 # Default Location of the php binary (if --php /path/to/custom/php/bin is not set)
-PHP_BIN=$(which php || true)
+PHP_BIN=$(command -v php || true)
 
 # Location of the md5sum binary
-MD5SUM_BIN=$(which md5sum || true)
-if [ -z "${MD5SUM_BIN}" ]; then
-    echo "Could not find a binary for md5sum" 1>&2
-    exit 1
-fi
+MD5SUM_BIN=$(command -v md5sum)
+[ $? -ne 0 ] && die "Could not find a binary for md5sum"
+
+# https://stackoverflow.com/a/12145443
+self=$(
+    self=${0}
+    while [ -L "${self}" ]
+    do
+        cd "${self%/*}" || exit 1
+        self=$(readlink "${self}")
+    done
+    cd "${self%/*}" || exit 1
+    echo "$(pwd -P)/${self##*/}"
+)
 
 # Absolute path to Magento installation shell scripts
-DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")/shell" && pwd)
-if [[ -z "${DIR}" || ! -d "${DIR}" ]]; then
+DIR=$(cd "$(dirname "${self}")/shell" && pwd)
+if [ -z "${DIR}" ] || [ ! -d "${DIR}" ]; then
     echo "Could not resolve base shell directory" 1>&2
     exit 1
 fi
 
 # The scheduler.php script
 SCHEDULER="scheduler.php"
-if [[ ! -e "${DIR}/${SCHEDULER}" || ! -r "${DIR}/${SCHEDULER}" ]]; then
+if [ ! -e "${DIR}/${SCHEDULER}" ] || [ ! -r "${DIR}/${SCHEDULER}" ]; then
     echo "Could not find scheduler.php script" 1>&2
     exit 1
 fi
@@ -159,11 +167,11 @@ fi
 # This is to prevent multiple processes for the same cron parameters (And the only reason we don't call PHP directly)
 
 # Unique identifier for this cron job run
-IDENTIFIER=$(echo -n "${DIR}|${MODE}|${INCLUDE_GROUPS}|${EXCLUDE_GROUPS}|${INCLUDE_JOBS}|${EXCLUDE_JOBS}" | "${MD5SUM_BIN}" - | cut -f1 -d' ')
+IDENTIFIER=$(printf %s "${DIR}|${MODE}|${INCLUDE_GROUPS}|${EXCLUDE_GROUPS}|${INCLUDE_JOBS}|${EXCLUDE_JOBS}" | "${MD5SUM_BIN}" - | cut -f1 -d' ')
 acquire_lock "/tmp/magento.aoe_scheduler.${IDENTIFIER}.lock";
 
 # Needed because PHP resolves symlinks before setting __FILE__
-cd "${DIR}"
+cd "${DIR}" || die "Couldn't change to dir ${DIR}"
 
 # Build the options
 OPTIONS=""
