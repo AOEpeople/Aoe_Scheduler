@@ -31,7 +31,6 @@
 
             <cron>
                 <rewrite>
-                    <observer>Aoe_Scheduler_Model_Observer</observer>
                     <schedule>Aoe_Scheduler_Model_Schedule</schedule>
                 </rewrite>
             </cron>
@@ -131,6 +130,24 @@
     </adminhtml>
 
     <crontab>
+        <events>
+            <default>
+                <observers>
+                    <cron_observer>
+                        <class>aoe_scheduler/observer</class>
+                        <method>dispatch</method>
+                    </cron_observer>
+                </observers>
+            </default>
+            <always>
+                <observers>
+                    <cron_observer>
+                        <class>aoe_scheduler/observer</class>
+                        <method>dispatchAlways</method>
+                    </cron_observer>
+                </observers>
+            </always>
+        </events>
         <jobs>
             <aoescheduler_testtask>
                 <!--<schedule><cron_expr>*/5 * * * *</cron_expr></schedule>-->

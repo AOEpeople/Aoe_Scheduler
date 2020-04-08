@@ -109,6 +109,7 @@ INCLUDE_GROUPS=""
 EXCLUDE_GROUPS=""
 INCLUDE_JOBS=""
 EXCLUDE_JOBS=""
+SKIP_LOCKING=0
 
 # Parse command line args (very simplistic)
 while [ $# -gt 0 ]; do
@@ -133,6 +134,10 @@ while [ $# -gt 0 ]; do
             EXCLUDE_JOBS=$2
             shift 2
         ;;
+        --skipLocking)
+            SKIP_LOCKING=1
+            shift
+        ;;
         --)
             shift
             break
@@ -154,8 +159,10 @@ fi
 # This is to prevent multiple processes for the same cron parameters (And the only reason we don't call PHP directly)
 
 # Unique identifier for this cron job run
-IDENTIFIER=$(echo -n "${DIR}|${MODE}|${INCLUDE_GROUPS}|${EXCLUDE_GROUPS}|${INCLUDE_JOBS}|${EXCLUDE_JOBS}" | "${MD5SUM_BIN}" - | cut -f1 -d' ')
-acquire_lock "/tmp/magento.aoe_scheduler.${IDENTIFIER}.lock";
+if [[ $SKIP_LOCKING -eq 0 ]]; then
+    IDENTIFIER=$(echo -n "${DIR}|${MODE}|${INCLUDE_GROUPS}|${EXCLUDE_GROUPS}|${INCLUDE_JOBS}|${EXCLUDE_JOBS}" | "${MD5SUM_BIN}" - | cut -f1 -d' ')
+    acquire_lock "/tmp/magento.aoe_scheduler.${IDENTIFIER}.lock";
+fi
 
 # Needed because PHP resolves symlinks before setting __FILE__
 cd "${DIR}"

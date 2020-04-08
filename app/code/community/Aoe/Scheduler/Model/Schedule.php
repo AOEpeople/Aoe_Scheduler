@@ -240,6 +240,7 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
             if ((is_string($messages) && strtoupper(substr($messages, 0, 6)) == 'ERROR:') || $this->getStatus() === Aoe_Scheduler_Model_Schedule::STATUS_ERROR) {
                 $this->setStatus(Aoe_Scheduler_Model_Schedule::STATUS_ERROR);
                 Mage::helper('aoe_scheduler')->sendErrorMail($this, $messages);
+                Mage::log("Cron error while executing {$this->getJobCode()}: ".$messages, Zend_Log::ERR);
                 Mage::dispatchEvent('cron_' . $this->getJobCode() . '_after_error', array('schedule' => $this));
                 Mage::dispatchEvent('cron_after_error', array('schedule' => $this));
             } elseif ((is_string($messages) && strtoupper(substr($messages, 0, 7)) == 'NOTHING') || $this->getStatus() === Aoe_Scheduler_Model_Schedule::STATUS_DIDNTDOANYTHING) {
@@ -264,6 +265,7 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
             Mage::dispatchEvent('cron_' . $this->getJobCode() . '_exception', array('schedule' => $this, 'exception' => $e));
             Mage::dispatchEvent('cron_exception', array('schedule' => $this, 'exception' => $e));
             Mage::helper('aoe_scheduler')->sendErrorMail($this, $e->__toString());
+            Mage::logException($e);
         }
 
         $this->setFinishedAt(strftime('%Y-%m-%d %H:%M:%S', time()));
@@ -273,6 +275,11 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
 
         $this->save();
         Mage::unregister('currently_running_schedule');
+
+        // Log when transaction is still in progress after a task is run as this is a bug.
+        if ($this->getResource()->isInTransaction()) {
+            Mage::log(sprintf('Transaction still in progress after cron job task: %s (%s)', $this->getJobCode(), $this->getId()));
+        }
 
         return $this;
     }
@@ -561,20 +568,18 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
             $this->setScheduledBy(Mage::getSingleton('admin/session')->getUser()->getId());
         }
 
-        $collection = Mage::getModel('cron/schedule')/* @var $collection Mage_Cron_Model_Resource_Schedule_Collection */
-            ->getCollection()
-            ->addFieldToFilter('status', Aoe_Scheduler_Model_Schedule::STATUS_PENDING)
-            ->addFieldToFilter('job_code', $this->getJobCode())
-            ->addFieldToFilter('scheduled_at', $this->getScheduledAt());
-        if ($this->getId() !== null) {
-            $collection->addFieldToFilter('schedule_id', array('neq' => $this->getId()));
-        }
-        $count = $collection->count();
-        if ($count > 0) {
-            $this->_dataSaveAllowed = false; // prevents this object from being stored to database
-            $this->log(sprintf('Pending schedule for "%s" at "%s" already exists %s times. Skipping.', $this->getJobCode(), $this->getScheduledAt(), $count));
-        } else {
-            $this->_dataSaveAllowed = true; // allow the next object to save (because it's not reset automatically)
+        if ($this->isObjectNew()) {
+            $collection = Mage::getModel('cron/schedule')/* @var $collection Mage_Cron_Model_Resource_Schedule_Collection */
+                              ->getCollection()
+                              ->addFieldToFilter('status', Aoe_Scheduler_Model_Schedule::STATUS_PENDING)
+                              ->addFieldToFilter('job_code', $this->getJobCode())
+                              ->addFieldToFilter('scheduled_at', $this->getScheduledAt());
+            $count = $collection->getSize();
+            if ($count > 0) {
+                $this->_dataSaveAllowed = false; // prevents this object from being stored to database
+            } else {
+                $this->_dataSaveAllowed = true; // allow the next object to save (because it's not reset automatically)
+            }
         }
         return parent::_beforeSave();
     }
@@ -620,7 +625,7 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
         if (!$this->canRun(false)) {
             return $this;
         }
-        $this->runNow(!$this->isAlwaysTask());
+        $this->runNow(!$this->isAlwaysTask(), TRUE);
         return $this;
     }
 
