@@ -121,6 +121,26 @@ class Aoe_Scheduler_Model_ProcessManager
             $schedule->markAsDisappeared(sprintf('Process "%s" (id: %s) cannot be found anymore', $schedule->getJobCode(), $schedule->getId()));
         }
 
+        /**
+         * clean up "running" tasks THAT
+         * - have never been seen (for whatever reason)
+         * - and have never been scheduled (f.e. triggered by n98-magerun sys:cron:run) and failed
+         * - and have been created before maxAge
+         */
+        $schedules = Mage::getModel('cron/schedule')->getCollection() /* @var $schedules Mage_Cron_Model_Resource_Schedule_Collection */
+            ->addFieldToFilter('status', Aoe_Scheduler_Model_Schedule::STATUS_RUNNING)
+            ->addFieldToFilter('last_seen', array('null' => true))
+            ->addFieldToFilter('host', array('null' => true))
+            ->addFieldToFilter('pid', array('null' => true))
+            ->addFieldToFilter('scheduled_at', array('null' => true))
+            ->addFieldToFilter('created_at', array('lt' => strftime('%Y-%m-%d %H:%M:00', $maxAge)))
+            ->load();
+
+        foreach ($schedules->getIterator() as $schedule) { /* @var $schedule Aoe_Scheduler_Model_Schedule */
+            $schedule->setLastSeen(strftime('%Y-%m-%d %H:%M:%S', time()));
+            $schedule->markAsDisappeared(sprintf('Process "%s" (id: %s) cannot be found anymore', $schedule->getJobCode(), $schedule->getId()));
+        }
+
     }
 
     /**
