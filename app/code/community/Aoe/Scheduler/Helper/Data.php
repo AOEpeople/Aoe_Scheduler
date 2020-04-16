@@ -112,11 +112,12 @@ class Aoe_Scheduler_Helper_Data extends Mage_Core_Helper_Abstract
         if (empty($value) || $value == '0000-00-00 00:00:00') {
             $value = '';
         } else {
-            $value = Mage::getModel('core/date')->date($dateFormat, $value);
+            $dateConverter = Mage::getModel('core/date');
+            $value = $dateConverter->date($dateFormat, $value);
             $replace = array(
-                Mage::getModel('core/date')->date('Y-m-d ', time()) => $echoToday ? Mage::helper('aoe_scheduler')->__('Today') . ', ' : '', // today
-                Mage::getModel('core/date')->date('Y-m-d ', strtotime('+1 day')) => Mage::helper('aoe_scheduler')->__('Tomorrow') . ', ',
-                Mage::getModel('core/date')->date('Y-m-d ', strtotime('-1 day')) => Mage::helper('aoe_scheduler')->__('Yesterday') . ', ',
+                $dateConverter->date('Y-m-d ', time()) => $echoToday ? Mage::helper('aoe_scheduler')->__('Today') . ', ' : '', // today
+                $dateConverter->date('Y-m-d ', strtotime('+1 day')) => Mage::helper('aoe_scheduler')->__('Tomorrow') . ', ',
+                $dateConverter->date('Y-m-d ', strtotime('-1 day')) => Mage::helper('aoe_scheduler')->__('Yesterday') . ', ',
             );
             $value = str_replace(array_keys($replace), array_values($replace), $value);
         }
