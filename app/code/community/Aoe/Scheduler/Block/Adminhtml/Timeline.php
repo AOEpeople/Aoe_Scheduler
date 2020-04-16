@@ -87,7 +87,7 @@ class Aoe_Scheduler_Block_Adminhtml_Timeline extends Mage_Adminhtml_Block_Widget
 
     /**
      * @return Mage_Cron_Model_Resource_Schedule_Collection
-    */
+     */
     protected function getSchedulesCollection()
     {
         return Mage::getModel('cron/schedule')->getCollection();
