@@ -13,3 +13,13 @@ NOT: http://stackoverflow.com/questions/5644037/setting-up-cron-job-in-magento?r
 Add note to not run this via wget 
 - cron is not supposed to run in web context
 	- different php settings, max_execution time, memory_limit (and don't increase these globally only to satisfy cron.php)
+	
+## Script parameters:
+
+scheduler_cron.sh takes following parameters:
+ - `--php /path/to/custom/php/bin` for setting custom path to PHP binary
+ - `--mode default` mode is default or always
+ - `--includeGroups group,group2` see more about [groups here](cron-groups.md)
+ - `--excludeGroups group,group2`
+ - `--includeJobs`
+ - `--excludeJobs`
