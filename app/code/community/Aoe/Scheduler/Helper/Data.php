@@ -346,7 +346,17 @@ class Aoe_Scheduler_Helper_Data extends Mage_Core_Helper_Abstract
      */
     public function getRunningUser()
     {
-        return trim(shell_exec('whoami'));
+        if (function_exists('posix_getpwuid')) {
+            return posix_getpwuid(posix_geteuid())['name'];
+        }
+        $username = getenv('USERNAME');
+        if (!$username) {
+            $username = getenv('USER');
+        }
+        if (!$username) {
+           $username = trim(shell_exec('whoami'));
+        }
+        return $username;
     }
 
     /**
