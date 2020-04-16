@@ -354,7 +354,7 @@ class Aoe_Scheduler_Helper_Data extends Mage_Core_Helper_Abstract
             $username = getenv('USER');
         }
         if (!$username) {
-           $username = shell_exec('whoami');
+           $username = trim(shell_exec('whoami'));
         }
         return $username;
     }
