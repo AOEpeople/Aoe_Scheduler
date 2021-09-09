@@ -274,7 +274,7 @@ class Aoe_Scheduler_Model_ScheduleManager
      * Clean up the history of tasks
      * This override deals with custom states added in Aoe_Scheduler
      *
-     * @return Aoe_Scheduler_Model_ScheduleManager
+     * @return $this
      */
     public function cleanup()
     {
