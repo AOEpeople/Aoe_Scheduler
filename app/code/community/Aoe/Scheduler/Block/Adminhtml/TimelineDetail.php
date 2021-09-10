@@ -35,7 +35,7 @@ class Aoe_Scheduler_Block_Adminhtml_TimelineDetail extends Mage_Adminhtml_Block_
     /**
      * Get schedule
      *
-     * @return Aoe_Scheduler_Block_Adminhtml_TimelineDetail
+     * @return Aoe_Scheduler_Model_Schedule
      */
     public function getSchedule()
     {
