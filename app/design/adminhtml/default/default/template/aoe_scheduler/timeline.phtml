@@ -2,7 +2,7 @@
 /* @var $this Aoe_Scheduler_Block_Adminhtml_Timeline */
 $_helper = $this->helper('aoe_scheduler/data');
 /* @var $_helper Aoe_Scheduler_Helper_Data */
-$_jobCodes = $this->getAvailableJobCodes(); /* @var $_jobCodes array */
+$_jobs = $this->getAvailableJobs(); /* @var $_jobs array */
 ?>
 
 <div class="content-header">
@@ -16,7 +16,7 @@ $_jobCodes = $this->getAvailableJobCodes(); /* @var $_jobCodes array */
 
 <div id="maincontainer">
 
-    <?php if (count($_jobCodes) > 0): ?>
+    <?php if (count($_jobs) > 0): ?>
 
         <div id="contentwrapper">
             <div id="contentcolumn">
@@ -33,10 +33,9 @@ $_jobCodes = $this->getAvailableJobCodes(); /* @var $_jobCodes array */
                             </div>
                         </div>
 
-                        <?php foreach ($_jobCodes as $jobCode): /* @var $jobCode string */ ?>
-                            <?php $_schedules = $this->getSchedulesForCode($jobCode); ?>
+                        <?php foreach ($_jobs as $_jobCode => $_schedules): /* @var $_jobCode string */ /* @var $_schedules array */ ?>
                             <div class="row">
-                                <div class="timeline timeline_<?php echo $jobCode; ?>">
+                                <div class="timeline timeline_<?php echo $_jobCode; ?>">
                                     <?php foreach ($_schedules as $_schedule): /* @var $_schedule Aoe_Scheduler_Model_Schedule */ ?>
                                         <?php echo $this->getGanttDivAttributes($_schedule); ?>
                                         <?php echo $this->getLayout()->createBlock('aoe_scheduler/adminhtml_timelineDetail')->setSchedule($_schedule)->toHtml(); ?>
@@ -58,10 +57,21 @@ $_jobCodes = $this->getAvailableJobCodes(); /* @var $_jobCodes array */
                     - <?php echo $_helper->decorateTime($this->getEndtime(), true, 'Y-m-d H:i'); ?></div>
             </div>
 
-            <?php foreach ($_jobCodes as $jobCode): /* @var $jobCode string */ ?>
+            <?php foreach ($_jobs as $_jobCode => $_schedules): /* @var $_jobCode string */ /* @var $_schedules array */ ?>
                 <div class="row">
-                    <div class="configuration">
-                        <?php echo $jobCode; ?>
+                    <div class="timeline-row-info">
+                        <?php
+                        $_schedule = reset($_schedules);
+                        $_name = $_schedule->getJob()->getName(); 
+                        $_groups = $_schedule->getJob()->getGroups();
+                            if ($_name !== $_jobCode):
+                                echo $this->__('<b>Name:</b> ') .  $_name . "<br>";
+                            endif;
+                            echo $this->__('<b>Job Code:</b> ') .  $_jobCode . "<br>";
+                            if ($_groups !== $_jobCode):
+                                echo $this->__('<b>Crongroups:</b> ') . $_groups;
+                            endif;
+                        ?>
                     </div>
                 </div>
             <?php endforeach; ?>
