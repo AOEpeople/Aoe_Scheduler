@@ -264,6 +264,11 @@ class Aoe_Scheduler_Model_Resource_Job extends Mage_Core_Model_Resource_Db_Abstr
         } elseif ($default !== null) {
             $values['schedule/cron_expr'] = $default;
         }
+        if (isset($config['memory_limit'])) {
+            $values['memory_limit'] = $config['memory_limit'];
+        } elseif ($default !== null) {
+            $values['memory_limit'] = $default;
+        }
         if (isset($config['parameters'])) {
             $values['parameters'] = $config['parameters'];
         } elseif ($default !== null) {
@@ -329,6 +334,7 @@ class Aoe_Scheduler_Model_Resource_Job extends Mage_Core_Model_Resource_Db_Abstr
             'run/model'            => $job->getRunModel(),
             'schedule/config_path' => $job->getScheduleConfigPath(),
             'schedule/cron_expr'   => $job->getScheduleCronExpr(),
+            'memory_limit'         => $job->getMemoryLimit(),
             'parameters'           => $job->getParameters(),
             'groups'               => $job->getGroups(),
             'is_active'            => ($job->getIsActive() ? '1' : '0'),
@@ -356,6 +362,7 @@ class Aoe_Scheduler_Model_Resource_Job extends Mage_Core_Model_Resource_Db_Abstr
         $job->setScheduleCronExpr(isset($data['schedule/cron_expr']) ? $data['schedule/cron_expr'] : '');
         $job->setParameters(isset($data['parameters']) ? $data['parameters'] : '');
         $job->setGroups(isset($data['groups']) ? $data['groups'] : '');
+        $job->setMemoryLimit(isset($data['memory_limit']) ? $data['memory_limit'] : '');
         $job->setIsActive(isset($data['is_active']) ? $data['is_active'] : '');
         $job->setOnSuccess(isset($data['on_success']) ? $data['on_success'] : '');
         return $job;

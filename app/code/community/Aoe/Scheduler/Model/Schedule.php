@@ -185,6 +185,7 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
             if (!$job) {
                 Mage::throwException(sprintf("Could not create job with jobCode '%s'", $this->getJobCode()));
             }
+            $this->manageMemoryLimit($job);
 
             $startTime = time();
             $this
@@ -959,6 +960,20 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
             ->save();
 
         return $this;
+    }
+
+    /**
+     * Dynamically change memory limit from job configuration
+     * @param Aoe_Scheduler_Model_Job $job
+     */
+    private function manageMemoryLimit($job)
+    {
+        $phpMemoryLimit = ini_get('memory_limit');
+        $jobMemoryLimit = $job->getMemoryLimit();
+        if (!in_array($phpMemoryLimit, array(-1, '')) && $phpMemoryLimit < $jobMemoryLimit) {
+            ini_set('memory_limit', $jobMemoryLimit);
+            $this->log('Set memory limit to ' . $jobMemoryLimit . ' for job code : '.$job->getJobCode());
+        }
     }
 
 }

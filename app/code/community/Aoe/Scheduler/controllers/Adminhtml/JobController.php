@@ -271,6 +271,31 @@ class Aoe_Scheduler_Adminhtml_JobController extends Aoe_Scheduler_Controller_Abs
     }
 
     /**
+     * Ajax action: change memory
+     *
+     * @return void
+     */
+    public function changeMemoryAction()
+    {
+        $success = false;
+        if (($jobCode = $this->getRequest()->getParam('job_code')) && !is_null($memoryLimit = $this->getRequest()->getParam('memory_limit'))) {
+            $configPath = 'crontab/jobs/' . $jobCode . '/memory_limit';
+            if ($memoryLimit != Mage::getStoreConfig($configPath)) {
+                try {
+                    Mage::getModel('core/config')->saveConfig($configPath, $memoryLimit);
+                    Mage::app()->getCache()->clean(Zend_Cache::CLEANING_MODE_MATCHING_TAG, array(Mage_Core_Model_Config::CACHE_TAG));
+                    $success = true;
+                } catch (Exception $e) {
+                    Mage::helper('magextrem_utils/logger')
+                        ->setFilename('magextrem/aoe_scheduler')
+                        ->logException($e);
+                }
+            }
+        }
+        $this->getResponse()->setBody(Zend_Json::encode(array('success' => (int)$success)));
+    }
+
+    /**
      * ACL checking
      *
      * @return bool

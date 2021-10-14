@@ -14,6 +14,8 @@
  * @method string getScheduleConfigPath()
  * @method Aoe_Scheduler_Model_Job setRunModel($runModel)
  * @method string getRunModel()
+ * @method Aoe_Scheduler_Model_Job setMemoryLimit($memory_limit)
+ * @method string getMemoryLimit()
  * @method Aoe_Scheduler_Model_Job setParameters($parameters)
  * @method string getParameters()
  * @method Aoe_Scheduler_Model_Job setGroups($groups)

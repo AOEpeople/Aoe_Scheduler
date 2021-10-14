@@ -86,9 +86,10 @@ class Aoe_Scheduler_Block_Adminhtml_Job_Grid extends Mage_Adminhtml_Block_Widget
         $this->addColumn(
             'job_code',
             array(
-                'header'   => $this->__('Job code'),
-                'index'    => 'job_code',
-                'sortable' => false,
+                'header'            => $this->__('Job code'),
+                'index'             => 'job_code',
+                'sortable'          => false,
+                'column_css_class'  => 'job_code'
             )
         );
 
@@ -125,6 +126,15 @@ class Aoe_Scheduler_Block_Adminhtml_Job_Grid extends Mage_Adminhtml_Block_Widget
                 'header'   => $this->__('Run model'),
                 'index'    => 'run_model',
                 'sortable' => false,
+            )
+        );
+        $this->addColumn(
+            'memory_limit',
+            array(
+                'header'         => $this->__('Memory Limit'),
+                'index'          => 'memory_limit',
+                'type'           => 'select',
+                'options'        => Mage::getSingleton('aoe_scheduler/adminhtml_source_memorylimit')->toArray()
             )
         );
         $this->addColumn(
