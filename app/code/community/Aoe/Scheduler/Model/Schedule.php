@@ -431,8 +431,8 @@ class Aoe_Scheduler_Model_Schedule extends Mage_Cron_Model_Schedule
             ->setStatus(self::STATUS_DISAPPEARED)
             ->setFinishedAt($this->getLastSeen())
             ->save();
-
         $this->log(sprintf('Job "%s" (id: %s) disappeared. Message: %s', $this->getJobCode(), $this->getId(), $message));
+        Mage::app()->dispatchEvent('cron_job_disappeared', array('job' => $this->getJob(), 'message' => $message));
     }
 
     /**
