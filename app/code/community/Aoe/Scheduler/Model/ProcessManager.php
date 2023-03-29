@@ -9,8 +9,8 @@
 class Aoe_Scheduler_Model_ProcessManager
 {
 
-    const XML_PATH_MARK_AS_ERROR = 'system/cron/mark_as_error_after';
-    const XML_PATH_MAX_JOB_RUNTIME = 'system/cron/max_job_runtime';
+    public const XML_PATH_MARK_AS_ERROR = 'system/cron/mark_as_error_after';
+    public const XML_PATH_MAX_JOB_RUNTIME = 'system/cron/max_job_runtime';
 
     /**
      * Get all schedules running on this server
@@ -37,7 +37,7 @@ class Aoe_Scheduler_Model_ProcessManager
     public function getAllKillRequests($host = null)
     {
         $collection = $this->getAllRunningSchedules($host);
-        $collection->addFieldToFilter('kill_request', array('lt' => strftime('%Y-%m-%d %H:%M:00', time()+60)));
+        $collection->addFieldToFilter('kill_request', ['lt' => strftime('%Y-%m-%d %H:%M:00', time()+60)]);
         return $collection;
     }
 
@@ -55,7 +55,7 @@ class Aoe_Scheduler_Model_ProcessManager
             ->addFieldToFilter('status', Aoe_Scheduler_Model_Schedule::STATUS_RUNNING)
             ->addFieldToFilter('job_code', $jobCode);
         if (!is_null($ignoreId)) {
-            $collection->addFieldToFilter('schedule_id', array('neq' => $ignoreId));
+            $collection->addFieldToFilter('schedule_id', ['neq' => $ignoreId]);
         }
         foreach ($collection as $schedule) { /* @var $schedule Aoe_Scheduler_Model_Schedule */
             $alive = $schedule->isAlive();
@@ -94,7 +94,7 @@ class Aoe_Scheduler_Model_ProcessManager
         if ($markAsErrorAfter) {
             $schedules = Mage::getModel('cron/schedule')->getCollection()/* @var $schedules Mage_Cron_Model_Resource_Schedule_Collection */
             ->addFieldToFilter('status', Aoe_Scheduler_Model_Schedule::STATUS_RUNNING)
-                ->addFieldToFilter('last_seen', array('lt' => strftime('%Y-%m-%d %H:%M:00', $maxAge)))
+                ->addFieldToFilter('last_seen', ['lt' => strftime('%Y-%m-%d %H:%M:00', $maxAge)])
                 ->load();
 
             foreach ($schedules as $schedule) { /* @var $schedule Aoe_Scheduler_Model_Schedule */
@@ -110,10 +110,10 @@ class Aoe_Scheduler_Model_ProcessManager
         // by robinfritze. @see https://github.com/AOEpeople/Aoe_Scheduler/issues/40#issuecomment-67749476
         $schedules = Mage::getModel('cron/schedule')->getCollection() /* @var $schedules Mage_Cron_Model_Resource_Schedule_Collection */
             ->addFieldToFilter('status', Aoe_Scheduler_Model_Schedule::STATUS_RUNNING)
-            ->addFieldToFilter('last_seen', array('null' => true))
-            ->addFieldToFilter('host', array('null' => true))
-            ->addFieldToFilter('pid', array('null' => true))
-            ->addFieldToFilter('scheduled_at', array('lt' => strftime('%Y-%m-%d %H:%M:00', $maxAge)))
+            ->addFieldToFilter('last_seen', ['null' => true])
+            ->addFieldToFilter('host', ['null' => true])
+            ->addFieldToFilter('pid', ['null' => true])
+            ->addFieldToFilter('scheduled_at', ['lt' => strftime('%Y-%m-%d %H:%M:00', $maxAge)])
             ->load();
 
         foreach ($schedules->getIterator() as $schedule) { /* @var $schedule Aoe_Scheduler_Model_Schedule */
@@ -129,11 +129,11 @@ class Aoe_Scheduler_Model_ProcessManager
          */
         $schedules = Mage::getModel('cron/schedule')->getCollection() /* @var $schedules Mage_Cron_Model_Resource_Schedule_Collection */
             ->addFieldToFilter('status', Aoe_Scheduler_Model_Schedule::STATUS_RUNNING)
-            ->addFieldToFilter('last_seen', array('null' => true))
-            ->addFieldToFilter('host', array('null' => true))
-            ->addFieldToFilter('pid', array('null' => true))
-            ->addFieldToFilter('scheduled_at', array('null' => true))
-            ->addFieldToFilter('created_at', array('lt' => strftime('%Y-%m-%d %H:%M:00', $maxAge)))
+            ->addFieldToFilter('last_seen', ['null' => true])
+            ->addFieldToFilter('host', ['null' => true])
+            ->addFieldToFilter('pid', ['null' => true])
+            ->addFieldToFilter('scheduled_at', ['null' => true])
+            ->addFieldToFilter('created_at', ['lt' => strftime('%Y-%m-%d %H:%M:00', $maxAge)])
             ->load();
 
         foreach ($schedules->getIterator() as $schedule) { /* @var $schedule Aoe_Scheduler_Model_Schedule */

@@ -107,7 +107,7 @@ class Aoe_Scheduler_Adminhtml_JobController extends Aoe_Scheduler_Controller_Abs
 
             $messages = $schedule->getMessages();
 
-            if (in_array($schedule->getStatus(), array(Aoe_Scheduler_Model_Schedule::STATUS_SUCCESS, Aoe_Scheduler_Model_Schedule::STATUS_DIDNTDOANYTHING))) {
+            if (in_array($schedule->getStatus(), [Aoe_Scheduler_Model_Schedule::STATUS_SUCCESS, Aoe_Scheduler_Model_Schedule::STATUS_DIDNTDOANYTHING])) {
                 $this->_getSession()->addSuccess($this->__('Ran "%s" (Duration: %s sec)', $key, intval($schedule->getDuration())));
                 if ($messages) {
                     $this->_getSession()->addSuccess($this->__('"%s" messages:<pre>%s</pre>', $key, $messages));
@@ -139,7 +139,7 @@ class Aoe_Scheduler_Adminhtml_JobController extends Aoe_Scheduler_Controller_Abs
     {
         $codes = $this->getRequest()->getParam($key);
         if (!is_array($codes)) {
-            return array();
+            return [];
         }
         $allowedCodes = Mage::getSingleton('aoe_scheduler/job')->getResource()->getJobCodes();
         $codes = array_intersect(array_unique(array_filter(array_map('trim', $codes))), $allowedCodes);
@@ -202,7 +202,7 @@ class Aoe_Scheduler_Adminhtml_JobController extends Aoe_Scheduler_Controller_Abs
             $job->addData($data);
             //validating
             if (!$this->_validatePostData($data)) {
-                $this->_redirect('*/*/edit', array('job_code' => $job->getJobCode(), '_current' => true));
+                $this->_redirect('*/*/edit', ['job_code' => $job->getJobCode(), '_current' => true]);
                 return;
             }
 
@@ -218,7 +218,7 @@ class Aoe_Scheduler_Adminhtml_JobController extends Aoe_Scheduler_Controller_Abs
                 $this->_getSession()->setFormData(false);
                 // check if 'Save and Continue'
                 if ($this->getRequest()->getParam('back', false)) {
-                    $this->_redirect('*/*/edit', array('job_code' => $job->getJobCode(), '_current' => true));
+                    $this->_redirect('*/*/edit', ['job_code' => $job->getJobCode(), '_current' => true]);
                     return;
                 }
 
@@ -241,11 +241,11 @@ class Aoe_Scheduler_Adminhtml_JobController extends Aoe_Scheduler_Controller_Abs
             }
 
             $this->_getSession()->setFormData($data);
-            $this->_redirect('*/*/edit', array('job_code' => $this->getRequest()->getParam('job_code')));
+            $this->_redirect('*/*/edit', ['job_code' => $this->getRequest()->getParam('job_code')]);
             return;
         }
 
-        $this->_redirect('*/*/', array('_current' => true));
+        $this->_redirect('*/*/', ['_current' => true]);
     }
 
     /**

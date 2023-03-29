@@ -28,25 +28,15 @@ class Aoe_Scheduler_Block_Adminhtml_Job extends Mage_Adminhtml_Block_Widget_Grid
         $this->removeButton('add');
         $this->_addButton(
             'add_new_job',
-            array(
-                'label'   => $this->__('Create new job'),
-                'onclick' => "setLocation('{$this->getUrl('*/*/new')}')",
-                'class'   => 'add'
-            )
+            ['label'   => $this->__('Create new job'), 'onclick' => "setLocation('{$this->getUrl('*/*/new')}')", 'class'   => 'add']
         );
         $this->_addButton(
             'add_new',
-            array(
-                'label'   => $this->__('Generate Schedule'),
-                'onclick' => "setLocation('{$this->getUrl('*/*/generateSchedule')}')",
-            )
+            ['label'   => $this->__('Generate Schedule'), 'onclick' => "setLocation('{$this->getUrl('*/*/generateSchedule')}')"]
         );
         $this->_addButton(
             'configure',
-            array(
-                'label'   => $this->__('Cron Configuration'),
-                'onclick' => "setLocation('{$this->getUrl('adminhtml/system_config/edit', array('section' => 'system'))}#system_cron')",
-            )
+            ['label'   => $this->__('Cron Configuration'), 'onclick' => "setLocation('{$this->getUrl('adminhtml/system_config/edit', ['section' => 'system'])}#system_cron')"]
         );
         return parent::_prepareLayout();
     }

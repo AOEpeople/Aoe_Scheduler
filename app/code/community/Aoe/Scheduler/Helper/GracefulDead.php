@@ -16,11 +16,11 @@ class Aoe_Scheduler_Helper_GracefulDead
     {
         static $configured = false;
         if (!$configured) {
-            register_shutdown_function(array('Aoe_Scheduler_Helper_GracefulDead', 'beforeDyingShutdown'));
+            register_shutdown_function(['Aoe_Scheduler_Helper_GracefulDead', 'beforeDyingShutdown']);
             if (extension_loaded('pcntl') && function_exists('pcntl_signal')) {
                 declare(ticks = 1);
-                pcntl_signal(SIGINT, array('Aoe_Scheduler_Helper_GracefulDead', 'beforeDyingSigint')); // CTRL + C
-                pcntl_signal(SIGTERM, array('Aoe_Scheduler_Helper_GracefulDead', 'beforeDyingSigterm')); // kill <pid>
+                pcntl_signal(SIGINT, ['Aoe_Scheduler_Helper_GracefulDead', 'beforeDyingSigint']); // CTRL + C
+                pcntl_signal(SIGTERM, ['Aoe_Scheduler_Helper_GracefulDead', 'beforeDyingSigterm']); // kill <pid>
             }
             $configured = true;
         }

@@ -13,7 +13,6 @@ class Aoe_Scheduler_Model_Task_Test
      * General purpose test task.
      * Behavior can be controlled via parameters
      *
-     * @param Aoe_Scheduler_Model_Schedule $schedule
      * @return string
      * @throws Exception
      */
@@ -21,7 +20,7 @@ class Aoe_Scheduler_Model_Task_Test
     {
         $parameters = $schedule->getParameters();
         if ($parameters) {
-            $parameters = json_decode($parameters, true);
+            $parameters = json_decode($parameters, true, 512, JSON_THROW_ON_ERROR);
         }
 
         // fake duration

@@ -28,7 +28,7 @@ class Aoe_Scheduler_Test_Helper_Data extends EcomDev_PHPUnit_Test_Case
      */
     public function testShouldCallCorrectUserMethodAndPerformMatch($method, $user, $useRunningUser)
     {
-        $mock = $this->getHelperMock('aoe_scheduler', array('getRunningUser', 'getLastRunUser'));
+        $mock = $this->getHelperMock('aoe_scheduler', ['getRunningUser', 'getLastRunUser']);
 
         $mock->expects($this->once())->method($method)->will($this->returnValue($user));
 
