@@ -35,14 +35,7 @@ class Aoe_Scheduler_Test_Model_Schedule_Runnow extends EcomDev_PHPUnit_Test_Case
         $this->assertEquals(Aoe_Scheduler_Model_Schedule::STATUS_SUCCESS, $loadedSchedule->getStatus());
 
         $this->assertEventDispatched(
-            array(
-                'cron_after',
-                'cron_after_success',
-                'cron_' . $jobCode . '_after',
-                'cron_' . $jobCode . '_after_success',
-                'cron_before',
-                'cron_' . $jobCode . '_before',
-            )
+            ['cron_after', 'cron_after_success', 'cron_' . $jobCode . '_after', 'cron_' . $jobCode . '_after_success', 'cron_before', 'cron_' . $jobCode . '_before']
         );
     }
 
@@ -55,10 +48,10 @@ class Aoe_Scheduler_Test_Model_Schedule_Runnow extends EcomDev_PHPUnit_Test_Case
 
         $jobCode = 'aoescheduler_testtask';
 
-        $parameter = array('outcome' => 'error');
+        $parameter = ['outcome' => 'error'];
 
         $schedule->setJobCode($jobCode);
-        $schedule->setParameters(json_encode($parameter));
+        $schedule->setParameters(json_encode($parameter, JSON_THROW_ON_ERROR));
         $schedule->runNow(false);
 
         $scheduleId = $schedule->getId();
@@ -74,14 +67,7 @@ class Aoe_Scheduler_Test_Model_Schedule_Runnow extends EcomDev_PHPUnit_Test_Case
         $this->assertEquals(Aoe_Scheduler_Model_Schedule::STATUS_ERROR, $loadedSchedule->getStatus());
 
         $this->assertEventDispatched(
-            array(
-                'cron_after',
-                'cron_after_error',
-                'cron_' . $jobCode . '_after',
-                'cron_' . $jobCode . '_after_error',
-                'cron_before',
-                'cron_' . $jobCode . '_before',
-            )
+            ['cron_after', 'cron_after_error', 'cron_' . $jobCode . '_after', 'cron_' . $jobCode . '_after_error', 'cron_before', 'cron_' . $jobCode . '_before']
         );
     }
 
@@ -94,7 +80,7 @@ class Aoe_Scheduler_Test_Model_Schedule_Runnow extends EcomDev_PHPUnit_Test_Case
 
         $jobCode = 'aoescheduler_testtask';
 
-        $parameter = array('outcome' => 'nothing');
+        $parameter = ['outcome' => 'nothing'];
 
         $schedule->setJobCode($jobCode);
         $schedule->setParameters(json_encode($parameter));
@@ -113,14 +99,7 @@ class Aoe_Scheduler_Test_Model_Schedule_Runnow extends EcomDev_PHPUnit_Test_Case
         $this->assertEquals(Aoe_Scheduler_Model_Schedule::STATUS_DIDNTDOANYTHING, $loadedSchedule->getStatus());
 
         $this->assertEventDispatched(
-            array(
-                'cron_after',
-                'cron_after_nothing',
-                'cron_' . $jobCode . '_after',
-                'cron_' . $jobCode . '_after_nothing',
-                'cron_before',
-                'cron_' . $jobCode . '_before',
-            )
+            ['cron_after', 'cron_after_nothing', 'cron_' . $jobCode . '_after', 'cron_' . $jobCode . '_after_nothing', 'cron_before', 'cron_' . $jobCode . '_before']
         );
     }
 
@@ -133,10 +112,10 @@ class Aoe_Scheduler_Test_Model_Schedule_Runnow extends EcomDev_PHPUnit_Test_Case
 
         $jobCode = 'aoescheduler_testtask';
 
-        $parameter = array('outcome' => 'exception');
+        $parameter = ['outcome' => 'exception'];
 
         $schedule->setJobCode($jobCode);
-        $schedule->setParameters(json_encode($parameter));
+        $schedule->setParameters(json_encode($parameter, JSON_THROW_ON_ERROR));
         $schedule->runNow(false);
 
         $scheduleId = $schedule->getId();
@@ -152,14 +131,7 @@ class Aoe_Scheduler_Test_Model_Schedule_Runnow extends EcomDev_PHPUnit_Test_Case
         $this->assertEquals(Aoe_Scheduler_Model_Schedule::STATUS_ERROR, $loadedSchedule->getStatus());
 
         $this->assertEventDispatched(
-            array(
-                'cron_after',
-                'cron_exception',
-                'cron_' . $jobCode . '_after',
-                'cron_' . $jobCode . '_exception',
-                'cron_before',
-                'cron_' . $jobCode . '_before',
-            )
+            ['cron_after', 'cron_exception', 'cron_' . $jobCode . '_after', 'cron_' . $jobCode . '_exception', 'cron_before', 'cron_' . $jobCode . '_before']
         );
     }
 
@@ -193,7 +165,7 @@ class Aoe_Scheduler_Test_Model_Schedule_Runnow extends EcomDev_PHPUnit_Test_Case
      */
     protected function _performConfiguredUserTest()
     {
-        $helperMock = $this->getHelperMock('aoe_scheduler', array('runningAsConfiguredUser'));
+        $helperMock = $this->getHelperMock('aoe_scheduler', ['runningAsConfiguredUser']);
         $helperMock->expects($this->once())->method('runningAsConfiguredUser')->will($this->returnValue(false));
         $this->replaceByMock('helper', 'aoe_scheduler', $helperMock);
 

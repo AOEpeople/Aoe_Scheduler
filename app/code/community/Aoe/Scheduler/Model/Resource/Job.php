@@ -6,7 +6,7 @@ class Aoe_Scheduler_Model_Resource_Job extends Mage_Core_Model_Resource_Db_Abstr
     protected $loaded = false;
 
     /** @var Aoe_Scheduler_Model_Job[] */
-    protected $jobs = array();
+    protected $jobs = [];
 
     /**
      * Resource initialization
@@ -18,9 +18,9 @@ class Aoe_Scheduler_Model_Resource_Job extends Mage_Core_Model_Resource_Db_Abstr
 
     public function getJobCodes()
     {
-        $codes = array();
+        $codes = [];
 
-        $nodes = array('crontab/jobs', 'default/crontab/jobs');
+        $nodes = ['crontab/jobs', 'default/crontab/jobs'];
         foreach ($nodes as $node) {
             $jobs = Mage::getConfig()->getNode($node);
             if ($jobs && $jobs->hasChildren()) {
@@ -41,15 +41,13 @@ class Aoe_Scheduler_Model_Resource_Job extends Mage_Core_Model_Resource_Db_Abstr
 
     /**
      * @param Aoe_Scheduler_Model_Job $object
-     * @param mixed                   $value
      * @param null                    $field
-     *
      * @return $this
      */
-    public function load(Mage_Core_Model_Abstract $object, $value, $field = null)
+    public function load(Mage_Core_Model_Abstract $object, mixed $value, $field = null)
     {
         if (!$object instanceof Aoe_Scheduler_Model_Job) {
-            throw new InvalidArgumentException(sprintf("Expected object of type 'Aoe_Scheduler_Model_Job' got '%s'", get_class($object)));
+            throw new InvalidArgumentException(sprintf("Expected object of type 'Aoe_Scheduler_Model_Job' got '%s'", $object::class));
         }
 
         /** @var Aoe_Scheduler_Model_Job $object */
@@ -59,10 +57,10 @@ class Aoe_Scheduler_Model_Resource_Job extends Mage_Core_Model_Resource_Db_Abstr
         }
 
         if (empty($value)) {
-            $this->setModelFromJobData($object, array());
+            $this->setModelFromJobData($object, []);
             $object->setJobCode('');
-            $object->setXmlJobData(array());
-            $object->setDbJobData(array());
+            $object->setXmlJobData([]);
+            $object->setDbJobData([]);
             return $this;
         }
 
@@ -91,7 +89,7 @@ class Aoe_Scheduler_Model_Resource_Job extends Mage_Core_Model_Resource_Db_Abstr
         }
 
         if (!$object instanceof Aoe_Scheduler_Model_Job) {
-            throw new InvalidArgumentException(sprintf("Expected object of type 'Aoe_Scheduler_Model_Job' got '%s'", get_class($object)));
+            throw new InvalidArgumentException(sprintf("Expected object of type 'Aoe_Scheduler_Model_Job' got '%s'", $object::class));
         }
 
         if (!$object->getJobCode()) {
@@ -131,33 +129,20 @@ class Aoe_Scheduler_Model_Resource_Job extends Mage_Core_Model_Resource_Db_Abstr
         foreach ($updateValues as $k => $v) {
             $adapter->update(
                 $this->getMainTable(),
-                array('value' => $v),
-                array(
-                    'scope = ?'    => 'default',
-                    'scope_id = ?' => 0,
-                    'path = ?'     => $pathPrefix . $k
-                )
+                ['value' => $v],
+                ['scope = ?'    => 'default', 'scope_id = ?' => 0, 'path = ?'     => $pathPrefix . $k]
             );
         }
         foreach ($insertValues as $k => $v) {
             $adapter->insert(
                 $this->getMainTable(),
-                array(
-                    'scope'    => 'default',
-                    'scope_id' => 0,
-                    'path'     => $pathPrefix . $k,
-                    'value'    => $v
-                )
+                ['scope'    => 'default', 'scope_id' => 0, 'path'     => $pathPrefix . $k, 'value'    => $v]
             );
         }
         foreach ($deleteValues as $k => $v) {
             $adapter->delete(
                 $this->getMainTable(),
-                array(
-                    'scope = ?'    => 'default',
-                    'scope_id = ?' => 0,
-                    'path = ?'     => $pathPrefix . $k
-                )
+                ['scope = ?'    => 'default', 'scope_id = ?' => 0, 'path = ?'     => $pathPrefix . $k]
             );
         }
 
@@ -187,7 +172,7 @@ class Aoe_Scheduler_Model_Resource_Job extends Mage_Core_Model_Resource_Db_Abstr
     public function delete(Mage_Core_Model_Abstract $object)
     {
         if (!$object instanceof Aoe_Scheduler_Model_Job) {
-            throw new InvalidArgumentException(sprintf("Expected object of type 'Aoe_Scheduler_Model_Job' got '%s'", get_class($object)));
+            throw new InvalidArgumentException(sprintf("Expected object of type 'Aoe_Scheduler_Model_Job' got '%s'", $object::class));
         }
 
         $this->_beforeDelete($object);
@@ -199,11 +184,7 @@ class Aoe_Scheduler_Model_Resource_Job extends Mage_Core_Model_Resource_Db_Abstr
         $adapter = $this->_getWriteAdapter();
         $adapter->delete(
             $this->getMainTable(),
-            array(
-                'path LIKE ?' => $this->getJobSearchPath($object->getJobCode()),
-                'scope = ?' => 'default',
-                'scope_id = ?' => 0
-            )
+            ['path LIKE ?' => $this->getJobSearchPath($object->getJobCode()), 'scope = ?' => 'default', 'scope_id = ?' => 0]
         );
 
         Mage::getConfig()->reinit();
@@ -220,19 +201,19 @@ class Aoe_Scheduler_Model_Resource_Job extends Mage_Core_Model_Resource_Db_Abstr
 
     protected function getJobSearchPath($jobCode)
     {
-        return str_replace(array('\\', '%', '_'), array('\\\\', '\\%', '\\_'), $this->getJobPathPrefix($jobCode)) . '/%';
+        return str_replace(['\\', '%', '_'], ['\\\\', '\\%', '\\_'], $this->getJobPathPrefix($jobCode)) . '/%';
     }
 
     private function getJobDataFromConfig($jobCode, $useDefaultScope = false, $default = null)
     {
         $config = Mage::getConfig()->getNode(($useDefaultScope ? 'default/' : '') . $this->getJobPathPrefix($jobCode));
         if (!$config) {
-            return array();
+            return [];
         }
 
         $config = $config->asArray();
 
-        $values = array();
+        $values = [];
 
         if (isset($config['name'])) {
             $values['name'] = $config['name'];
@@ -301,15 +282,15 @@ class Aoe_Scheduler_Model_Resource_Job extends Mage_Core_Model_Resource_Db_Abstr
         $adapter = $this->_getWriteAdapter();
 
         $select = $adapter->select()
-            ->from($this->getMainTable(), array('path', 'value'))
+            ->from($this->getMainTable(), ['path', 'value'])
             ->where('scope = ?', 'default')
             ->where('scope_id = ?', '0')
             ->where('path LIKE ?', $this->getJobSearchPath($jobCode));
 
         $pathPrefix = $this->getJobPathPrefix($jobCode) . '/';
-        $values = array();
+        $values = [];
         foreach ($adapter->query($select)->fetchAll() as $row) {
-            if (strpos($row['path'], $pathPrefix) === 0) {
+            if (str_starts_with($row['path'], $pathPrefix)) {
                 $values[substr($row['path'], strlen($pathPrefix))] = $row['value'];
             }
         }
@@ -322,18 +303,7 @@ class Aoe_Scheduler_Model_Resource_Job extends Mage_Core_Model_Resource_Db_Abstr
 
     public function getJobDataFromModel(Aoe_Scheduler_Model_Job $job)
     {
-        $values = array(
-            'name'                 => $job->getName(),
-            'description'          => $job->getDescription(),
-            'short_description'    => $job->getShortDescription(),
-            'run/model'            => $job->getRunModel(),
-            'schedule/config_path' => $job->getScheduleConfigPath(),
-            'schedule/cron_expr'   => $job->getScheduleCronExpr(),
-            'parameters'           => $job->getParameters(),
-            'groups'               => $job->getGroups(),
-            'is_active'            => ($job->getIsActive() ? '1' : '0'),
-            'on_success'           => $job->getOnSuccess()
-        );
+        $values = ['name'                 => $job->getName(), 'description'          => $job->getDescription(), 'short_description'    => $job->getShortDescription(), 'run/model'            => $job->getRunModel(), 'schedule/config_path' => $job->getScheduleConfigPath(), 'schedule/cron_expr'   => $job->getScheduleCronExpr(), 'parameters'           => $job->getParameters(), 'groups'               => $job->getGroups(), 'is_active'            => ($job->getIsActive() ? '1' : '0'), 'on_success'           => $job->getOnSuccess()];
 
         // Strip out the auto-generated name
         if ($values['name'] === $job->getJobCode()) {
@@ -348,16 +318,16 @@ class Aoe_Scheduler_Model_Resource_Job extends Mage_Core_Model_Resource_Db_Abstr
 
     public function setModelFromJobData(Aoe_Scheduler_Model_Job $job, array $data)
     {
-        $job->setName(isset($data['name']) ? $data['name'] : '');
-        $job->setDescription(isset($data['description']) ? $data['description'] : '');
-        $job->setShortDescription(isset($data['short_description']) ? $data['short_description'] : '');
-        $job->setRunModel(isset($data['run/model']) ? $data['run/model'] : '');
-        $job->setScheduleConfigPath(isset($data['schedule/config_path']) ? $data['schedule/config_path'] : '');
-        $job->setScheduleCronExpr(isset($data['schedule/cron_expr']) ? $data['schedule/cron_expr'] : '');
-        $job->setParameters(isset($data['parameters']) ? $data['parameters'] : '');
-        $job->setGroups(isset($data['groups']) ? $data['groups'] : '');
-        $job->setIsActive(isset($data['is_active']) ? $data['is_active'] : '');
-        $job->setOnSuccess(isset($data['on_success']) ? $data['on_success'] : '');
+        $job->setName($data['name'] ?? '');
+        $job->setDescription($data['description'] ?? '');
+        $job->setShortDescription($data['short_description'] ?? '');
+        $job->setRunModel($data['run/model'] ?? '');
+        $job->setScheduleConfigPath($data['schedule/config_path'] ?? '');
+        $job->setScheduleCronExpr($data['schedule/cron_expr'] ?? '');
+        $job->setParameters($data['parameters'] ?? '');
+        $job->setGroups($data['groups'] ?? '');
+        $job->setIsActive($data['is_active'] ?? '');
+        $job->setOnSuccess($data['on_success'] ?? '');
         return $job;
     }
 }

@@ -11,8 +11,6 @@ class Aoe_Scheduler_Model_Observer /* extends Mage_Cron_Model_Observer */
      * Process cron queue
      * Generate tasks schedule
      * Cleanup tasks schedule
-     *
-     * @param Varien_Event_Observer $observer
      */
     public function dispatch(Varien_Event_Observer $observer)
     {
@@ -48,8 +46,6 @@ class Aoe_Scheduler_Model_Observer /* extends Mage_Cron_Model_Observer */
 
     /**
      * Process cron queue for tasks marked as 'always'
-     *
-     * @param Varien_Event_Observer $observer
      */
     public function dispatchAlways(Varien_Event_Observer $observer)
     {

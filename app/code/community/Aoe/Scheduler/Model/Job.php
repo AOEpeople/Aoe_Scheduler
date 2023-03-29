@@ -62,7 +62,7 @@ class Aoe_Scheduler_Model_Job extends Mage_Core_Model_Abstract
      */
     public function setIsActive($flag)
     {
-        return $this->setData('is_active', !in_array($flag, array(false, 'false', 0, '0'), true));
+        return $this->setData('is_active', !in_array($flag, [false, 'false', 0, '0'], true));
     }
 
     /**
@@ -70,7 +70,7 @@ class Aoe_Scheduler_Model_Job extends Mage_Core_Model_Abstract
      */
     public function getIsActive()
     {
-        return !in_array($this->getData('is_active'), array(false, 'false', 0, '0'), true);
+        return !in_array($this->getData('is_active'), [false, 'false', 0, '0'], true);
     }
 
     /**
@@ -89,7 +89,7 @@ class Aoe_Scheduler_Model_Job extends Mage_Core_Model_Abstract
     public function getXmlJobData()
     {
         $jobData = $this->getData('xml_job_data');
-        return (is_array($jobData) ? $jobData : array());
+        return (is_array($jobData) ? $jobData : []);
     }
 
     /**
@@ -117,7 +117,7 @@ class Aoe_Scheduler_Model_Job extends Mage_Core_Model_Abstract
         }
 
         $jobData = $this->getData('db_job_data');
-        return (is_array($jobData) ? $jobData : array());
+        return (is_array($jobData) ? $jobData : []);
     }
 
     /**

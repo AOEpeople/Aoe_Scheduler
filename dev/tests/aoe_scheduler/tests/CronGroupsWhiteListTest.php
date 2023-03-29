@@ -3,7 +3,7 @@
 class CronGroupsWhiteListTest extends AbstractTest
 {
 
-    protected $groups = array();
+    protected $groups = [];
 
     protected function setUp()
     {
@@ -46,7 +46,7 @@ class CronGroupsWhiteListTest extends AbstractTest
         }
 
         // fake schedule generation to avoid it to be generated on the next run:
-        Mage::app()->saveCache(time(), Mage_Cron_Model_Observer::CACHE_KEY_LAST_SCHEDULE_GENERATE_AT, array('crontab'), null);
+        Mage::app()->saveCache(time(), Mage_Cron_Model_Observer::CACHE_KEY_LAST_SCHEDULE_GENERATE_AT, ['crontab'], null);
     }
 
     /**
@@ -72,11 +72,11 @@ class CronGroupsWhiteListTest extends AbstractTest
         $this->assertTrue(in_array($this->schedules['jobWithGroupAandB']->getJobCode(), $map[$this->groups['groupA']]));
         $this->assertTrue(in_array($this->schedules['jobWithGroupAandB']->getJobCode(), $map[$this->groups['groupB']]));
 
-        $includeJobs = $helper->addGroupJobs(array(), array($this->groups['groupA']));
+        $includeJobs = $helper->addGroupJobs([], [$this->groups['groupA']]);
         $this->assertTrue(in_array($this->schedules['jobWithGroupA']->getJobCode(), $includeJobs));
         $this->assertTrue(in_array($this->schedules['jobWithGroupAandB']->getJobCode(), $includeJobs));
 
-        $includeJobs = $helper->addGroupJobs(array(), array($this->groups['groupB']));
+        $includeJobs = $helper->addGroupJobs([], [$this->groups['groupB']]);
         $this->assertTrue(in_array($this->schedules['jobWithGroupB']->getJobCode(), $includeJobs));
         $this->assertTrue(in_array($this->schedules['jobWithGroupAandB']->getJobCode(), $includeJobs));
 
@@ -84,7 +84,7 @@ class CronGroupsWhiteListTest extends AbstractTest
 
         if ($sameRequest) {
             // dispatch event
-            $event = new Varien_Event_Observer(array('include_groups' => array($this->groups['groupA'])));
+            $event = new Varien_Event_Observer(['include_groups' => [$this->groups['groupA']]]);
             $observer = new Aoe_Scheduler_Model_Observer();
             $observer->dispatch($event);
         } else {

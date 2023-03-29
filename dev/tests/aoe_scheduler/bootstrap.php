@@ -1,13 +1,13 @@
 <?php
 
-define("AOE_SCHEDULER_TESTSUITE_BASEDIR", dirname(__FILE__));
+define("AOE_SCHEDULER_TESTSUITE_BASEDIR", __DIR__);
 
 $magentoRoot = getenv('MAGENTO_ROOT');
 if (empty($magentoRoot)) {
     $i=0;
     $prefix = '';
     do {
-        foreach(array('app/Mage.php', 'htdocs/app/Mage.php') as $file) {
+        foreach(['app/Mage.php', 'htdocs/app/Mage.php'] as $file) {
             if (is_file($prefix.$file)) {
                 break 2;
             }
@@ -17,7 +17,7 @@ if (empty($magentoRoot)) {
     if (!is_file($prefix.$file)) {
         echo "Could not find Magento root!"; exit(1);
     }
-    $magentoRoot = realpath(dirname(dirname($prefix.$file)));
+    $magentoRoot = realpath(dirname($prefix.$file, 2));
 }
 
 define('MAGENTO_ROOT', $magentoRoot);
