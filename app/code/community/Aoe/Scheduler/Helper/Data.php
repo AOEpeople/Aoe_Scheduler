@@ -78,6 +78,7 @@ class Aoe_Scheduler_Helper_Data extends Mage_Core_Helper_Abstract
             case Aoe_Scheduler_Model_Schedule::STATUS_ERROR:
             case Aoe_Scheduler_Model_Schedule::STATUS_DISAPPEARED:
             case Aoe_Scheduler_Model_Schedule::STATUS_KILLED:
+            case Aoe_Scheduler_Model_Schedule::STATUS_DIED:
                 $result = '<span class="bar-red"><span>' . $status . '</span></span>';
                 break;
             default:
