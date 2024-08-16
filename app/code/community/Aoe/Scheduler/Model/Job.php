@@ -127,7 +127,7 @@ class Aoe_Scheduler_Model_Job extends Mage_Core_Model_Abstract
      */
     public function getCronExpression()
     {
-        $cronExpr = null;
+        $cronExpr = '';
         if ($this->getScheduleConfigPath()) {
             $cronExpr = Mage::getStoreConfig($this->getScheduleConfigPath(), Mage_Core_Model_Store::ADMIN_CODE);
         }
